@@ -40,6 +40,23 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
+### Backend
+
+#### Running
+To start the backend server, run:
+
+```bash
+cargo run
+```
+
+#### Code coverage
+Requires [cargo-llvm-cov](https://crates.io/crates/cargo-llvm-cov).
+
+```bash
+cargo llvm-cov test
+```
+
+
 ## Developement workflow
 
 We try to apply the GitFlow workflow, specific features/issue fixes should be developped in their own branches. When the functionnality is developed, create a Pull Request and ask for reviewers.
