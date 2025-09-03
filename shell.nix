@@ -10,12 +10,16 @@ let
     extensions = [
       "rust-src" # for rust-analyzer
       "rust-analyzer"
+      "llvm-tools-preview"
     ];
   };
 in
   pkgs.mkShell rec {
     packages = with pkgs; [
+      # Front
       nodejs
+      # Back
+      cargo-llvm-cov
     ];
     nativeBuildInputs = with pkgs; [
       rust
