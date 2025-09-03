@@ -1,0 +1,11 @@
+[workspace]
+members = []
+resolver = "2"
+
+# --- Workspace Settings ---
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/GaspardCulis/regionoix"
