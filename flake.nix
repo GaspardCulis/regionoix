@@ -76,7 +76,8 @@
           rust
           pkg-config
         ];
-        buildInputs = [
+        buildInputs = with pkgs; [
+          openssl
         ];
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath buildInputs;
       };
