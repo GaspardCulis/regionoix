@@ -2,7 +2,7 @@
 
 use sea_orm::entity::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "product")]
 pub struct Model {
     #[sea_orm(primary_key)]
@@ -11,7 +11,8 @@ pub struct Model {
     pub name: String,
     #[sea_orm(column_type = "Text", nullable)]
     pub description: Option<String>,
-    pub weight: Option<i32>,
+    #[sea_orm(column_type = "Double", nullable)]
+    pub weight: Option<f64>,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
     pub price: Option<Decimal>,
     pub brand_id: Option<i32>,

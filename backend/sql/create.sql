@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS PRODUCT (
     id serial primary key,
     name varchar(50) not null unique,
     description text,
-    weight integer,
+    weight float,
     price numeric(10,2) CHECK(price > 0),
     brand_id integer references brand(id),
     image varchar,
