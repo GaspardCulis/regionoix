@@ -30,7 +30,7 @@
     };
   in {
     nixosConfigurations = {
-      Ravioles1 = nixpkgs.lib.nixosSystem {
+      Raviole1 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./nix/Raviole1/configuration.nix
@@ -40,7 +40,7 @@
     };
 
     deploy.nodes = {
-      Ravioles1 = {
+      Raviole1 = {
         hostname = "regionoix.gasdev.fr";
         profiles.system = {
           user = "root";
