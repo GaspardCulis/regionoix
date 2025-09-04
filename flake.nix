@@ -69,6 +69,8 @@
           nodejs
           # Back
           cargo-llvm-cov
+          # CI
+          deploy-rs.packages."${system}".deploy-rs
         ];
         nativeBuildInputs = with pkgs; [
           rust
