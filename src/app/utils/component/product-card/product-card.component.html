@@ -1,13 +1,13 @@
-<div class="w-full max-w-xs bg-base-100 shadow-xl rounded-xl p-4 flex flex-col items-center justify-center;">
+<div class="card">
     <figure>
-        <img class="rounded-lg" [src]="image" [alt]="title" />
+        <img [src]="image" [alt]="title" />
     </figure>
-    <div class="w-full text-center text-justify">
-        <h2 class="text-xl font-bold mb-2">{{ title }}</h2>
-        <p class="mb-2">{{ description }}</p>
-        <p class="font-bold text-lg">{{ price }} €</p>
-        <div class="card-actions justify-end">
-            <button class="btn btn-primary">Ajouter au panier</button>
+    <div class="card-content">
+        <h2>{{ title }}</h2>
+        <p>{{ description }}</p>
+        <p class="price">{{ price }} €</p>
+        <div class="card-action">
+            <button class="btn">Ajouter au panier</button>
         </div>
     </div>
 </div>
