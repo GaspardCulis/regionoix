@@ -3,6 +3,9 @@ name: Check frontend
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'backend/**'
+      - 'nix/**'
   pull_request:
     branches: [ "main" ]
 
