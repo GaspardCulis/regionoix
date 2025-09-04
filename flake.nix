@@ -10,11 +10,16 @@
     };
 
     deploy-rs.url = "github:serokell/deploy-rs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
+    disko,
     deploy-rs,
     rust-overlay,
   }: let
@@ -27,7 +32,10 @@
     nixosConfigurations = {
       Ravioles1 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [];
+        modules = [
+          ./nix/Raviole1/configuration.nix
+          disko.nixosModules.disko
+        ];
       };
     };
 
