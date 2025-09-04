@@ -12,4 +12,9 @@ repository = "https://github.com/GaspardCulis/regionoix"
 
 [workspace.dependencies]
 actix-web = "4"
-sea-orm = { version = "^0.12.0", features = [ "sqlx-postgres", "runtime-async-std-native-tls", "macros" ] }
+serde = { version = "1.0", features = ["derive"] }
+sea-orm = { version = "^0.12.0", features = [
+    "sqlx-postgres",
+    "runtime-async-std-native-tls",
+    "macros",
+] }

@@ -8,3 +8,4 @@ repository.workspace = true
 [dependencies]
 actix-web = { workspace = true }
 sea-orm = { workspace = true }
+serde = { workspace = true }
