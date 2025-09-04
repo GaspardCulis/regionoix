@@ -8,6 +8,9 @@ on:
       - 'nix/**'
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'backend/**'
+      - 'nix/**'
 
 
 jobs:
