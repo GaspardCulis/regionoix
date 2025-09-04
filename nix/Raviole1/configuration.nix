@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
+    ./services
   ];
 
   networking.hostName = "Raviole1";
