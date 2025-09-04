@@ -30,13 +30,17 @@
     };
   in {
     nixosConfigurations = {
-      Raviole1 = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./nix/Raviole1/configuration.nix
-          disko.nixosModules.disko
-        ];
-      };
+      Raviole1 = let
+        domain = "regionoix.gasdev.fr";
+      in
+        nixpkgs.lib.nixosSystem {
+          specialArgs = {inherit domain;};
+          system = "x86_64-linux";
+          modules = [
+            ./nix/Raviole1/configuration.nix
+            disko.nixosModules.disko
+          ];
+        };
     };
 
     deploy.nodes = {
