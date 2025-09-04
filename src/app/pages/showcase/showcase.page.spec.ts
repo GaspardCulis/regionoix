@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Showcase } from './showcase-page';
+import { Showcase } from './showcase.page';
 
 describe('Showcase', () => {
   let component: Showcase;
