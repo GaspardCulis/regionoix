@@ -1,0 +1,67 @@
+.card {
+    width: 100%;
+    max-width: 20rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.card figure img {
+    border-radius: 0.5rem;
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.card-content {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.75rem;
+}
+
+.card-content h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.card-content p {
+    margin-bottom: 0.5rem;
+    text-align: justify;
+}
+
+.card-content .price {
+    font-weight: bold;
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.card-actions .btn {
+    background-color: var(--background-auvergne-rhone-alpes);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.card-actions .btn:hover {
+    background-color: var(--background-auvergne-rhone-alpes);
+}
