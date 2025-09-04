@@ -80,3 +80,12 @@ in Kebab Case. If the branch is dedicated to fixing a specific issue, `short-sco
 ### URL routes
 
 All URL routes (pages and APIs) must be in Kebab Case (ex: `/api/customer-info`)
+
+## IAC
+
+Server infrastructure is defined using a reproducible [NixOS](https://nixos.org/) configuration (flake).
+
+Remote deployments are done using [deploy-rs](https://github.com/serokell/deploy-rs):
+```sh
+deploy .#Raviole1
+```
