@@ -17,7 +17,7 @@ in {
       inherit port;
     };
     authentication = ''
-      host all ${user} 0.0.0.0/32 scram-sha-256
+      host all ${user} 0.0.0.0/0 scram-sha-256
     '';
     initialScript = pkgs.writeText "init-sql-script" ''
       alter user ${user} with password '${pass}';
