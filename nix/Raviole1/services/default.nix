@@ -1,5 +1,6 @@
 {...}: {
   imports = [
-    ./postgres.nix
+    ./postgres.nix # DB
+    ./caddy.nix # Proxy
   ];
 }
