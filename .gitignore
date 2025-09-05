@@ -46,3 +46,6 @@ Thumbs.db
 # Added by cargo
 
 /target
+
+# Environnement variable
+.env
