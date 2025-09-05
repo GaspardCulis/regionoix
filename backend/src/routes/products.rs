@@ -6,7 +6,7 @@ use crate::{
         product, region,
     },
 };
-use actix_web::{HttpRequest, HttpResponse, Responder, delete, get, post, web};
+use actix_web::{HttpRequest, HttpResponse, Responder, delete, get, post, put, web};
 use sea_orm::{
     ActiveModelTrait,
     ActiveValue::{self, NotSet, Set},
@@ -14,11 +14,12 @@ use sea_orm::{
 };
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    cfg.service(get);
-    cfg.service(get_by_id);
-    cfg.service(get_by_id_expand);
-    cfg.service(create);
-    cfg.service(delete_by_id);
+    cfg.service(get)
+        .service(get_by_id)
+        .service(get_by_id_expand)
+        .service(create)
+        .service(delete_by_id)
+        .service(update_by_id);
 }
 
 #[get("")]
@@ -149,4 +150,36 @@ pub async fn delete_by_id(data: web::Data<AppState>, req: HttpRequest) -> impl R
         .expect(&format!("Failed to delete product of id {}", id));
 
     HttpResponse::Ok().body("Product succesfully deleted")
+}
+
+#[put("/{id}")]
+pub async fn update_by_id(
+    data: web::Data<AppState>,
+    req: HttpRequest,
+    form_data: web::Json<product::Model>,
+) -> impl Responder {
+    let db = &data.db;
+    let id: i32 = req.match_info().query("id").parse().unwrap();
+    println!("id sent {0}", id);
+
+    let product: Option<product::Model> = Product::find_by_id(id)
+        .one(db)
+        .await
+        .expect(&format!("Failed to get product of id {}", id));
+
+    // Into ActiveModel
+    let mut product: product::ActiveModel = product.unwrap().into();
+
+    product.name = Set(form_data.name.to_owned());
+    product.description = Set(form_data.description.to_owned());
+    product.weight = Set(form_data.weight.to_owned());
+    product.price = Set(form_data.price.to_owned());
+    product.brand_id = Set(form_data.brand_id.to_owned());
+    product.image = Set(form_data.image.to_owned());
+    product.stock = Set(form_data.stock.to_owned());
+    product.region_id = Set(form_data.region_id.to_owned());
+
+    product.update(db).await.expect("Failed to update product");
+
+    HttpResponse::Ok().body("Product succesfully updated")
 }
