@@ -1,7 +1,7 @@
 <div class="topbar">
     <img class="logo" src={{pathLogo}} alt="Logo de la region">
     <h1 class="title">{{ title }}</h1>
-    <input class="search" type="text" [(ngModel)]="searchText" placeholder="Search...">
+    <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher...">
     <div class="topbar-actions">
         <button class="user-basket" (click)="goToBasket()">
             <img src="assets/panier1.png" alt="logo panier">
@@ -14,7 +14,7 @@
             <img src="https://i.pinimg.com/736x/f3/d1/ed/f3d1edf10d63c40e1fa06364176fa502.jpg" alt="logo user">
             }
             @else {
-            <span> Login </span>
+            <span>Se connecter</span>
             }
         </button>
     </div>

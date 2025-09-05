@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ConnexionPage } from './connexion-page';
+import { ConnectionPage } from './connection-page';
 
-describe('ConnexionPage', () => {
-  let component: ConnexionPage;
-  let fixture: ComponentFixture<ConnexionPage>;
+describe('ConnectionPage', () => {
+  let component: ConnectionPage;
+  let fixture: ComponentFixture<ConnectionPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConnexionPage]
+      imports: [ConnectionPage]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(ConnexionPage);
+    fixture = TestBed.createComponent(ConnectionPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

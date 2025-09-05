@@ -3,6 +3,7 @@
         [quantity]="product.quantity" [price]="product.price">
     </app-product-list-item-component>
     <div class="basket-actions">
-        <button class="btn-validate" (click)="goToPayment()">Valider le panier</button>
+        <p>Total {{getTotalPrice()}} €</p>
+        <button class="btn-validate" (click)="goToPayment()">Commander</button>
     </div>
 </div>
