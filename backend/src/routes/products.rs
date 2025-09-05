@@ -154,7 +154,7 @@ pub async fn update_by_id(
     product.stock = Set(form_data.stock.to_owned());
     product.region_id = Set(form_data.region_id.to_owned());
 
-    product.update(db).await.expect("Failed to update product");
+    product.update(db).await?;
 
     Ok(HttpResponse::Ok().body("Product succesfully updated"))
 }
