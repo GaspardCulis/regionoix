@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserModel } from '../../models/user-model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-connexion-page',
@@ -14,13 +15,15 @@ export class ConnexionPage {
 
   @Output() login = new EventEmitter<UserModel>();
 
+  private router = inject(Router);
+
   //TODO: add constructor with service injection for actual login
   
   onSubmit() {
     if (this.checkCredentials()) {
       const user: UserModel = { email: this.email, password: this.password };
       this.login.emit(user);
-      //TODO: navigate to another page on successful login
+      this.router.navigate(['/showcase']);
     }
   }
 
