@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS SUB_CATEGORY(
 CREATE TABLE IF NOT EXISTS USER_(
     id serial primary key,
     email citext unique not null,
-    password varchar not null
+    password varchar not null,
+    role varchar not null CHECK(role IN ('CLIENT','ADMIN')) default 'ADMIN'
 );
 
 CREATE TABLE IF NOT EXISTS PRODUCT (

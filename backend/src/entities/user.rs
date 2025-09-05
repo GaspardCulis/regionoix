@@ -11,6 +11,7 @@ pub struct Model {
     #[sea_orm(column_type = "custom(\"citext\")", unique)]
     pub email: String,
     pub password: String,
+    pub role: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
