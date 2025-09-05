@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -13,8 +13,7 @@ import { Router } from '@angular/router';
 export class PaymentPage {
   @Input() totalPrice!: number;
 
-  constructor(private router: Router) { }
-
+  private router = inject(Router);
   currentStep = 1;
 
   nextStep() {

@@ -2,7 +2,7 @@
     <app-product-list-item-component *ngFor="let product of products" [title]="product.title" [image]="product.image"
         [quantity]="product.quantity" [price]="product.price">
     </app-product-list-item-component>
-    <div class="basket-actions" (click)="goToPayment()">
-        <button class="btn-validate">Valider le panier</button>
+    <div class="basket-actions">
+        <button class="btn-validate" (click)="goToPayment()">Valider le panier</button>
     </div>
 </div>
