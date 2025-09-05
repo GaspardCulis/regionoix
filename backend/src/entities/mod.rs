@@ -3,6 +3,8 @@
 pub mod prelude;
 
 pub mod brand;
+pub mod cart;
+pub mod cart_line;
 pub mod category;
 pub mod discount;
 pub mod order;
@@ -10,6 +12,5 @@ pub mod order_line;
 pub mod product;
 pub mod product_category;
 pub mod region;
-pub mod stock;
 pub mod sub_category;
 pub mod user;

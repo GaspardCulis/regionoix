@@ -26,13 +26,4 @@ impl Related<super::product_category::Entity> for Entity {
     }
 }
 
-impl Related<super::product::Entity> for Entity {
-    fn to() -> RelationDef {
-        super::product_category::Relation::Product.def()
-    }
-    fn via() -> Option<RelationDef> {
-        Some(super::product_category::Relation::Category.def().rev())
-    }
-}
-
 impl ActiveModelBehavior for ActiveModel {}

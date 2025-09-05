@@ -4,42 +4,31 @@ use sea_orm::entity::prelude::*;
 use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize)]
-#[sea_orm(table_name = "order_")]
+#[sea_orm(table_name = "cart")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub client_lastname: String,
-    pub client_firstname: String,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub total_price: Decimal,
-    #[sea_orm(column_name = "status_")]
-    pub status: Option<String>,
-    pub arrival_date: Option<Date>,
-    pub creation_date: Option<Date>,
+    #[sea_orm(unique)]
     pub user_id: Option<i32>,
-    pub city: String,
-    pub country: String,
-    pub adress: String,
-    pub postal_code: Decimal,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::order_line::Entity")]
-    OrderLine,
+    #[sea_orm(has_many = "super::cart_line::Entity")]
+    CartLine,
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::UserId",
         to = "super::user::Column::Id",
         on_update = "NoAction",
-        on_delete = "Cascade"
+        on_delete = "NoAction"
     )]
     User,
 }
 
-impl Related<super::order_line::Entity> for Entity {
+impl Related<super::cart_line::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::OrderLine.def()
+        Relation::CartLine.def()
     }
 }
 

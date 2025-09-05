@@ -18,7 +18,7 @@ pub struct Model {
     pub price: Option<Decimal>,
     pub brand_id: Option<i32>,
     pub image: Option<String>,
-    pub stock_id: Option<i32>,
+    pub stock: i32,
     pub region_id: Option<i32>,
 }
 
@@ -32,6 +32,8 @@ pub enum Relation {
         on_delete = "NoAction"
     )]
     Brand,
+    #[sea_orm(has_many = "super::cart_line::Entity")]
+    CartLine,
     #[sea_orm(has_many = "super::discount::Entity")]
     Discount,
     #[sea_orm(has_many = "super::order_line::Entity")]
@@ -46,19 +48,17 @@ pub enum Relation {
         on_delete = "NoAction"
     )]
     Region,
-    #[sea_orm(
-        belongs_to = "super::stock::Entity",
-        from = "Column::StockId",
-        to = "super::stock::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    Stock,
 }
 
 impl Related<super::brand::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Brand.def()
+    }
+}
+
+impl Related<super::cart_line::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::CartLine.def()
     }
 }
 
@@ -83,21 +83,6 @@ impl Related<super::product_category::Entity> for Entity {
 impl Related<super::region::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Region.def()
-    }
-}
-
-impl Related<super::stock::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Stock.def()
-    }
-}
-
-impl Related<super::category::Entity> for Entity {
-    fn to() -> RelationDef {
-        super::product_category::Relation::Category.def()
-    }
-    fn via() -> Option<RelationDef> {
-        Some(super::product_category::Relation::Product.def().rev())
     }
 }
 

@@ -4,37 +4,38 @@ use sea_orm::entity::prelude::*;
 use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize)]
-#[sea_orm(table_name = "product_category")]
+#[sea_orm(table_name = "cart_line")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub product_id: Option<i32>,
-    pub category_id: Option<i32>,
+    pub cart_id: Option<i32>,
+    pub quantity: i32,
+    pub product_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::category::Entity",
-        from = "Column::CategoryId",
-        to = "super::category::Column::Id",
+        belongs_to = "super::cart::Entity",
+        from = "Column::CartId",
+        to = "super::cart::Column::Id",
         on_update = "NoAction",
-        on_delete = "Cascade"
+        on_delete = "NoAction"
     )]
-    Category,
+    Cart,
     #[sea_orm(
         belongs_to = "super::product::Entity",
         from = "Column::ProductId",
         to = "super::product::Column::Id",
         on_update = "NoAction",
-        on_delete = "Cascade"
+        on_delete = "NoAction"
     )]
     Product,
 }
 
-impl Related<super::category::Entity> for Entity {
+impl Related<super::cart::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Category.def()
+        Relation::Cart.def()
     }
 }
 

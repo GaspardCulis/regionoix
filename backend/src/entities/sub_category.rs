@@ -6,10 +6,10 @@ use serde::Serialize;
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize)]
 #[sea_orm(table_name = "sub_category")]
 pub struct Model {
-    #[sea_orm(primary_key, auto_increment = false)]
-    pub main_category_id: i32,
-    #[sea_orm(primary_key, auto_increment = false)]
-    pub sub_category_id: i32,
+    #[sea_orm(primary_key)]
+    pub id: i32,
+    pub main_category_id: Option<i32>,
+    pub sub_category_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
