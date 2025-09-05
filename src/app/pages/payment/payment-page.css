@@ -1,0 +1,72 @@
+.purchaseForm {
+    width: 33%;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/*Stepper*/
+.steps {
+    display: flex;
+    justify-content: space-between;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+/* Formulaires */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+label.form-control {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+label span.label-text {
+    margin-bottom: 0.25rem;
+}
+
+
+/* Boutons */
+button.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+button.btn:hover {
+    background-color: var(--background-auvergne-rhone-alpes);
+    color: var(--white);
+}
+
+/* Container des boutons Précédent / Suivant */
+form>div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+    .purchaseForm {
+        width: 90%;
+        padding: 1.5rem;
+    }
+}
