@@ -6,10 +6,10 @@ use crate::{
         product, region,
     },
 };
-use actix_web::{HttpRequest, HttpResponse, Responder, get, post, web};
+use actix_web::{HttpRequest, HttpResponse, Responder, delete, get, post, web};
 use sea_orm::{
     ActiveModelTrait,
-    ActiveValue::{NotSet, Set},
+    ActiveValue::{self, NotSet, Set},
     EntityTrait as _, LoaderTrait, ModelTrait,
 };
 
@@ -18,6 +18,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(get_by_id);
     cfg.service(get_by_id_expand);
     cfg.service(create);
+    cfg.service(delete_by_id);
 }
 
 #[get("")]
@@ -105,7 +106,7 @@ pub async fn get_by_id_expand(data: web::Data<AppState>, req: HttpRequest) -> im
     }
 }
 
-#[post("/")]
+#[post("")]
 pub async fn create(
     data: web::Data<AppState>,
     form_data: web::Json<product::Model>,
@@ -130,4 +131,22 @@ pub async fn create(
     .expect("Failed to save new product");
 
     HttpResponse::Ok().body("Product succesfully created")
+}
+
+#[delete("/{id}")]
+pub async fn delete_by_id(data: web::Data<AppState>, req: HttpRequest) -> impl Responder {
+    let db = &data.db;
+    let id = req.match_info().query("id").parse().unwrap();
+    println!("id sent {0}", id);
+
+    let product = product::ActiveModel {
+        id: ActiveValue::Set(id),
+        ..Default::default()
+    };
+    product
+        .delete(db)
+        .await
+        .expect(&format!("Failed to delete product of id {}", id));
+
+    HttpResponse::Ok().body("Product succesfully deleted")
 }
