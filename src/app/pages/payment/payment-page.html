@@ -1,0 +1,66 @@
+<ul class="steps">
+    <li class="step" [ngClass]="{ 'step-primary': currentStep >= 1 }">Informations</li>
+    <li class="step" [ngClass]="{ 'step-primary': currentStep >= 2 }">Adresse</li>
+    <li class="step" [ngClass]="{ 'step-primary': currentStep >= 3 }">Payment</li>
+    <li class="step" [ngClass]="{ 'step-primary': currentStep >= 4 }">Confirmation</li>
+</ul>
+
+<div class="purchaseForm">
+    <!-- Step 1 : Informations -->
+    <form *ngIf="currentStep === 1" #infoForm="ngForm" (ngSubmit)="nextStep()">
+        <label class="form-control">
+            <span class="label-text">Nom</span>
+            <input type="text" name="name" ngModel required class="input" />
+        </label>
+
+        <label class="form-control">
+            <span class="label-text">Email</span>
+            <input type="email" name="email" ngModel required class="input" />
+        </label>
+
+        <button type="submit" class="btn mt-6">Suivant</button>
+    </form>
+
+    <!-- Step 2 : Adresse -->
+    <form *ngIf="currentStep === 2" #addressForm="ngForm" (ngSubmit)="nextStep()">
+        <label class="form-control ">
+            <span class="label-text">Adresse</span>
+            <input type="text" name="address" ngModel required class="input" />
+        </label>
+
+        <label class="form-control">
+            <span class="label-text">Code postal</span>
+            <input type="text" name="zip" ngModel required class="input" />
+        </label>
+
+        <div>
+            <button type="button" class="btn" (click)="prevStep()">Précédent</button>
+            <button type="submit" class="btn">Suivant</button>
+        </div>
+    </form>
+
+    <!-- Step 3 : Payment -->
+    <form *ngIf="currentStep === 3" #paymentForm="ngForm" (ngSubmit)="nextStep()">
+        <label class="form-control ">
+            <span class="label-text">Numéro de carte</span>
+            <input type="text" name="card" ngModel required class="input" />
+        </label>
+
+        <div>
+            <button type="button" class="btn" (click)="prevStep()">Précédent</button>
+            <button type="submit" class="btn">Payer</button>
+        </div>
+    </form>
+
+    <!-- Step 4 : Confirmation -->
+    <div *ngIf="currentStep === 4">
+        <h2>Merci pour votre commande !</h2>
+        <p>Vous recevrez bientôt une confirmation par email.</p>
+        <button class="btn" (click)="finish()">Retour à l'accueil</button>
+    </div>
+    <!-- Snackbar de confirmation -->
+    <div class="snackbar" *ngIf="showSnackbar">
+        Paiement validé avec succès !
+    </div>
+
+</div>

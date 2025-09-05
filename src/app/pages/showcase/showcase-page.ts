@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { ProductCardComponent } from '../../utils/component/product-card/product-card.component';
+import { ProductCardComponent } from '../../utils/component/product-card-component/product-card-component';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-showcase',
   standalone: true,
   imports: [CommonModule, ProductCardComponent],
-  templateUrl: './showcase.page.html',
-  styleUrl: './showcase.page.css'
+  templateUrl: './showcase-page.html',
+  styleUrl: './showcase-page.css'
 })
-export class Showcase {
+export class ShowcasePage {
 
   products = [
     {

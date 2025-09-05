@@ -30,4 +30,8 @@ export class TopbarComponent {
       this.router.navigate(['/connexion']);
     }
   }
+
+  goToBasket() {
+    this.router.navigate(['/basket'])
+  }
 }
