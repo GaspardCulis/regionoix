@@ -10,7 +10,7 @@
 
       src = ../../..;
 
-      npmDepsHash = "sha256-VGUJYhy7F2nlB7XdKDcGFPFYx1hb1IaIqNrTUoeEe0s=";
+      npmDepsHash = "sha256-v/M93gyHmFhUHa3oXHOJa3eRpI4TCSFfeENWGkix8L8=";
       npmBuildScript = "build";
 
       installPhase = ''
