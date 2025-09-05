@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-basket',
@@ -43,5 +44,11 @@ export class BasketPage {
       price: 49.99
     },
   ]
+
+  constructor(private router: Router) { }
+
+  goToPayment() {
+    this.router.navigate(['/payment']);
+  }
 
 }
