@@ -15,10 +15,17 @@ export class PaymentPage {
 
   private router = inject(Router);
   currentStep = 1;
+  showSnackbar = false;
 
   nextStep() {
     if (this.currentStep < 4) {
       this.currentStep++;
+    }
+    if (this.currentStep === 4) {
+      this.showSnackbar = true;
+      setTimeout(() => {
+        this.showSnackbar = false;
+      }, 3000);
     }
   }
 

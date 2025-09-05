@@ -58,4 +58,9 @@
         <p>Vous recevrez bientôt une confirmation par email.</p>
         <button class="btn" (click)="finish()">Retour à l'accueil</button>
     </div>
+    <!-- Snackbar de confirmation -->
+    <div class="snackbar" *ngIf="showSnackbar">
+        Paiement validé avec succès !
+    </div>
+
 </div>
