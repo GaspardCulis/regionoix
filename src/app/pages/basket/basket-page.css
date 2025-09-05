@@ -1,0 +1,16 @@
+.basket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 33%;
+    margin: 2rem auto;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .basket-list {
+        width: 90%;
+    }
+}
