@@ -3,7 +3,7 @@
     <h1 class="title">{{ title }}</h1>
     <input class="search" type="text" [(ngModel)]="searchText" placeholder="Search...">
     <div class="topbar-actions">
-        <button class="user-basket">
+        <button class="user-basket" (click)="goToBasket()">
             <img src="assets/panier1.png" alt="logo panier">
             @if (basketCount !== 0) {
             <span class="basket-count">{{basketCount}}</span>
