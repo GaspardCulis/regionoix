@@ -46,7 +46,8 @@ pub async fn login(
 
     check_password(&login_request, &user)?;
 
-    Identity::login(&request.extensions(), format!("{}", user.id)).unwrap();
+    Identity::login(&request.extensions(), format!("{}", user.id))
+        .map_err(|err| anyhow::Error::new(err))?;
 
     Ok(HttpResponse::Ok().finish())
 }
