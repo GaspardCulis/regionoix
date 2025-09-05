@@ -6,13 +6,18 @@ use crate::{
         product, region,
     },
 };
-use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
-use sea_orm::{EntityTrait as _, LoaderTrait, ModelTrait};
+use actix_web::{HttpRequest, HttpResponse, Responder, get, post, web};
+use sea_orm::{
+    ActiveModelTrait,
+    ActiveValue::{NotSet, Set},
+    EntityTrait as _, LoaderTrait, ModelTrait,
+};
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(get);
     cfg.service(get_by_id);
     cfg.service(get_by_id_expand);
+    cfg.service(create);
 }
 
 #[get("")]
@@ -98,4 +103,31 @@ pub async fn get_by_id_expand(data: web::Data<AppState>, req: HttpRequest) -> im
 
         HttpResponse::Ok().json(response)
     }
+}
+
+#[post("/")]
+pub async fn create(
+    data: web::Data<AppState>,
+    form_data: web::Json<product::Model>,
+) -> impl Responder {
+    let db = &data.db;
+    let form_data = form_data.into_inner();
+
+    product::ActiveModel {
+        id: NotSet,
+        name: Set(form_data.name),
+        description: Set(form_data.description.to_owned()),
+        weight: Set(form_data.weight.to_owned()),
+        price: Set(form_data.price.to_owned()),
+        brand_id: Set(form_data.brand_id.to_owned()),
+        image: Set(form_data.image.to_owned()),
+        stock: Set(form_data.stock.to_owned()),
+        region_id: Set(form_data.region_id.to_owned()),
+        ..Default::default()
+    }
+    .save(db)
+    .await
+    .expect("Failed to save new product");
+
+    HttpResponse::Ok().body("Product succesfully created")
 }
