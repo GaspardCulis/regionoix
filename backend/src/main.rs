@@ -22,6 +22,7 @@ async fn main() -> std::io::Result<()> {
     let api_host = std::env::var("API_HOST").expect("API_HOST must be set.");
     let api_port = std::env::var("API_PORT").expect("API_PORT must be set.");
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
+    let redis_url = std::env::var("REDIS_URL").expect("REDIS_URL must be set.");
     let secret_key = std::env::var("SECRET_KEY").expect("SECRET_KEY must be set.");
 
     println!("Connecting to database");
@@ -32,9 +33,7 @@ async fn main() -> std::io::Result<()> {
     println!("Connected to database");
 
     println!("Connecting to Redis session store");
-    let redis_store = RedisSessionStore::new("redis://127.0.0.1:6379")
-        .await
-        .unwrap();
+    let redis_store = RedisSessionStore::new(redis_url).await.unwrap();
     println!("Connected to Redis session store");
 
     HttpServer::new(move || {
