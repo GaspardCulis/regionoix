@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,7 +20,7 @@ export class TopbarComponent {
   @Input() user!: string | null;
   @Output() searchText = '';
 
-  constructor(private router: Router) { }
+  private router = inject(Router);
 
   goToBasket() {
     this.router.navigate(['/basket']);

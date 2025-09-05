@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
 import { Router } from '@angular/router';
 
@@ -45,7 +45,7 @@ export class BasketPage {
     },
   ]
 
-  constructor(private router: Router) { }
+  private router = inject(Router);
 
   goToPayment() {
     this.router.navigate(['/payment']);
