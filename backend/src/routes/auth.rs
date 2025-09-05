@@ -2,7 +2,7 @@ use crate::Result;
 use actix_identity::Identity;
 use actix_web::{HttpMessage as _, HttpRequest, HttpResponse, Responder, get, post, web};
 use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
-use sea_orm::{EntityName, EntityTrait as _};
+use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
 use serde::{Deserialize, Serialize};
 
 use crate::{AppState, entities::user};
@@ -32,17 +32,13 @@ pub async fn login(
     data: web::Data<AppState>,
 ) -> Result<HttpResponse> {
     let db = &data.db;
-    let users: Vec<user::Model> = user::Entity::find().all(db).await?;
-
-    let user = match users
-        .into_iter()
-        .find(|user| user.email == login_request.email)
-    {
-        Some(user) => Ok(user),
-        None => Err(crate::Error::EntityNotFound {
+    let user = user::Entity::find()
+        .filter(user::Column::Email.eq(&login_request.email))
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
             table_name: user::Entity.table_name(),
-        }),
-    }?;
+        })?;
 
     check_password(&login_request, &user)?;
 
