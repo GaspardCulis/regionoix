@@ -1,3 +1,5 @@
+use std::num::ParseIntError;
+
 use actix_web::{ResponseError, http::StatusCode};
 
 #[derive(thiserror::Error, Debug)]
@@ -11,6 +13,8 @@ pub enum Error {
         /// Can be retreived using `you_entity_mod::Entity.table_name()`
         table_name: &'static str,
     },
+    #[error("failed to parse: {0}")]
+    ParseIntFailure(#[from] ParseIntError),
     #[error("authentication failed: password mismatch")]
     AuthenticationFailure,
 }
