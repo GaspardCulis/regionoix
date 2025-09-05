@@ -6,6 +6,11 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-actix-web = { workspace = true }
-sea-orm = { workspace = true }
-serde = { workspace = true }
+actix-web = "4"
+dotenv = "0.15"
+serde = { version = "1.0", features = ["derive"] }
+sea-orm = { version = "1.1", features = [
+    "sqlx-postgres",
+    "runtime-async-std-native-tls",
+    "macros",
+] }
