@@ -1,0 +1,74 @@
+.topbar {
+    display: flex;
+    align-items: center;
+    background: var(--background-auvergne-rhone-alpes);
+    padding: 1rem 1.5rem;
+    gap: 1.5rem;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
+}
+
+.logo {
+    width: 200px;
+    height: 80px;
+    object-fit: contain;
+    margin-right: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 1.5rem 0 0;
+    color: #222;
+    white-space: nowrap;
+}
+
+.search {
+    flex: 0 0 220px;
+    max-width: 220px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 1rem;
+    margin-right: 1.5rem;
+}
+
+.user-basket, .user-profile {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    margin-left: 0.5rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.user-basket img {
+    width: 40px;
+    height: 40px;
+}
+
+.user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.basket-count {
+    position: absolute;
+    top: 34px;
+    right: -16px;
+    color: rgb(0, 0, 0);
+    border-radius: 50%;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+}

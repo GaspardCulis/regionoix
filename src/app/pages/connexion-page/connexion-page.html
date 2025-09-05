@@ -1,0 +1,23 @@
+<div class="connexion-container">
+  <div class="card">
+    <form class="form" (ngSubmit)="onSubmit()">
+      <h1 class="form-title">Connexion</h1>
+
+      <div class="form-control">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Entrez votre Email" [(ngModel)]="email" name="email" required>
+      </div>
+
+      <div class="form-control">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" placeholder="Entrez votre mot de passe" [(ngModel)]="password"
+          name="password" required>
+        <a class="forgot-link">Mot de passe oublié ?</a>
+      </div>
+
+      <div class="form-action">
+        <button type="submit">Connexion</button>
+      </div>
+    </form>
+  </div>
+</div>

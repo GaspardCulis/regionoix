@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root {
+    --background-auvergne-rhone-alpes: #0094dd;
+    --white: #fff;
+}
+
+body {
+    margin: 0;
+    font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
