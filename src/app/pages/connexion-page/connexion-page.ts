@@ -9,17 +9,18 @@ import { UserModel } from '../../models/user-model';
   styleUrl: './connexion-page.css'
 })
 export class ConnexionPage {
-  email: string = '';
-  password: string = '';
+  email = '';
+  password = '';
 
-  @Output() onLogin = new EventEmitter<UserModel>();
+  @Output() login = new EventEmitter<UserModel>();
 
   //TODO: add constructor with service injection for actual login
   
   onSubmit() {
     if (this.checkCredentials()) {
-      let user: UserModel = { email: this.email, password: this.password };
-      this.onLogin.emit(user);
+      const user: UserModel = { email: this.email, password: this.password };
+      this.login.emit(user);
+      //TODO: navigate to another page on successful login
     }
   }
 
