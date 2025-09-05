@@ -17,7 +17,7 @@ impl Secrets {
             api_port: std::env::var("API_PORT")?.parse()?,
             database_url: std::env::var("DATABASE_URL")?,
             redis_url: std::env::var("REDIS_URL")?,
-            secret_key: std::env::var("SECREY_KEY")?,
+            secret_key: std::env::var("SECRET_KEY")?,
         })
     }
 }
