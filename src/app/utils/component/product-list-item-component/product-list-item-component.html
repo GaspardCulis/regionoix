@@ -7,7 +7,10 @@
 
         <div class="info">
             <p class="price">{{ price }} €</p>
-            <p class="quantity">x{{ quantity }}</p>
+            <div class="details">
+                <p class="quantity">x{{ quantity }}</p>
+                <p class="subtotal">{{ price*quantity | number:'1.2-2' }}€</p>
+            </div>
         </div>
 
         <div class="list-action">

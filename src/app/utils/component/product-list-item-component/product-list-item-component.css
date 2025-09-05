@@ -1,6 +1,6 @@
 .list-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     padding: 0.75rem 1rem;
     border-bottom: var(--white);
@@ -27,15 +27,20 @@
 
 .info {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     margin-bottom: 0.5rem;
 }
 
-.price {
+
+.subtotal {
     font-weight: bold;
     font-size: 0.95rem;
-    color: var(--background-auvergne-rhone-alpes);
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .quantity {

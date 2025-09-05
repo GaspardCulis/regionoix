@@ -9,6 +9,23 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.btn-validate {
+    background-color: var(--background-auvergne-rhone-alpes);
+    color: var(--white);
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-validate:hover {
+    color: black;
+    background-color: var(--white);
+}
+
 @media (max-width: 768px) {
     .basket-list {
         width: 90%;

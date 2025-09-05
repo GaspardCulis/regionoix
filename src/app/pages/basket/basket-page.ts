@@ -51,4 +51,12 @@ export class BasketPage {
     this.router.navigate(['/payment']);
   }
 
+  getTotalPrice(): number {
+    let total = 0;
+    for (const product of this.products) {
+      total += product.price * product.quantity;
+    }
+    return total;
+  }
+
 }
