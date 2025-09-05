@@ -106,7 +106,7 @@ pub async fn create(
     .save(db)
     .await?;
 
-    Ok(HttpResponse::Ok().body("Product succesfully created"))
+    Ok(HttpResponse::Ok().body("Product successfully created"))
 }
 
 #[delete("/{id}")]
@@ -123,7 +123,7 @@ pub async fn delete_by_id(
     };
     product.delete(db).await?;
 
-    Ok(HttpResponse::Ok().body("Product succesfully deleted"))
+    Ok(HttpResponse::Ok().body("Product successfully deleted"))
 }
 
 #[put("/{id}")]
@@ -156,5 +156,5 @@ pub async fn update_by_id(
 
     product.update(db).await?;
 
-    Ok(HttpResponse::Ok().body("Product succesfully updated"))
+    Ok(HttpResponse::Ok().body("Product successfully updated"))
 }
