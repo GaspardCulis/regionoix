@@ -9,9 +9,9 @@
             <span class="basket-count">{{basketCount}}</span>
             }
         </button>
-        <button class="user-profile">
+        <button class="user-profile" (click)="onProfileClick()">
             @if (user) {
-            <span> Zakaria </span>
+            <img src="https://i.pinimg.com/736x/f3/d1/ed/f3d1edf10d63c40e1fa06364176fa502.jpg" alt="logo user">
             }
             @else {
             <span> Login </span>

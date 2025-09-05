@@ -1,0 +1,85 @@
+.connexion-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+/*Form*/
+.card {
+  background-color: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: black;
+}
+
+.form-control {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-control label {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  color: black;
+}
+
+.form-control input {
+  padding: 0.75rem;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border 0.2s, box-shadow 0.2s;
+  color: black;
+}
+
+.form-control input::placeholder {
+  color: lightgrey;
+  opacity: 1;
+}
+
+.form-control input:focus {
+  outline: none;
+  border-color: black;
+  box-shadow: 0 0 0 1px black;
+}
+
+/*Forgot password link*/
+.forgot-link {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: dodgerblue;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/*Login button*/
+.form-action button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.form-action button:hover {
+  background-color: darkblue;
+}
