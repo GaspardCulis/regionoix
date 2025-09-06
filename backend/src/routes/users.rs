@@ -2,7 +2,7 @@ use crate::{
     AppState,
     entities::{cart, cart_line, prelude::CartLine, product},
 };
-use actix_web::{HttpRequest, HttpResponse, Responder, get, patch, post, web};
+use actix_web::{HttpRequest, HttpResponse, Responder, delete, get, patch, post, web};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, ModelTrait, QueryFilter,
 };
@@ -10,7 +10,8 @@ use sea_orm::{
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(get_cart_by_user)
         .service(add_product_to_cart)
-        .service(update_quantity_product_cart);
+        .service(update_quantity_product_cart)
+        .service(remove_product_from_cart);
 }
 
 #[get("/{id}/cart")]
@@ -175,6 +176,37 @@ async fn update_quantity_product_cart(
             .await
             .expect("Failed to update cart line");
         HttpResponse::Ok().body("Updated quantity of product in cart")
+    } else {
+        HttpResponse::NotFound().body("Cart not found")
+    }
+}
+
+#[delete("/{id}/cart/products/{product_id}")]
+async fn remove_product_from_cart(data: web::Data<AppState>, req: HttpRequest) -> impl Responder {
+    let db = &data.db;
+    let id: i32 = req.match_info().query("id").parse().unwrap();
+    let product_id: i32 = req.match_info().query("product_id").parse().unwrap();
+
+    let cart: Option<cart::Model> = cart::Entity::find()
+        .filter(cart::Column::UserId.eq(id))
+        .one(db)
+        .await
+        .expect(&format!("Failed to get cart of user id {}", id));
+
+    if let Some(cart) = cart {
+        let cart_line: Option<cart_line::Model> = CartLine::find()
+            .filter(cart_line::Column::ProductId.eq(product_id))
+            .filter(cart_line::Column::CartId.eq(cart.id))
+            .one(db)
+            .await
+            .expect("Failed to find cart line");
+
+        let line_cart: cart_line::Model = cart_line.unwrap();
+        line_cart
+            .delete(db)
+            .await
+            .expect("Failed to delete car linet");
+        HttpResponse::Ok().body("Product successfully removed from cart")
     } else {
         HttpResponse::NotFound().body("Cart not found")
     }
