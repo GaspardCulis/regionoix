@@ -1,12 +1,14 @@
 use crate::{
     AppState,
-    entities::{cart, cart_line, product},
+    entities::{cart, cart_line, prelude::CartLine, product},
 };
-use actix_web::{HttpRequest, HttpResponse, Responder, get, web};
-use sea_orm::{ColumnTrait, EntityTrait, ModelTrait, QueryFilter};
+use actix_web::{HttpRequest, HttpResponse, Responder, get, post, web};
+use sea_orm::{
+    ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, ModelTrait, QueryFilter,
+};
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    cfg.service(get_cart_by_user);
+    cfg.service(get_cart_by_user).service(add_product_to_cart);
 }
 
 #[get("/{id}/cart")]
@@ -64,6 +66,67 @@ async fn get_cart_by_user(data: web::Data<AppState>, req: HttpRequest) -> impl R
             cart,
             lines: enriched_lines,
         })
+    } else {
+        HttpResponse::NotFound().body("Cart not found")
+    }
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+struct FormDataAddProductToCart {
+    product_id: i32,
+    quantity: Option<i32>,
+}
+
+#[post("/{id}/cart/products")]
+async fn add_product_to_cart(
+    data: web::Data<AppState>,
+    form_data: web::Json<FormDataAddProductToCart>,
+    req: HttpRequest,
+) -> impl Responder {
+    let db = &data.db;
+    let id: i32 = req.match_info().query("id").parse().unwrap();
+
+    let cart: Option<cart::Model> = cart::Entity::find()
+        .filter(cart::Column::UserId.eq(id))
+        .one(db)
+        .await
+        .expect(&format!("Failed to get cart of user id {}", id));
+
+    if let Some(cart) = cart {
+        let form_data = form_data.into_inner();
+
+        // Check if product already added in cart
+        let cart_line: Option<cart_line::Model> = CartLine::find()
+            .filter(cart_line::Column::ProductId.eq(form_data.product_id))
+            .filter(cart_line::Column::CartId.eq(cart.id))
+            .one(db)
+            .await
+            .expect("Failed to get cart line");
+
+        if cart_line.is_some() {
+            return HttpResponse::BadRequest()
+                .body("Product already added to cart, try updating quantity");
+        }
+
+        let quantity = if form_data.quantity.is_some() {
+            form_data.quantity.unwrap()
+        } else {
+            1
+        };
+
+        let cart_line = cart_line::ActiveModel {
+            cart_id: Set(Some(cart.id)),
+            product_id: Set(form_data.product_id),
+            quantity: Set(quantity),
+            ..Default::default()
+        };
+
+        cart_line
+            .insert(db)
+            .await
+            .expect("Failed to add product to cart");
+
+        HttpResponse::Ok().body("Product successfully added to cart")
     } else {
         HttpResponse::NotFound().body("Cart not found")
     }
