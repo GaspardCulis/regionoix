@@ -11,7 +11,8 @@ pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(get_cart_by_user)
         .service(add_product_to_cart)
         .service(update_quantity_product_cart)
-        .service(remove_product_from_cart);
+        .service(remove_product_from_cart)
+        .service(empty_cart);
 }
 
 #[get("/{id}/cart")]
@@ -209,5 +210,28 @@ async fn remove_product_from_cart(data: web::Data<AppState>, req: HttpRequest) -
         HttpResponse::Ok().body("Product successfully removed from cart")
     } else {
         HttpResponse::NotFound().body("Cart not found")
+    }
+}
+
+#[delete("/{id}/cart")]
+async fn empty_cart(data: web::Data<AppState>, req: HttpRequest) -> impl Responder {
+    let db = &data.db;
+    let id: i32 = req.match_info().query("id").parse().unwrap();
+
+    let cart: Option<cart::Model> = cart::Entity::find()
+        .filter(cart::Column::UserId.eq(id))
+        .one(db)
+        .await
+        .expect(&format!("Failed to get cart of user id {}", id));
+
+    if let Some(cart) = cart {
+        cart_line::Entity::delete_many()
+            .filter(cart_line::Column::CartId.eq(cart.id))
+            .exec(db)
+            .await
+            .expect("Failed to delete cart lines");
+        HttpResponse::Ok().body("Cart emptied successfully")
+    } else {
+        HttpResponse::NotFound().body("Failed to empty cart")
     }
 }
