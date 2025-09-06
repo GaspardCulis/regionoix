@@ -2,13 +2,15 @@ use crate::{
     AppState,
     entities::{cart, cart_line, prelude::CartLine, product},
 };
-use actix_web::{HttpRequest, HttpResponse, Responder, get, post, web};
+use actix_web::{HttpRequest, HttpResponse, Responder, get, patch, post, web};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, ModelTrait, QueryFilter,
 };
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    cfg.service(get_cart_by_user).service(add_product_to_cart);
+    cfg.service(get_cart_by_user)
+        .service(add_product_to_cart)
+        .service(update_quantity_product_cart);
 }
 
 #[get("/{id}/cart")]
@@ -127,6 +129,52 @@ async fn add_product_to_cart(
             .expect("Failed to add product to cart");
 
         HttpResponse::Ok().body("Product successfully added to cart")
+    } else {
+        HttpResponse::NotFound().body("Cart not found")
+    }
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+struct Quantity {
+    quantity: i32,
+}
+
+#[patch("/{id}/cart/products/{product_id}")]
+async fn update_quantity_product_cart(
+    data: web::Data<AppState>,
+    form_data: web::Json<Quantity>,
+    req: HttpRequest,
+) -> impl Responder {
+    let db = &data.db;
+    let id: i32 = req.match_info().query("id").parse().unwrap();
+    let product_id: i32 = req.match_info().query("product_id").parse().unwrap();
+
+    let form_data = form_data.into_inner();
+
+    let cart: Option<cart::Model> = cart::Entity::find()
+        .filter(cart::Column::UserId.eq(id))
+        .one(db)
+        .await
+        .expect(&format!("Failed to get cart of user id {}", id));
+
+    if let Some(cart) = cart {
+        let line_cart: Option<cart_line::Model> = CartLine::find()
+            .filter(cart_line::Column::ProductId.eq(product_id))
+            .filter(cart_line::Column::CartId.eq(cart.id))
+            .one(db)
+            .await
+            .expect("Failed");
+
+        let mut cart_line: cart_line::ActiveModel = line_cart.unwrap().into();
+
+        // Update cart line quantity
+        cart_line.quantity = Set(form_data.quantity.to_owned());
+        // Update db
+        cart_line
+            .update(db)
+            .await
+            .expect("Failed to update cart line");
+        HttpResponse::Ok().body("Updated quantity of product in cart")
     } else {
         HttpResponse::NotFound().body("Cart not found")
     }
