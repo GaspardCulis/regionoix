@@ -4,7 +4,7 @@
   port = 5432;
 in {
   sops.secrets."postgres/password".owner = "postgres";
-  sops.templates."postgres-init-sqsl-script" = {
+  sops.templates."postgres-init-sql-script" = {
     content = ''
       alter user ${user} with password '${config.sops.placeholder."postgres/password"}';
       grant ALL on database ${database} to ${user};
@@ -27,7 +27,7 @@ in {
     authentication = ''
       host all ${user} 0.0.0.0/0 scram-sha-256
     '';
-    initialScript = config.sops.templates."postgres-init-sqsl-script".path;
+    initialScript = config.sops.templates."postgres-init-sql-script".path;
   };
 
   networking.firewall.allowedTCPPorts = [port];
