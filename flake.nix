@@ -14,6 +14,10 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -21,6 +25,7 @@
     nixpkgs,
     disko,
     deploy-rs,
+    sops-nix,
     rust-overlay,
   }: let
     system = "x86_64-linux";
@@ -39,6 +44,7 @@
           modules = [
             ./nix/Raviole1/configuration.nix
             disko.nixosModules.disko
+            sops-nix.nixosModules.sops
           ];
         };
     };
@@ -75,6 +81,8 @@
           cargo-llvm-cov
           # CI
           deploy-rs.packages."${system}".deploy-rs
+          sops
+          sops-nix.packages."${system}".sops-install-secrets
         ];
         nativeBuildInputs = with pkgs; [
           rust
