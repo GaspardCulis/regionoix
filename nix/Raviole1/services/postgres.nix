@@ -1,9 +1,17 @@
-{pkgs, ...}: let
+{config, ...}: let
   user = "regionoix";
   database = "regionoix";
   port = 5432;
-  pass = "SCRAM-SHA-256$4096:R6A43wF+9je6l8/DkrCjLw==$XIwdnPNhz53tKWRHmBAAAgPOrOeTFSMEsVs+qH4SLsA=:joj8UbTHadOPpVHq0xSIp45LnPnqN7oMCkxOUw+8tN4=";
 in {
+  sops.secrets."postgres/password".owner = "postgres";
+  sops.templates."postgres-init-sqsl-script" = {
+    content = ''
+      alter user ${user} with password '${config.sops.placeholder."postgres/password"}';
+      grant ALL on database ${database} to ${user};
+    '';
+    owner = "postgres";
+  };
+
   services.postgresql = {
     enable = true;
     enableTCPIP = true;
@@ -19,10 +27,7 @@ in {
     authentication = ''
       host all ${user} 0.0.0.0/0 scram-sha-256
     '';
-    initialScript = pkgs.writeText "init-sql-script" ''
-      alter user ${user} with password '${pass}';
-      grant ALL on database ${database} to ${user};
-    '';
+    initialScript = config.sops.templates."postgres-init-sqsl-script".path;
   };
 
   networking.firewall.allowedTCPPorts = [port];
