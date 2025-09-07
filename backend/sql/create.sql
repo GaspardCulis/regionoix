@@ -13,22 +13,17 @@ CREATE TABLE IF NOT EXISTS REGION (
 CREATE TABLE IF NOT EXISTS CATEGORY (
     id serial primary key,
     name varchar(100) not null unique,
-    description text
+    description text,
+    category_parent integer references category(id)
 );
 
-
-CREATE TABLE IF NOT EXISTS SUB_CATEGORY(
-    id serial primary key,
-    main_category_id integer references category(id) ON DELETE CASCADE,
-    sub_category_id integer references category(id) ON DELETE CASCADE,
-    unique(main_category_id, sub_category_id)
-);
+CREATE TYPE roles AS ENUM ('CLIENT','ADMIN');
 
 CREATE TABLE IF NOT EXISTS USER_(
     id serial primary key,
     email citext unique not null,
     password varchar not null,
-    role varchar not null CHECK(role IN ('CLIENT','ADMIN')) default 'ADMIN'
+    role roles not null default 'CLIENT'
 );
 
 CREATE TABLE IF NOT EXISTS PRODUCT (
@@ -36,55 +31,52 @@ CREATE TABLE IF NOT EXISTS PRODUCT (
     name varchar(50) not null unique,
     description text,
     weight float,
-    price numeric(10,2) CHECK(price > 0),
-    brand_id integer references brand(id),
+    price numeric(10,2) CHECK(price > 0) NOT NULL,
     image varchar,
     stock integer not null CHECK(stock >= 0) default 0,
-    region_id integer references region(id)
+    region_id integer references region(id) ON DELETE SET NULL,
+    brand_id integer references brand(id) ON DELETE SET NULL,
+    category_id integer references category(id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS PRODUCT_CATEGORY(
-    id serial primary key,
-    product_id integer references product(id) ON DELETE CASCADE,
-    category_id integer references category(id) ON DELETE CASCADE,
-    unique (category_id, product_id)
-);
-
+CREATE TYPE order_status AS ENUM ('PENDING_PAYMENT','PAYED', 'IN_DELIVERY', 'DELIVERED','CANCELED', 'ABORTED');
 
 CREATE TABLE IF NOT EXISTS ORDER_(
     id serial primary key,
     client_lastname varchar not null,
     client_firstname varchar not null,
     total_price numeric(10,2) not null,
-    status_ varchar CHECK (status_ in ('PAYED', 'IN_DELIVERY', 'DELIVERED','CANCELED' )),
-    arrival_date date,
-    creation_date date,
-    user_id integer references user_(id) ON DELETE CASCADE,
+    status_ order_status not null default 'PENDING_PAYMENT',
+    arrival_date date CHECK (arrival_date > creation_date),
+    creation_date date default now(),
     city varchar not null,
     country varchar not null,
-    adress varchar not null,
-    postal_code numeric not null
+    address varchar not null,
+    postal_code numeric not null,
+    user_id integer references user_(id) ON DELETE SET NULL
 );
 
 
 CREATE TABLE IF NOT EXISTS ORDER_LINE(
     id serial primary key,
-    quantity integer not null CHECK(quantity >= 0),
+    quantity integer not null CHECK(quantity >= 0) default 1,
     unit_price numeric(10,2) not null CHECK(unit_price >= 0),
-    product_id integer references product(id),
-    order_id integer references order_(id) ON DELETE CASCADE)
-;
+    product_id integer references product(id) ON DELETE CASCADE,
+    order_id integer references order_(id) ON DELETE CASCADE,
+    UNIQUE(product_id, order_id)
+);
 
 CREATE TABLE IF NOT EXISTS CART(
     id serial primary key,
-    user_id integer references user_(id) UNIQUE
+    user_id integer UNIQUE references user_(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CART_LINE (
     id serial primary key,
-    cart_id integer references cart(id),
-    quantity integer not null CHECK(quantity >= 0),
-    product_id integer not null references product(id)
+    cart_id integer references cart(id) ON DELETE CASCADE,
+    quantity integer not null CHECK(quantity >= 0) DEFAULT 1,
+    product_id integer not null references product(id) ON DELETE CASCADE,
+    UNIQUE(cart_id, product_id)
 );
 
 CREATE TABLE IF NOT EXISTS DISCOUNT(
@@ -93,6 +85,6 @@ CREATE TABLE IF NOT EXISTS DISCOUNT(
     start_date date not null,
     end_date date not null,
     check (end_date > start_date),
-    product_id integer references product(id)
+    product_id integer references product(id) ON DELETE CASCADE
 );
 

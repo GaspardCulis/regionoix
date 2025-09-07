@@ -10,7 +10,6 @@ pub mod discount;
 pub mod order;
 pub mod order_line;
 pub mod product;
-pub mod product_category;
 pub mod region;
-pub mod sub_category;
+pub mod sea_orm_active_enums;
 pub mod user;

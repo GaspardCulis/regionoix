@@ -13,17 +13,26 @@ pub struct Model {
     pub name: String,
     #[sea_orm(column_type = "Text", nullable)]
     pub description: Option<String>,
+    pub category_parent: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::product_category::Entity")]
-    ProductCategory,
+    #[sea_orm(
+        belongs_to = "Entity",
+        from = "Column::CategoryParent",
+        to = "Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    SelfRef,
+    #[sea_orm(has_many = "super::product::Entity")]
+    Product,
 }
 
-impl Related<super::product_category::Entity> for Entity {
+impl Related<super::product::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::ProductCategory.def()
+        Relation::Product.def()
     }
 }
 

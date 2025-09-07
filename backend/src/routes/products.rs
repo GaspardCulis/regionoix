@@ -2,7 +2,7 @@ use crate::{
     AppState,
     entities::{
         brand, category,
-        prelude::{Brand, Category, Product, ProductCategory, Region},
+        prelude::{Brand, Category, Product, Region},
         product, region,
     },
 };
@@ -10,7 +10,7 @@ use actix_web::{HttpRequest, HttpResponse, Responder, delete, get, post, put, we
 use sea_orm::{
     ActiveModelTrait,
     ActiveValue::{self, NotSet, Set},
-    EntityTrait as _, LoaderTrait, ModelTrait,
+    EntityTrait as _, ModelTrait,
 };
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -77,30 +77,25 @@ pub async fn get_by_id_expand(data: web::Data<AppState>, req: HttpRequest) -> im
             .await
             .expect("Failed to get brand product");
 
-        let categories_products = product
-            .find_related(ProductCategory)
-            .all(db)
+        let category = product
+            .find_related(Category)
+            .one(db)
             .await
-            .expect("Failed to get category product");
-
-        let categories = categories_products
-            .load_one(Category, db)
-            .await
-            .expect("Failed to get categories product");
+            .expect("Failed to get category");
 
         #[derive(serde::Serialize)]
         struct ProductExpanded {
             product: product::Model,
             region: Option<region::Model>,
             brand: Option<brand::Model>,
-            categories: Vec<Option<category::Model>>,
+            category: Option<category::Model>,
         }
 
         let response = ProductExpanded {
             product,
             region,
             brand,
-            categories,
+            category,
         };
 
         HttpResponse::Ok().json(response)

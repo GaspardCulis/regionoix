@@ -8,7 +8,5 @@ pub use super::discount::Entity as Discount;
 pub use super::order::Entity as Order;
 pub use super::order_line::Entity as OrderLine;
 pub use super::product::Entity as Product;
-pub use super::product_category::Entity as ProductCategory;
 pub use super::region::Entity as Region;
-pub use super::sub_category::Entity as SubCategory;
 pub use super::user::Entity as User;
