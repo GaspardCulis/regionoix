@@ -27,7 +27,7 @@ export class TopbarComponent {
       this.router.navigate(['/profile']); //TODO: replace with profile page
     }
     else {
-      this.router.navigate(['/connexion']);
+      this.router.navigate(['/connection']);
     }
   }
 
