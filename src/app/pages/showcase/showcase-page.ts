@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProductCardComponent } from '../../utils/component/product-card-component/product-card-component';
 import { CommonModule } from '@angular/common';
+import { ProductsService } from '../../services/products-service';
 
 @Component({
   selector: 'app-showcase',
@@ -10,6 +11,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './showcase-page.css'
 })
 export class ShowcasePage {
+
+  private readonly productsService = inject(ProductsService);
 
   products = [
     {
@@ -43,4 +46,9 @@ export class ShowcasePage {
       price: 49.99
     },
   ]
+  ngOnInit() {
+    this.productsService.getProducts().subscribe((data) => {
+      console.log(data);
+    });
+  }
 }
