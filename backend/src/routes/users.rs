@@ -2,9 +2,10 @@ use crate::{
     AppState,
     entities::{cart, cart_line, prelude::CartLine, product},
 };
-use actix_web::{HttpRequest, HttpResponse, Responder, delete, get, patch, post, web};
+use actix_web::{HttpRequest, HttpResponse, delete, get, patch, post, web};
 use sea_orm::{
-    ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, ModelTrait, QueryFilter,
+    ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityName as _, EntityTrait, ModelTrait,
+    QueryFilter,
 };
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -16,63 +17,53 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 }
 
 #[get("/{id}/cart")]
-async fn get_cart_by_user(data: web::Data<AppState>, req: HttpRequest) -> impl Responder {
+async fn get_cart_by_user(
+    data: web::Data<AppState>,
+    req: HttpRequest,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse().unwrap();
+    let id: i32 = req.match_info().query("id").parse()?;
 
-    //  Récupérer le panier
-    let cart: Option<cart::Model> = cart::Entity::find()
+    // Get cart
+    let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
         .one(db)
-        .await
-        .expect(&format!("Failed to get cart of user id {}", id));
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
 
-    if let Some(cart) = cart {
-        //  Récupérer toutes les lignes liées
-        let lines: Vec<cart_line::Model> = cart
-            .find_related(cart_line::Entity)
-            .all(db)
-            .await
-            .expect("Failed to load cart lines");
+    // Get all linked lines
+    let lines: Vec<cart_line::Model> = cart.find_related(cart_line::Entity).all(db).await?;
 
-        // 3 Enrichir chaque ligne avec son produit
-        #[derive(serde::Serialize)]
-        struct LineWithProduct {
-            product: product::Model,
-            quantity: i32,
-        }
-
-        let mut enriched_lines = Vec::new();
-
-        for line in lines {
-            if let Some(prod) = line
-                .find_related(product::Entity)
-                .one(db)
-                .await
-                .expect("Failed to load product")
-            {
-                enriched_lines.push(LineWithProduct {
-                    product: prod,
-                    quantity: line.quantity,
-                });
-            }
-        }
-
-        // Résultat final
-
-        #[derive(serde::Serialize)]
-        struct CartWithLines {
-            cart: cart::Model,
-            lines: Vec<LineWithProduct>,
-        }
-
-        HttpResponse::Ok().json(CartWithLines {
-            cart,
-            lines: enriched_lines,
-        })
-    } else {
-        HttpResponse::NotFound().body("Cart not found")
+    // Add each line with product
+    #[derive(serde::Serialize)]
+    struct LineWithProduct {
+        product: product::Model,
+        quantity: i32,
     }
+
+    let mut enriched_lines = Vec::new();
+
+    for line in lines {
+        if let Some(prod) = line.find_related(product::Entity).one(db).await? {
+            enriched_lines.push(LineWithProduct {
+                product: prod,
+                quantity: line.quantity,
+            });
+        }
+    }
+    // Final result
+    #[derive(serde::Serialize)]
+    struct CartWithLines {
+        cart: cart::Model,
+        lines: Vec<LineWithProduct>,
+    }
+
+    Ok(HttpResponse::Ok().json(CartWithLines {
+        cart,
+        lines: enriched_lines,
+    }))
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -86,152 +77,136 @@ async fn add_product_to_cart(
     data: web::Data<AppState>,
     form_data: web::Json<FormDataAddProductToCart>,
     req: HttpRequest,
-) -> impl Responder {
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse().unwrap();
+    let id: i32 = req.match_info().query("id").parse()?;
 
-    let cart: Option<cart::Model> = cart::Entity::find()
+    let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
         .one(db)
-        .await
-        .expect(&format!("Failed to get cart of user id {}", id));
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
 
-    if let Some(cart) = cart {
-        let form_data = form_data.into_inner();
+    let form_data = form_data.into_inner();
 
-        // Check if product already added in cart
-        let cart_line: Option<cart_line::Model> = CartLine::find()
-            .filter(cart_line::Column::ProductId.eq(form_data.product_id))
-            .filter(cart_line::Column::CartId.eq(cart.id))
-            .one(db)
-            .await
-            .expect("Failed to get cart line");
+    // Check if product already added in cart
+    let cart_line = CartLine::find()
+        .filter(cart_line::Column::ProductId.eq(form_data.product_id))
+        .filter(cart_line::Column::CartId.eq(cart.id))
+        .one(db)
+        .await?;
 
-        if cart_line.is_some() {
-            return HttpResponse::BadRequest()
-                .body("Product already added to cart, try updating quantity");
-        }
-
-        let quantity = if form_data.quantity.is_some() {
-            form_data.quantity.unwrap()
-        } else {
-            1
-        };
-
-        let cart_line = cart_line::ActiveModel {
-            cart_id: Set(Some(cart.id)),
-            product_id: Set(form_data.product_id),
-            quantity: Set(quantity),
-            ..Default::default()
-        };
-
-        cart_line
-            .insert(db)
-            .await
-            .expect("Failed to add product to cart");
-
-        HttpResponse::Ok().body("Product successfully added to cart")
-    } else {
-        HttpResponse::NotFound().body("Cart not found")
+    if cart_line.is_some() {
+        return Err(crate::Error::BadRequestError(
+            "Product already added to cart, try updating quantity".into(),
+        ));
     }
+
+    let quantity = form_data.quantity.unwrap_or(1);
+
+    let cart_line = cart_line::ActiveModel {
+        cart_id: Set(Some(cart.id)),
+        product_id: Set(form_data.product_id),
+        quantity: Set(quantity),
+        ..Default::default()
+    };
+
+    let res = cart_line.insert(db).await?;
+
+    Ok(HttpResponse::Created().json(res))
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
-struct Quantity {
+struct FormDataUpdateQuantityProductCart {
     quantity: i32,
 }
 
 #[patch("/{id}/cart/products/{product_id}")]
 async fn update_quantity_product_cart(
     data: web::Data<AppState>,
-    form_data: web::Json<Quantity>,
+    form_data: web::Json<FormDataUpdateQuantityProductCart>,
     req: HttpRequest,
-) -> impl Responder {
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse().unwrap();
-    let product_id: i32 = req.match_info().query("product_id").parse().unwrap();
+    let id: i32 = req.match_info().query("id").parse()?;
+    let product_id: i32 = req.match_info().query("product_id").parse()?;
 
     let form_data = form_data.into_inner();
 
-    let cart: Option<cart::Model> = cart::Entity::find()
+    let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
         .one(db)
-        .await
-        .expect(&format!("Failed to get cart of user id {}", id));
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
 
-    if let Some(cart) = cart {
-        let line_cart: Option<cart_line::Model> = CartLine::find()
-            .filter(cart_line::Column::ProductId.eq(product_id))
-            .filter(cart_line::Column::CartId.eq(cart.id))
-            .one(db)
-            .await
-            .expect("Failed");
+    let line_cart = CartLine::find()
+        .filter(cart_line::Column::ProductId.eq(product_id))
+        .filter(cart_line::Column::CartId.eq(cart.id))
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
 
-        let mut cart_line: cart_line::ActiveModel = line_cart.unwrap().into();
+    let mut cart_line: cart_line::ActiveModel = line_cart.into();
 
-        // Update cart line quantity
-        cart_line.quantity = Set(form_data.quantity.to_owned());
-        // Update db
-        cart_line
-            .update(db)
-            .await
-            .expect("Failed to update cart line");
-        HttpResponse::Ok().body("Updated quantity of product in cart")
-    } else {
-        HttpResponse::NotFound().body("Cart not found")
-    }
+    // Update cart line quantity
+    cart_line.quantity = Set(form_data.quantity.to_owned());
+    // Update db
+    let res = cart_line.update(db).await?;
+    Ok(HttpResponse::Ok().json(res))
 }
 
 #[delete("/{id}/cart/products/{product_id}")]
-async fn remove_product_from_cart(data: web::Data<AppState>, req: HttpRequest) -> impl Responder {
+async fn remove_product_from_cart(
+    data: web::Data<AppState>,
+    req: HttpRequest,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse().unwrap();
-    let product_id: i32 = req.match_info().query("product_id").parse().unwrap();
+    let id: i32 = req.match_info().query("id").parse()?;
+    let product_id: i32 = req.match_info().query("product_id").parse()?;
 
-    let cart: Option<cart::Model> = cart::Entity::find()
+    let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
         .one(db)
-        .await
-        .expect(&format!("Failed to get cart of user id {}", id));
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
 
-    if let Some(cart) = cart {
-        let cart_line: Option<cart_line::Model> = CartLine::find()
-            .filter(cart_line::Column::ProductId.eq(product_id))
-            .filter(cart_line::Column::CartId.eq(cart.id))
-            .one(db)
-            .await
-            .expect("Failed to find cart line");
+    let cart_line = CartLine::find()
+        .filter(cart_line::Column::ProductId.eq(product_id))
+        .filter(cart_line::Column::CartId.eq(cart.id))
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
 
-        let line_cart: cart_line::Model = cart_line.unwrap();
-        line_cart
-            .delete(db)
-            .await
-            .expect("Failed to delete car linet");
-        HttpResponse::Ok().body("Product successfully removed from cart")
-    } else {
-        HttpResponse::NotFound().body("Cart not found")
-    }
+    cart_line.delete(db).await?;
+    Ok(HttpResponse::Ok().body("Product successfully removed from cart"))
 }
 
 #[delete("/{id}/cart")]
-async fn empty_cart(data: web::Data<AppState>, req: HttpRequest) -> impl Responder {
+async fn empty_cart(data: web::Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse().unwrap();
+    let id: i32 = req.match_info().query("id").parse()?;
 
-    let cart: Option<cart::Model> = cart::Entity::find()
+    let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
         .one(db)
-        .await
-        .expect(&format!("Failed to get cart of user id {}", id));
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
 
-    if let Some(cart) = cart {
-        cart_line::Entity::delete_many()
-            .filter(cart_line::Column::CartId.eq(cart.id))
-            .exec(db)
-            .await
-            .expect("Failed to delete cart lines");
-        HttpResponse::Ok().body("Cart emptied successfully")
-    } else {
-        HttpResponse::NotFound().body("Failed to empty cart")
-    }
+    cart_line::Entity::delete_many()
+        .filter(cart_line::Column::CartId.eq(cart.id))
+        .exec(db)
+        .await?;
+    Ok(HttpResponse::Ok().body("Cart emptied successfully"))
 }
