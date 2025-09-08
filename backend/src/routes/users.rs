@@ -7,8 +7,10 @@ use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityName as _, EntityTrait, ModelTrait,
     QueryFilter,
 };
+use utoipa::ToSchema;
+use utoipa_actix_web::service_config::ServiceConfig;
 
-pub fn config(cfg: &mut web::ServiceConfig) {
+pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get_cart_by_user)
         .service(add_product_to_cart)
         .service(update_quantity_product_cart)
@@ -16,6 +18,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         .service(empty_cart);
 }
 
+#[utoipa::path()]
 #[get("/{id}/cart")]
 async fn get_cart_by_user(
     data: web::Data<AppState>,
@@ -66,12 +69,13 @@ async fn get_cart_by_user(
     }))
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct FormDataAddProductToCart {
     product_id: i32,
     quantity: Option<i32>,
 }
 
+#[utoipa::path()]
 #[post("/{id}/cart/products")]
 async fn add_product_to_cart(
     data: web::Data<AppState>,
@@ -118,11 +122,12 @@ async fn add_product_to_cart(
     Ok(HttpResponse::Created().json(res))
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct FormDataUpdateQuantityProductCart {
     quantity: i32,
 }
 
+#[utoipa::path()]
 #[patch("/{id}/cart/products/{product_id}")]
 async fn update_quantity_product_cart(
     data: web::Data<AppState>,
@@ -161,6 +166,7 @@ async fn update_quantity_product_cart(
     Ok(HttpResponse::Ok().json(res))
 }
 
+#[utoipa::path()]
 #[delete("/{id}/cart/products/{product_id}")]
 async fn remove_product_from_cart(
     data: web::Data<AppState>,
@@ -191,6 +197,7 @@ async fn remove_product_from_cart(
     Ok(HttpResponse::Ok().body("Product successfully removed from cart"))
 }
 
+#[utoipa::path()]
 #[delete("/{id}/cart")]
 async fn empty_cart(data: web::Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;

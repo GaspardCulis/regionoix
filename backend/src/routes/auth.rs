@@ -1,17 +1,16 @@
-use crate::Result;
+use crate::prelude::*;
 use actix_identity::Identity;
-use actix_web::{HttpMessage as _, HttpRequest, HttpResponse, Responder, get, post, web};
 use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
 use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
-use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use crate::{AppState, entities::user};
 
-pub fn config(cfg: &mut web::ServiceConfig) {
+pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(login).service(logout).service(status);
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema, Debug)]
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
@@ -25,12 +24,13 @@ struct JwtClaims {
     exp: usize,
 }
 
+#[utoipa::path()]
 #[post("/login")]
 pub async fn login(
     request: HttpRequest,
-    login_request: web::Json<LoginRequest>,
-    data: web::Data<AppState>,
-) -> Result<HttpResponse> {
+    login_request: Json<LoginRequest>,
+    data: Data<AppState>,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let user = user::Entity::find()
         .filter(user::Column::Email.eq(&login_request.email))
@@ -48,6 +48,7 @@ pub async fn login(
     Ok(HttpResponse::Ok().finish())
 }
 
+#[utoipa::path()]
 #[post("/logout")]
 async fn logout(user: Option<Identity>) -> impl Responder {
     if let Some(user) = user {
@@ -56,15 +57,7 @@ async fn logout(user: Option<Identity>) -> impl Responder {
     HttpResponse::Ok()
 }
 
-fn check_password(login_request: &LoginRequest, user: &user::Model) -> Result<()> {
-    let parsed_hash = PasswordHash::new(&user.password)
-        .map_err(|err| crate::Error::InternalError(anyhow::Error::msg(err)))?;
-
-    Argon2::default()
-        .verify_password(login_request.password.as_bytes(), &parsed_hash)
-        .map_err(|_| crate::Error::AuthenticationFailure)
-}
-
+#[utoipa::path()]
 #[get("/status")]
 async fn status(user: Option<Identity>) -> impl Responder {
     if let Some(user) = user {
@@ -72,4 +65,13 @@ async fn status(user: Option<Identity>) -> impl Responder {
     } else {
         "unauthenticated".to_owned()
     }
+}
+
+fn check_password(login_request: &LoginRequest, user: &user::Model) -> crate::Result<()> {
+    let parsed_hash = PasswordHash::new(&user.password)
+        .map_err(|err| crate::Error::InternalError(anyhow::Error::msg(err)))?;
+
+    Argon2::default()
+        .verify_password(login_request.password.as_bytes(), &parsed_hash)
+        .map_err(|_| crate::Error::AuthenticationFailure)
 }
