@@ -8,13 +8,13 @@
             <div class="dropdown">
                 <button class="dropbtn">Catégories</button>
                 <div class="dropdown-content">
-                    <a *ngFor="let c of categories" (click)="selectedCategory = c">{{ c }}</a>
+                    <button *ngFor="let c of categories" (click)="selectedCategory = c">{{ c }}</button>
                 </div>
             </div>
             <div class="dropdown">
                 <button class="dropbtn">Régions</button>
                 <div class="dropdown-content">
-                    <a *ngFor="let r of regions" (click)="selectedRegion = r">{{ r }}</a>
+                    <button *ngFor="let r of regions" (click)="selectedRegion = r">{{ r }}</button>
                 </div>
             </div>
         </div>
