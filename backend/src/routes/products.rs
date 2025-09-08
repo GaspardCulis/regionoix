@@ -1,3 +1,4 @@
+use crate::prelude::*;
 use crate::{
     AppState,
     entities::{
@@ -12,7 +13,6 @@ use sea_orm::{
     ActiveValue::{self},
     EntityName, EntityTrait as _, ModelTrait,
 };
-use utoipa_actix_web::service_config::ServiceConfig;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get)

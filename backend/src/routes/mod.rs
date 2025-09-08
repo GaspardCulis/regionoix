@@ -1,4 +1,4 @@
-use utoipa_actix_web::{service_config::ServiceConfig, *};
+use crate::prelude::*;
 
 mod auth;
 mod products;

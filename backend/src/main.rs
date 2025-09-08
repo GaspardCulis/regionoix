@@ -8,12 +8,13 @@ use utoipa_swagger_ui::SwaggerUi;
 
 pub mod entities;
 mod error;
+mod prelude;
 mod routes;
 mod secrets;
 
 pub use error::*;
 
-struct AppState {
+pub struct AppState {
     db: DatabaseConnection,
 }
 
