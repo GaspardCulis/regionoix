@@ -54,7 +54,7 @@ async fn main() -> std::io::Result<()> {
             .openapi(ApiDoc::openapi())
             .service(utoipa_actix_web::scope("/api").configure(routes::config))
             .openapi_service(|api| {
-                SwaggerUi::new("/swagger-ui/{_:.*}").url("/api-docs/openapi.json", api)
+                SwaggerUi::new("/api-docs/swagger-ui/{_:.*}").url("/api-docs/openapi.json", api)
             })
             .into_app()
     })
