@@ -17,8 +17,7 @@ use sea_orm::{
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get)
         .service(get_by_id)
-        .service(get_by_id_expand)
-        .service(delete_by_id);
+        .service(get_by_id_expand);
 }
 
 #[utoipa::path()]
@@ -85,19 +84,4 @@ pub async fn get_by_id_expand(
     };
 
     Ok(HttpResponse::Ok().json(response))
-}
-
-#[utoipa::path()]
-#[delete("/{id}")]
-pub async fn delete_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-    let id = req.match_info().query("id").parse()?;
-
-    let product = product::ActiveModel {
-        id: ActiveValue::Set(id),
-        ..Default::default()
-    };
-    product.delete(db).await?;
-
-    Ok(HttpResponse::Ok().body("Product successfully deleted"))
 }
