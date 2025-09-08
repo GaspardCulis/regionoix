@@ -48,6 +48,8 @@ pub enum Relation {
     Discount,
     #[sea_orm(has_many = "super::order_line::Entity")]
     OrderLine,
+    #[sea_orm(has_many = "super::product_tag::Entity")]
+    ProductTag,
     #[sea_orm(
         belongs_to = "super::region::Entity",
         from = "Column::RegionId",
@@ -85,6 +87,16 @@ impl Related<super::discount::Entity> for Entity {
 impl Related<super::order_line::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::OrderLine.def()
+    }
+}
+
+impl Related<super::tag::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::product_tag::Relation::Tag.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::product_tag::Relation::Product.def().rev())
     }
 }
 

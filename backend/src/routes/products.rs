@@ -2,8 +2,8 @@ use crate::{
     AppState,
     entities::{
         brand, category,
-        prelude::{Brand, Category, Product, Region},
-        product, region,
+        prelude::{Brand, Category, Product, Region, Tag},
+        product, region, tag,
     },
 };
 use actix_web::{HttpRequest, HttpResponse, delete, get, post, put, web};
@@ -63,6 +63,7 @@ pub async fn get_by_id_expand(
     let region = product.find_related(Region).one(db).await?;
     let brand = product.find_related(Brand).one(db).await?;
     let category = product.find_related(Category).one(db).await?;
+    let tags = product.find_related(Tag).all(db).await?;
 
     #[derive(serde::Serialize)]
     struct ProductExpanded {
@@ -70,6 +71,7 @@ pub async fn get_by_id_expand(
         region: Option<region::Model>,
         brand: Option<brand::Model>,
         category: Option<category::Model>,
+        tags: Vec<tag::Model>,
     }
 
     let response = ProductExpanded {
@@ -77,6 +79,7 @@ pub async fn get_by_id_expand(
         region,
         brand,
         category,
+        tags,
     };
 
     Ok(HttpResponse::Ok().json(response))

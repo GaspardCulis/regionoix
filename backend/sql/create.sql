@@ -17,6 +17,11 @@ CREATE TABLE IF NOT EXISTS CATEGORY (
     category_parent integer references category(id)
 );
 
+CREATE TABLE IF NOT EXISTS TAG(
+    id serial primary key,
+    name citext not null unique
+);
+
 CREATE TYPE roles AS ENUM ('CLIENT','ADMIN');
 
 CREATE TABLE IF NOT EXISTS USER_(
@@ -37,6 +42,12 @@ CREATE TABLE IF NOT EXISTS PRODUCT (
     region_id integer references region(id) ON DELETE SET NULL,
     brand_id integer references brand(id) ON DELETE SET NULL,
     category_id integer references category(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS PRODUCT_TAG(
+    id serial primary key,
+    product_id integer references product(id),
+    tag_id integer references tag(id)
 );
 
 CREATE TYPE order_status AS ENUM ('PENDING_PAYMENT','PAYED', 'IN_DELIVERY', 'DELIVERED','CANCELED', 'ABORTED');
