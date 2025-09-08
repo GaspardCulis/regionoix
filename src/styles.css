@@ -4,7 +4,22 @@
 
 :root {
     --background-auvergne-rhone-alpes: #0094dd;
-    --white: #fff;
+
+    --color-bg: #ffffff;
+    --color-surface: #f1ccb4;
+    --color-text: #111827;
+    --color-text-muted: #7380a6;
+
+    --color-accent: #f0c19e;
+    --color-accent-dark: #cf7225;
+
+    --color-primary: #3066be;
+    --color-primary-hover: #6fa4d2;
+    --color-primary-light: #8ec3dc;
+    --color-primary-pale: #ade1e5;
+
+    --color-secondary: #b5998e;
+
 }
 
 body {
