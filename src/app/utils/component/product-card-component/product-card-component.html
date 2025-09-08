@@ -1,9 +1,12 @@
 <div class="card">
     <figure>
-        <img [src]="image" [alt]="title" />
+        <button (click)="goToProduct()">
+            <img [src]="image" [alt]="title" /></button>
     </figure>
     <div class="card-content">
-        <h2>{{ title }}</h2>
+        <button (click)="goToProduct()">
+            <h2>{{ title }}</h2>
+        </button>
         <p>{{ description }}</p>
         <p class="price">{{ price }} €</p>
         <div class="card-action">
