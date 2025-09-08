@@ -4,7 +4,7 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "adress")]
+#[sea_orm(table_name = "address")]
 pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
@@ -12,7 +12,7 @@ pub struct Model {
     pub city: String,
     pub country: String,
     pub street: String,
-    pub postal_code: Decimal,
+    pub postal_code: String,
     pub lastname: String,
     pub firstname: String,
 }

@@ -15,8 +15,8 @@ pub struct Model {
     pub description: Option<String>,
     #[sea_orm(column_type = "Double", nullable)]
     pub weight: Option<f64>,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
-    pub price: Option<Decimal>,
+    #[sea_orm(column_type = "Float")]
+    pub price: f32,
     pub image: Option<String>,
     pub stock: i32,
     pub region_id: Option<i32>,

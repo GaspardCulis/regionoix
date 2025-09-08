@@ -3,15 +3,15 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "order_line")]
 pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
     pub id: i32,
     pub quantity: i32,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub unit_price: Decimal,
+    #[sea_orm(column_type = "Float")]
+    pub unit_price: f32,
     pub product_id: Option<i32>,
     pub order_id: Option<i32>,
 }
