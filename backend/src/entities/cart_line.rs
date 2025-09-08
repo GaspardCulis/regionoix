@@ -21,7 +21,7 @@ pub enum Relation {
         from = "Column::CartId",
         to = "super::cart::Column::Id",
         on_update = "NoAction",
-        on_delete = "NoAction"
+        on_delete = "Cascade"
     )]
     Cart,
     #[sea_orm(
@@ -29,7 +29,7 @@ pub enum Relation {
         from = "Column::ProductId",
         to = "super::product::Column::Id",
         on_update = "NoAction",
-        on_delete = "NoAction"
+        on_delete = "Cascade"
     )]
     Product,
 }

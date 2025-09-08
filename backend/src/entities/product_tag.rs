@@ -4,44 +4,44 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "product_category")]
+#[sea_orm(table_name = "product_tag")]
 pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
     pub id: i32,
     pub product_id: Option<i32>,
-    pub category_id: Option<i32>,
+    pub tag_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::category::Entity",
-        from = "Column::CategoryId",
-        to = "super::category::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Category,
-    #[sea_orm(
         belongs_to = "super::product::Entity",
         from = "Column::ProductId",
         to = "super::product::Column::Id",
         on_update = "NoAction",
-        on_delete = "Cascade"
+        on_delete = "NoAction"
     )]
     Product,
-}
-
-impl Related<super::category::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Category.def()
-    }
+    #[sea_orm(
+        belongs_to = "super::tag::Entity",
+        from = "Column::TagId",
+        to = "super::tag::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    Tag,
 }
 
 impl Related<super::product::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Product.def()
+    }
+}
+
+impl Related<super::tag::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Tag.def()
     }
 }
 

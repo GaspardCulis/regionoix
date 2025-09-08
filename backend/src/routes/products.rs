@@ -2,15 +2,15 @@ use crate::{
     AppState,
     entities::{
         brand, category,
-        prelude::{Brand, Category, Product, ProductCategory, Region},
-        product, region,
+        prelude::{Brand, Category, Product, Region, Tag},
+        product, region, tag,
     },
 };
 use actix_web::{HttpRequest, HttpResponse, delete, get, post, put, web};
 use sea_orm::{
     ActiveModelTrait,
     ActiveValue::{self, NotSet, Set},
-    EntityName, EntityTrait as _, LoaderTrait, ModelTrait,
+    EntityName, EntityTrait as _, ModelTrait,
 };
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -62,22 +62,24 @@ pub async fn get_by_id_expand(
 
     let region = product.find_related(Region).one(db).await?;
     let brand = product.find_related(Brand).one(db).await?;
-    let categories_products = product.find_related(ProductCategory).all(db).await?;
-    let categories = categories_products.load_one(Category, db).await?;
+    let category = product.find_related(Category).one(db).await?;
+    let tags = product.find_related(Tag).all(db).await?;
 
     #[derive(serde::Serialize)]
     struct ProductExpanded {
         product: product::Model,
         region: Option<region::Model>,
         brand: Option<brand::Model>,
-        categories: Vec<Option<category::Model>>,
+        category: Option<category::Model>,
+        tags: Vec<tag::Model>,
     }
 
     let response = ProductExpanded {
         product,
         region,
         brand,
-        categories,
+        category,
+        tags,
     };
 
     Ok(HttpResponse::Ok().json(response))
@@ -153,6 +155,7 @@ pub async fn update_by_id(
     product.image = Set(form_data.image.to_owned());
     product.stock = Set(form_data.stock.to_owned());
     product.region_id = Set(form_data.region_id.to_owned());
+    product.category_id = Set(form_data.category_id.to_owned());
 
     product.update(db).await?;
 

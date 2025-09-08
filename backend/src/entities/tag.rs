@@ -4,35 +4,28 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "category")]
+#[sea_orm(table_name = "tag")]
 pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
     pub id: i32,
-    #[sea_orm(unique)]
+    #[sea_orm(column_type = "custom(\"citext\")", unique)]
     pub name: String,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub description: Option<String>,
-    pub category_parent: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "Entity",
-        from = "Column::CategoryParent",
-        to = "Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    SelfRef,
-    #[sea_orm(has_many = "super::product::Entity")]
-    Product,
+    #[sea_orm(has_many = "super::product_tag::Entity")]
+    ProductTag,
 }
 
 impl Related<super::product::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Product.def()
+        super::product_tag::Relation::Product.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::product_tag::Relation::Tag.def().rev())
     }
 }
 

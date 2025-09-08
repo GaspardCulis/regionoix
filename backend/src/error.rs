@@ -17,6 +17,8 @@ pub enum Error {
     ParseIntFailure(#[from] ParseIntError),
     #[error("authentication failed: password mismatch")]
     AuthenticationFailure,
+    #[error("bad request: {0}")]
+    BadRequestError(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

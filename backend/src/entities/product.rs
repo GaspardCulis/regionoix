@@ -15,12 +15,13 @@ pub struct Model {
     pub description: Option<String>,
     #[sea_orm(column_type = "Double", nullable)]
     pub weight: Option<f64>,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))", nullable)]
-    pub price: Option<Decimal>,
-    pub brand_id: Option<i32>,
+    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
+    pub price: Decimal,
     pub image: Option<String>,
     pub stock: i32,
     pub region_id: Option<i32>,
+    pub brand_id: Option<i32>,
+    pub category_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -30,23 +31,31 @@ pub enum Relation {
         from = "Column::BrandId",
         to = "super::brand::Column::Id",
         on_update = "NoAction",
-        on_delete = "NoAction"
+        on_delete = "SetNull"
     )]
     Brand,
     #[sea_orm(has_many = "super::cart_line::Entity")]
     CartLine,
+    #[sea_orm(
+        belongs_to = "super::category::Entity",
+        from = "Column::CategoryId",
+        to = "super::category::Column::Id",
+        on_update = "NoAction",
+        on_delete = "SetNull"
+    )]
+    Category,
     #[sea_orm(has_many = "super::discount::Entity")]
     Discount,
     #[sea_orm(has_many = "super::order_line::Entity")]
     OrderLine,
-    #[sea_orm(has_many = "super::product_category::Entity")]
-    ProductCategory,
+    #[sea_orm(has_many = "super::product_tag::Entity")]
+    ProductTag,
     #[sea_orm(
         belongs_to = "super::region::Entity",
         from = "Column::RegionId",
         to = "super::region::Column::Id",
         on_update = "NoAction",
-        on_delete = "NoAction"
+        on_delete = "SetNull"
     )]
     Region,
 }
@@ -63,6 +72,12 @@ impl Related<super::cart_line::Entity> for Entity {
     }
 }
 
+impl Related<super::category::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Category.def()
+    }
+}
+
 impl Related<super::discount::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Discount.def()
@@ -75,9 +90,13 @@ impl Related<super::order_line::Entity> for Entity {
     }
 }
 
-impl Related<super::product_category::Entity> for Entity {
+impl Related<super::tag::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::ProductCategory.def()
+        super::product_tag::Relation::Tag.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::product_tag::Relation::Product.def().rev())
     }
 }
 
