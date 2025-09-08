@@ -56,7 +56,8 @@
               "buildTarget": "regionoix:build:production"
             },
             "development": {
-              "buildTarget": "regionoix:build:development"
+              "buildTarget": "regionoix:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

@@ -1,9 +1,9 @@
-<div class="product">
+<div class="product" *ngIf="product">
     <div class="image-wrapper">
         <img src="{{product.image}}" alt="{{ product.title }}" />
     </div>
     <div class="product-details">
-        <h1 class="product-name">{{ product.title }}</h1>
+        <h1 class="product-name">{{ product.name }}</h1>
         <p class="product-price">{{ product.price | number:'1.2-2' }} €</p>
         <p class="product-description">{{ product.description }}</p>
         <div class="cart-actions">
