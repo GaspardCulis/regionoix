@@ -10,7 +10,9 @@ pub struct Secrets {
 
 impl Secrets {
     pub fn load() -> anyhow::Result<Self> {
-        dotenv()?;
+        if dotenv().is_err() {
+            println!("Failed to read .env, falling back to existing env vars");
+        }
 
         Ok(Self {
             api_host: std::env::var("API_HOST")?,
