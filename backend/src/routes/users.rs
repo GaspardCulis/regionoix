@@ -1,14 +1,16 @@
 use crate::{
     AppState,
-    entities::{cart, cart_line, prelude::CartLine, product},
+    entities::{cart, cart_line, prelude::CartLine, prelude::Product, product},
 };
 use actix_web::{HttpRequest, HttpResponse, delete, get, patch, post, web};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityName as _, EntityTrait, ModelTrait,
     QueryFilter,
 };
+use utoipa::ToSchema;
+use utoipa_actix_web::service_config::ServiceConfig;
 
-pub fn config(cfg: &mut web::ServiceConfig) {
+pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get_cart_by_user)
         .service(add_product_to_cart)
         .service(update_quantity_product_cart)
@@ -16,6 +18,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         .service(empty_cart);
 }
 
+#[utoipa::path()]
 #[get("/{id}/cart")]
 async fn get_cart_by_user(
     data: web::Data<AppState>,
@@ -66,12 +69,13 @@ async fn get_cart_by_user(
     }))
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct FormDataAddProductToCart {
     product_id: i32,
     quantity: Option<i32>,
 }
 
+#[utoipa::path()]
 #[post("/{id}/cart/products")]
 async fn add_product_to_cart(
     data: web::Data<AppState>,
@@ -80,6 +84,21 @@ async fn add_product_to_cart(
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let id: i32 = req.match_info().query("id").parse()?;
+    let quantity = form_data.quantity.unwrap_or(1);
+
+    let product = Product::find_by_id(form_data.product_id)
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
+
+    // Check if there is enough stock for quantity desired
+    if product.stock < quantity {
+        return Err(crate::Error::BadRequestError(
+            "Not enough stock for adding product to cart in desired quantity".into(),
+        ));
+    }
 
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
@@ -104,8 +123,6 @@ async fn add_product_to_cart(
         ));
     }
 
-    let quantity = form_data.quantity.unwrap_or(1);
-
     let cart_line = cart_line::ActiveModel {
         cart_id: Set(Some(cart.id)),
         product_id: Set(form_data.product_id),
@@ -118,11 +135,12 @@ async fn add_product_to_cart(
     Ok(HttpResponse::Created().json(res))
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct FormDataUpdateQuantityProductCart {
     quantity: i32,
 }
 
+#[utoipa::path()]
 #[patch("/{id}/cart/products/{product_id}")]
 async fn update_quantity_product_cart(
     data: web::Data<AppState>,
@@ -135,6 +153,20 @@ async fn update_quantity_product_cart(
 
     let form_data = form_data.into_inner();
 
+    let product =
+        Product::find_by_id(product_id)
+            .one(db)
+            .await?
+            .ok_or(crate::Error::EntityNotFound {
+                table_name: cart::Entity.table_name(),
+            })?;
+
+    // Check if there is enough stock for quantity desired
+    if product.stock < form_data.quantity {
+        return Err(crate::Error::BadRequestError(
+            "Not enough stock for updating product to cart in desired quantity".into(),
+        ));
+    }
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
         .one(db)
@@ -161,6 +193,7 @@ async fn update_quantity_product_cart(
     Ok(HttpResponse::Ok().json(res))
 }
 
+#[utoipa::path()]
 #[delete("/{id}/cart/products/{product_id}")]
 async fn remove_product_from_cart(
     data: web::Data<AppState>,
@@ -191,6 +224,7 @@ async fn remove_product_from_cart(
     Ok(HttpResponse::Ok().body("Product successfully removed from cart"))
 }
 
+#[utoipa::path()]
 #[delete("/{id}/cart")]
 async fn empty_cart(data: web::Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;
