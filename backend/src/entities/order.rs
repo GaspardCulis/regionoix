@@ -10,23 +10,26 @@ pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
     pub id: i32,
-    pub client_lastname: String,
-    pub client_firstname: String,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
     pub total_price: Decimal,
     #[sea_orm(column_name = "status_")]
     pub status: OrderStatus,
     pub arrival_date: Option<Date>,
     pub creation_date: Option<Date>,
-    pub city: String,
-    pub country: String,
-    pub address: String,
-    pub postal_code: Decimal,
     pub user_id: Option<i32>,
+    pub adress_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::adress::Entity",
+        from = "Column::AdressId",
+        to = "super::adress::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    Adress,
     #[sea_orm(has_many = "super::order_line::Entity")]
     OrderLine,
     #[sea_orm(
@@ -37,6 +40,12 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     User,
+}
+
+impl Related<super::adress::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Adress.def()
+    }
 }
 
 impl Related<super::order_line::Entity> for Entity {
