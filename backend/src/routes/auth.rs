@@ -5,7 +5,6 @@ use actix_identity::Identity;
 use actix_web::{FromRequest, dev::Payload};
 use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
 use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
-use utoipa::ToSchema;
 
 use crate::{AppState, entities::user};
 

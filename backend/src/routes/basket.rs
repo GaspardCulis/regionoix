@@ -1,11 +1,8 @@
-use crate::{AppState, prelude::*, routes::auth::LoggedUser};
-use actix_web::{HttpRequest, HttpResponse, delete, get, patch, post, web};
+use crate::prelude::*;
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityName as _, EntityTrait, ModelTrait,
     QueryFilter,
 };
-use utoipa::ToSchema;
-use utoipa_actix_web::service_config::ServiceConfig;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get_basket)
@@ -17,10 +14,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 
 #[utoipa::path()]
 #[get("")]
-async fn get_basket(
-    data: web::Data<AppState>,
-    logged_user: LoggedUser,
-) -> crate::Result<HttpResponse> {
+async fn get_basket(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
 
     // Get cart
@@ -74,8 +68,8 @@ struct FormAddToBasket {
 #[utoipa::path()]
 #[post("/items")]
 async fn add_item(
-    data: web::Data<AppState>,
-    form_data: web::Json<FormAddToBasket>,
+    data: Data<AppState>,
+    form_data: Json<FormAddToBasket>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -138,8 +132,8 @@ struct FormUpdateQuantityBasket {
 #[utoipa::path()]
 #[patch("/items/{product_id}")]
 async fn update_item_quantity(
-    data: web::Data<AppState>,
-    form_data: web::Json<FormUpdateQuantityBasket>,
+    data: Data<AppState>,
+    form_data: Json<FormUpdateQuantityBasket>,
     req: HttpRequest,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
@@ -191,7 +185,7 @@ async fn update_item_quantity(
 #[utoipa::path()]
 #[delete("/items/{product_id}")]
 async fn remove_item(
-    data: web::Data<AppState>,
+    data: Data<AppState>,
     req: HttpRequest,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
@@ -221,7 +215,7 @@ async fn remove_item(
 
 #[utoipa::path()]
 #[delete("")]
-async fn empty(data: web::Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
+async fn empty(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
 
     let cart = cart::Entity::find()

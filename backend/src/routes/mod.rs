@@ -1,8 +1,8 @@
 use crate::prelude::*;
 
-mod auth;
-mod basket;
-mod products;
+pub mod auth;
+pub mod basket;
+pub mod products;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(scope("/auth").configure(auth::config))
