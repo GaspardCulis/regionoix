@@ -2,6 +2,7 @@
 
 pub mod prelude;
 
+pub mod adress;
 pub mod brand;
 pub mod cart;
 pub mod cart_line;

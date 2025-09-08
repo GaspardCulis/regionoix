@@ -50,6 +50,14 @@ CREATE TABLE IF NOT EXISTS PRODUCT_TAG(
     tag_id integer references tag(id)
 );
 
+CREATE TABLE IF NOT EXISTS ADRESS(
+    id serial primary key,
+    city varchar not null,
+    country varchar not null,
+    street varchar not null,
+    postal_code numeric not null
+);
+
 CREATE TYPE order_status AS ENUM ('PENDING_PAYMENT','PAYED', 'IN_DELIVERY', 'DELIVERED','CANCELED', 'ABORTED');
 
 CREATE TABLE IF NOT EXISTS ORDER_(
@@ -60,11 +68,8 @@ CREATE TABLE IF NOT EXISTS ORDER_(
     status_ order_status not null default 'PENDING_PAYMENT',
     arrival_date date CHECK (arrival_date > creation_date),
     creation_date date default now(),
-    city varchar not null,
-    country varchar not null,
-    address varchar not null,
-    postal_code numeric not null,
-    user_id integer references user_(id) ON DELETE SET NULL
+    user_id integer references user_(id) ON DELETE SET NULL,
+    adress_id integer references adress(id)
 );
 
 

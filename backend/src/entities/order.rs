@@ -18,15 +18,20 @@ pub struct Model {
     pub status: OrderStatus,
     pub arrival_date: Option<Date>,
     pub creation_date: Option<Date>,
-    pub city: String,
-    pub country: String,
-    pub address: String,
-    pub postal_code: Decimal,
     pub user_id: Option<i32>,
+    pub adress_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::adress::Entity",
+        from = "Column::AdressId",
+        to = "super::adress::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    Adress,
     #[sea_orm(has_many = "super::order_line::Entity")]
     OrderLine,
     #[sea_orm(
@@ -37,6 +42,12 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     User,
+}
+
+impl Related<super::adress::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Adress.def()
+    }
 }
 
 impl Related<super::order_line::Entity> for Entity {
