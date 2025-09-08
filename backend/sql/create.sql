@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS PRODUCT (
     name varchar(50) not null unique,
     description text,
     weight float,
-    price numeric(10,2) CHECK(price > 0) NOT NULL,
+    price real CHECK(price > 0) NOT NULL,
     image varchar,
     stock integer not null CHECK(stock >= 0) default 0,
     region_id integer references region(id) ON DELETE SET NULL,
@@ -52,21 +52,21 @@ CREATE TABLE IF NOT EXISTS PRODUCT_TAG(
     tag_id integer references tag(id)
 );
 
-CREATE TABLE IF NOT EXISTS ADRESS(
+CREATE TABLE IF NOT EXISTS ADDRESS(
     id serial primary key,
     lastname varchar not null,
     firstname varchar not null,
     city varchar not null,
     country varchar not null,
     street varchar not null,
-    postal_code numeric not null
+    postal_code varchar not null
 );
 
 CREATE TYPE order_status AS ENUM ('PENDING_PAYMENT','PAYED', 'IN_DELIVERY', 'DELIVERED','CANCELED', 'ABORTED');
 
 CREATE TABLE IF NOT EXISTS ORDER_(
     id serial primary key,
-    total_price numeric(10,2) not null,
+    total_price real not null,
     status_ order_status not null default 'PENDING_PAYMENT',
     arrival_date date CHECK (arrival_date > creation_date),
     creation_date date default now(),
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS ORDER_(
 CREATE TABLE IF NOT EXISTS ORDER_LINE(
     id serial primary key,
     quantity integer not null CHECK(quantity >= 0) default 1,
-    unit_price numeric(10,2) not null CHECK(unit_price >= 0),
+    unit_price real not null CHECK(unit_price >= 0),
     product_id integer references product(id) ON DELETE CASCADE,
     order_id integer references order_(id) ON DELETE CASCADE,
     UNIQUE(product_id, order_id)
