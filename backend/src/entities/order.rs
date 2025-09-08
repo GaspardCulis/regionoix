@@ -10,8 +10,6 @@ pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
     pub id: i32,
-    pub client_lastname: String,
-    pub client_firstname: String,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
     pub total_price: Decimal,
     #[sea_orm(column_name = "status_")]

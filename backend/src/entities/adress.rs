@@ -13,6 +13,8 @@ pub struct Model {
     pub country: String,
     pub street: String,
     pub postal_code: Decimal,
+    pub lastname: String,
+    pub firstname: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
