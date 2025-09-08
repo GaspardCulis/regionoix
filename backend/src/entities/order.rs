@@ -4,14 +4,14 @@ use super::sea_orm_active_enums::OrderStatus;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "order_")]
 pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
     pub id: i32,
-    #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
-    pub total_price: Decimal,
+    #[sea_orm(column_type = "Float")]
+    pub total_price: f32,
     #[sea_orm(column_name = "status_")]
     pub status: OrderStatus,
     pub arrival_date: Option<Date>,
@@ -23,13 +23,13 @@ pub struct Model {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::adress::Entity",
+        belongs_to = "super::address::Entity",
         from = "Column::AdressId",
-        to = "super::adress::Column::Id",
+        to = "super::address::Column::Id",
         on_update = "NoAction",
         on_delete = "NoAction"
     )]
-    Adress,
+    Address,
     #[sea_orm(has_many = "super::order_line::Entity")]
     OrderLine,
     #[sea_orm(
@@ -42,9 +42,9 @@ pub enum Relation {
     User,
 }
 
-impl Related<super::adress::Entity> for Entity {
+impl Related<super::address::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Adress.def()
+        Relation::Address.def()
     }
 }
 
