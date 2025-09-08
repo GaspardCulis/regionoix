@@ -6,32 +6,35 @@ use crate::{
         product, region, tag,
     },
 };
-use actix_web::{HttpRequest, HttpResponse, delete, get, post, put, web};
+use actix_web::{HttpRequest, HttpResponse, delete, get, web::Data};
 use sea_orm::{
     ActiveModelTrait,
-    ActiveValue::{self, NotSet, Set},
+    ActiveValue::{self},
     EntityName, EntityTrait as _, ModelTrait,
 };
+use utoipa_actix_web::service_config::ServiceConfig;
 
-pub fn config(cfg: &mut web::ServiceConfig) {
+pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get)
         .service(get_by_id)
         .service(get_by_id_expand)
-        .service(create)
-        .service(delete_by_id)
-        .service(update_by_id);
+        // .service(create)
+        .service(delete_by_id);
+    // .service(update_by_id);
 }
 
+#[utoipa::path()]
 #[get("")]
-pub async fn get(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let products: Vec<product::Model> = Product::find().all(db).await?;
 
     Ok(HttpResponse::Ok().json(products))
 }
 
+#[utoipa::path()]
 #[get("/{id}")]
-pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
+pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let id: u8 = req.match_info().query("id").parse()?;
 
@@ -45,9 +48,10 @@ pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Re
     Ok(HttpResponse::Ok().json(product))
 }
 
+#[utoipa::path()]
 #[get("/{id}/expand")]
 pub async fn get_by_id_expand(
-    data: web::Data<AppState>,
+    data: Data<AppState>,
     req: HttpRequest,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -85,10 +89,13 @@ pub async fn get_by_id_expand(
     Ok(HttpResponse::Ok().json(response))
 }
 
+/*
+// TODO: Make form data derive `ToSchema`
+#[utoipa::path()]
 #[post("")]
 pub async fn create(
-    data: web::Data<AppState>,
-    form_data: web::Json<product::Model>,
+    data: Data<AppState>,
+    form_data: Json<product::Model>,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let form_data = form_data.into_inner();
@@ -110,12 +117,11 @@ pub async fn create(
 
     Ok(HttpResponse::Ok().body("Product successfully created"))
 }
+*/
 
+#[utoipa::path()]
 #[delete("/{id}")]
-pub async fn delete_by_id(
-    data: web::Data<AppState>,
-    req: HttpRequest,
-) -> crate::Result<HttpResponse> {
+pub async fn delete_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let id = req.match_info().query("id").parse()?;
 
@@ -128,11 +134,14 @@ pub async fn delete_by_id(
     Ok(HttpResponse::Ok().body("Product successfully deleted"))
 }
 
+/*
+// TODO: Make form data derive `ToSchema`
+#[utoipa::path()]
 #[put("/{id}")]
 pub async fn update_by_id(
-    data: web::Data<AppState>,
+    data: Data<AppState>,
+    form_data: Json<product::Model>,
     req: HttpRequest,
-    form_data: web::Json<product::Model>,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let id: i32 = req.match_info().query("id").parse()?;
@@ -161,3 +170,4 @@ pub async fn update_by_id(
 
     Ok(HttpResponse::Ok().body("Product successfully updated"))
 }
+*/

@@ -1,17 +1,22 @@
 use crate::Result;
 use actix_identity::Identity;
-use actix_web::{HttpMessage as _, HttpRequest, HttpResponse, Responder, get, post, web};
+use actix_web::{
+    HttpMessage as _, HttpRequest, HttpResponse, Responder, get, post,
+    web::{Data, Json},
+};
 use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
 use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
+use utoipa_actix_web::service_config::ServiceConfig;
 
 use crate::{AppState, entities::user};
 
-pub fn config(cfg: &mut web::ServiceConfig) {
+pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(login).service(logout).service(status);
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema, Debug)]
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
@@ -25,11 +30,12 @@ struct JwtClaims {
     exp: usize,
 }
 
+#[utoipa::path()]
 #[post("/login")]
 pub async fn login(
     request: HttpRequest,
-    login_request: web::Json<LoginRequest>,
-    data: web::Data<AppState>,
+    login_request: Json<LoginRequest>,
+    data: Data<AppState>,
 ) -> Result<HttpResponse> {
     let db = &data.db;
     let user = user::Entity::find()
@@ -48,12 +54,23 @@ pub async fn login(
     Ok(HttpResponse::Ok().finish())
 }
 
+#[utoipa::path()]
 #[post("/logout")]
 async fn logout(user: Option<Identity>) -> impl Responder {
     if let Some(user) = user {
         user.logout();
     }
     HttpResponse::Ok()
+}
+
+#[utoipa::path()]
+#[get("/status")]
+async fn status(user: Option<Identity>) -> impl Responder {
+    if let Some(user) = user {
+        format!("authenticated as {}", user.id().unwrap())
+    } else {
+        "unauthenticated".to_owned()
+    }
 }
 
 fn check_password(login_request: &LoginRequest, user: &user::Model) -> Result<()> {
@@ -63,13 +80,4 @@ fn check_password(login_request: &LoginRequest, user: &user::Model) -> Result<()
     Argon2::default()
         .verify_password(login_request.password.as_bytes(), &parsed_hash)
         .map_err(|_| crate::Error::AuthenticationFailure)
-}
-
-#[get("/status")]
-async fn status(user: Option<Identity>) -> impl Responder {
-    if let Some(user) = user {
-        format!("authenticated as {}", user.id().unwrap())
-    } else {
-        "unauthenticated".to_owned()
-    }
 }
