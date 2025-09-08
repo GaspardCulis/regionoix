@@ -21,6 +21,11 @@ thiserror = "2.0"
 argon2 = "0.5"
 actix-session = { version = "0.11", features = ["redis-session"] }
 actix-identity = "0.9"
+
+tracing-actix-web = "0.7"
+tracing = "0.1"
+env_logger = "0.11"
+
 utoipa = { version = "5.4", features = ["actix_extras"] }
 utoipa-actix-web = "0.1"
 utoipa-swagger-ui = { version = "9.0", features = ["actix-web"] }

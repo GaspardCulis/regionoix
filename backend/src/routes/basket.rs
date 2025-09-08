@@ -1,8 +1,4 @@
-use crate::{
-    AppState,
-    entities::{cart, cart_line, prelude::CartLine, product},
-    routes::auth::LoggedUser,
-};
+use crate::{AppState, prelude::*, routes::auth::LoggedUser};
 use actix_web::{HttpRequest, HttpResponse, delete, get, patch, post, web};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityName as _, EntityTrait, ModelTrait,
@@ -83,6 +79,21 @@ async fn add_item(
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
+    let quantity = form_data.quantity.unwrap_or(1);
+
+    let product = Product::find_by_id(form_data.product_id)
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
+
+    // Check if there is enough stock for quantity desired
+    if product.stock < quantity {
+        return Err(crate::Error::BadRequestError(
+            "Not enough stock for adding product to cart in desired quantity".into(),
+        ));
+    }
 
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
@@ -106,8 +117,6 @@ async fn add_item(
             "Product already added to cart, try updating quantity".into(),
         ));
     }
-
-    let quantity = form_data.quantity.unwrap_or(1);
 
     let cart_line = cart_line::ActiveModel {
         cart_id: Set(Some(cart.id)),
@@ -139,6 +148,20 @@ async fn update_item_quantity(
 
     let form_data = form_data.into_inner();
 
+    let product =
+        Product::find_by_id(product_id)
+            .one(db)
+            .await?
+            .ok_or(crate::Error::EntityNotFound {
+                table_name: cart::Entity.table_name(),
+            })?;
+
+    // Check if there is enough stock for quantity desired
+    if product.stock < form_data.quantity {
+        return Err(crate::Error::BadRequestError(
+            "Not enough stock for updating product to cart in desired quantity".into(),
+        ));
+    }
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
         .one(db)

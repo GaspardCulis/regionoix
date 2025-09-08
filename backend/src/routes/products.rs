@@ -7,12 +7,8 @@ use crate::{
         product, region, tag,
     },
 };
-use actix_web::{HttpRequest, HttpResponse, delete, get, web::Data};
-use sea_orm::{
-    ActiveModelTrait,
-    ActiveValue::{self},
-    EntityName, EntityTrait as _, ModelTrait,
-};
+use actix_web::{HttpRequest, HttpResponse, get, web::Data};
+use sea_orm::{EntityName, EntityTrait as _, ModelTrait};
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get)
