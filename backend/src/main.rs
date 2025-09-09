@@ -2,6 +2,8 @@ use actix_identity::IdentityMiddleware;
 use actix_session::{SessionMiddleware, storage::RedisSessionStore};
 use actix_web::{App, HttpServer, cookie::Key, web::Data};
 use sea_orm::{Database, DatabaseConnection};
+use tracing::info;
+use tracing_actix_web::TracingLogger;
 use utoipa::OpenApi;
 use utoipa_actix_web::AppExt;
 use utoipa_swagger_ui::SwaggerUi;
@@ -31,22 +33,26 @@ struct ApiDoc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    println!("Loading environment variables from .env");
+    env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
+
+    info!("Loading environment variables from .env");
     let secrets = secrets::Secrets::load().expect("load secrets");
 
-    println!("Connecting to database");
+    info!("Connecting to database");
     let db = Database::connect(secrets.database_url)
         .await
         .expect("Failed to connect to database");
 
-    println!("Connected to database");
+    info!("Connecting to Redis session store");
+    let redis_store = RedisSessionStore::new(secrets.redis_url)
+        .await
+        .expect("Failed to connect to Redis session store");
 
-    println!("Connecting to Redis session store");
-    let redis_store = RedisSessionStore::new(secrets.redis_url).await.unwrap();
-    println!("Connected to Redis session store");
+    info!("Starting server app");
 
     HttpServer::new(move || {
         App::new()
+            .wrap(TracingLogger::default())
             .wrap(IdentityMiddleware::default())
             .wrap(SessionMiddleware::new(
                 redis_store.clone(),

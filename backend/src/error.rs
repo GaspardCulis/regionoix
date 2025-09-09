@@ -27,6 +27,7 @@ impl ResponseError for Error {
     fn status_code(&self) -> actix_web::http::StatusCode {
         match self {
             Error::EntityNotFound { table_name: _ } => StatusCode::NOT_FOUND,
+            Error::BadRequestError(_) => StatusCode::BAD_REQUEST,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

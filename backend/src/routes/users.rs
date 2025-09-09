@@ -1,6 +1,6 @@
 use crate::{
     AppState,
-    entities::{cart, cart_line, prelude::CartLine, product},
+    entities::{cart, cart_line, prelude::CartLine, prelude::Product, product},
 };
 use actix_web::{HttpRequest, HttpResponse, delete, get, patch, post, web};
 use sea_orm::{
@@ -84,6 +84,21 @@ async fn add_product_to_cart(
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let id: i32 = req.match_info().query("id").parse()?;
+    let quantity = form_data.quantity.unwrap_or(1);
+
+    let product = Product::find_by_id(form_data.product_id)
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
+
+    // Check if there is enough stock for quantity desired
+    if product.stock < quantity {
+        return Err(crate::Error::BadRequestError(
+            "Not enough stock for adding product to cart in desired quantity".into(),
+        ));
+    }
 
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
@@ -107,8 +122,6 @@ async fn add_product_to_cart(
             "Product already added to cart, try updating quantity".into(),
         ));
     }
-
-    let quantity = form_data.quantity.unwrap_or(1);
 
     let cart_line = cart_line::ActiveModel {
         cart_id: Set(Some(cart.id)),
@@ -140,6 +153,20 @@ async fn update_quantity_product_cart(
 
     let form_data = form_data.into_inner();
 
+    let product =
+        Product::find_by_id(product_id)
+            .one(db)
+            .await?
+            .ok_or(crate::Error::EntityNotFound {
+                table_name: cart::Entity.table_name(),
+            })?;
+
+    // Check if there is enough stock for quantity desired
+    if product.stock < form_data.quantity {
+        return Err(crate::Error::BadRequestError(
+            "Not enough stock for updating product to cart in desired quantity".into(),
+        ));
+    }
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(id))
         .one(db)
