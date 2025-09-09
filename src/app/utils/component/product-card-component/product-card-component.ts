@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -15,4 +15,10 @@ export class ProductCardComponent {
   @Input() image: string | null = null;
   @Input() price!: number;
   @Input() id!: number;
+
+  @Output() addToBasket = new EventEmitter<number>();
+
+  onAddToBasket() {
+    this.addToBasket.emit(this.id);
+  }
 }

@@ -11,7 +11,7 @@
                 <button class="qty-btn" id="decrease" (click)="decreaseQuantity()">-</button>
                 <span id="quantity">{{ quantity }}</span>
                 <button class="qty-btn" id="increase" (click)="increaseQuantity()">+</button>
-                <button class="add-btn">Ajouter au panier</button>
+                <button class="add-btn" (click)="addItem(product.id)">Ajouter au panier</button>
             </div>
         </div>
     </div>

@@ -6,6 +6,7 @@ import { OnInit } from '@angular/core';
 import { Product } from '../../utils/model/product-model';
 import { ProductService } from '../../utils/services/product-service';
 import { HttpClientModule } from '@angular/common/http';
+import { BasketService } from '../../utils/services/basket-service';
 
 
 @Component({
@@ -17,6 +18,7 @@ import { HttpClientModule } from '@angular/common/http';
 })
 
 export class ShowcasePage implements OnInit {
+  private basketService = inject(BasketService);
   private productService = inject(ProductService);
 
   products: Product[] = [];
@@ -36,6 +38,12 @@ export class ShowcasePage implements OnInit {
     });
   }
 
+  addItem(productId: number) {
+    this.basketService.addItem(productId).subscribe({
+      next: () => console.log('Product add to basket'),
+      error: (err) => console.error(err)
+    });
+  }
 
   get filteredProducts() {
     return this.products.filter(p => {

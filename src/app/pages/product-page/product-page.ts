@@ -3,6 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../utils/model/product-model';
 import { ProductService } from '../../utils/services/product-service';
+import { BasketService } from '../../utils/services/basket-service';
 
 @Component({
   selector: 'app-product-page',
@@ -15,6 +16,7 @@ export class ProductPage implements OnInit {
   product!: Product;
   quantity = 1;
 
+  private basketService = inject(BasketService);
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
 
@@ -31,6 +33,13 @@ export class ProductPage implements OnInit {
         error: (err) => console.error('Erreur lors de la récupération du produit', err)
       });
     }
+  }
+
+  addItem(productId: number) {
+    this.basketService.addItem(productId).subscribe({
+      next: () => console.log('Product add to basket'),
+      error: (err) => console.error(err)
+    });
   }
 
   increaseQuantity() {
