@@ -1,6 +1,7 @@
 {
   config,
   domain,
+  pkgs,
   ...
 }: let
   apiPort = 3900;
@@ -27,6 +28,7 @@ in {
 
   services.garage = {
     enable = true;
+    package = pkgs.garage_2;
     settings = {
       metadata_dir = "/var/lib/garage/meta";
       data_dir = "/var/lib/garage/data";
