@@ -1,5 +1,54 @@
-<div class="product-grid">
-    <app-product-card-component *ngFor="let product of products" [title]="product.title"
-        [description]="product.description" [image]="product.image" [price]="product.price">
-    </app-product-card-component>
+<div class="page-container">
+    <!-- Navbar en haut -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <span class="brand">Produits Régionaux</span>
+        </div>
+        <div class="nav-right">
+            <div class="dropdown">
+                <button class="dropbtn">Catégories</button>
+                <div class="dropdown-content">
+                    <button *ngFor="let c of categories" (click)="selectedCategory = c">{{ c }}</button>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Régions</button>
+                <div class="dropdown-content">
+                    <button *ngFor="let r of regions" (click)="selectedRegion = r">{{ r }}</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar + Produits -->
+    <aside class="filters">
+        <h3>Filtres</h3>
+
+        <label>
+            Prix max :
+            <input type="number" [(ngModel)]="maxPrice" placeholder="Ex: 50" />
+        </label>
+
+        <label>
+            Catégorie :
+            <select [(ngModel)]="selectedCategory">
+                <option value="">Toutes</option>
+                <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+            </select>
+        </label>
+
+        <label>
+            Région :
+            <select [(ngModel)]="selectedRegion">
+                <option value="">Toutes</option>
+                <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
+            </select>
+        </label>
+    </aside>
+
+    <main class="product-grid">
+        <app-product-card-component *ngFor="let product of filteredProducts" [title]="product.title"
+            [description]="product.description" [image]="product.image" [price]="product.price">
+        </app-product-card-component>
+    </main>
 </div>

@@ -1,0 +1,18 @@
+<div class="product" *ngIf="product">
+    <div class="image-wrapper">
+        <img src="{{product.image}}" alt="{{ product.name }}" />
+    </div>
+    <div class="product-details">
+        <h1 class="product-name">{{ product.name }}</h1>
+        <p class="product-price">{{ product.price | number:'1.2-2' }} €</p>
+        <p class="product-description">{{ product.description }}</p>
+        <div class="cart-actions">
+            <div class="quantity-control">
+                <button class="qty-btn" id="decrease" (click)="decreaseQuantity()">-</button>
+                <span id="quantity">{{ quantity }}</span>
+                <button class="qty-btn" id="increase" (click)="increaseQuantity()">+</button>
+                <button class="add-btn">Ajouter au panier</button>
+            </div>
+        </div>
+    </div>
+</div>

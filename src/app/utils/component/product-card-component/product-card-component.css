@@ -1,7 +1,9 @@
 .card {
     width: 100%;
     max-width: 20rem;
+    height: 20rem;
     border-radius: 0.75rem;
+    background-color: var(--color-bg);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 1rem;
     display: flex;
@@ -27,23 +29,27 @@
     width: 100%;
     text-align: center;
     margin-top: 0.75rem;
+    color: var(--color-text);
 }
 
 .card-content h2 {
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+    color: var(--color-text);
 }
 
 .card-content p {
     margin-bottom: 0.5rem;
     text-align: justify;
+    color: var(--color-text-muted);
 }
 
 .card-content .price {
     font-weight: bold;
     font-size: 1.125rem;
     margin-bottom: 0.75rem;
+    color: var(--color-accent-dark);
 }
 
 .card-actions {
@@ -52,8 +58,8 @@
 }
 
 .card-actions .btn {
-    background-color: var(--background-auvergne-rhone-alpes);
-    color: var(--white);
+    background-color: var(--color-primary);
+    color: var(--color-bg);
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-weight: 500;
@@ -63,5 +69,17 @@
 }
 
 .card-actions .btn:hover {
-    background-color: var(--background-auvergne-rhone-alpes);
+    background-color: var(--color-primary-hover);
+}
+
+.btn {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }

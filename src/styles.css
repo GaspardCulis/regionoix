@@ -4,7 +4,42 @@
 
 :root {
     --background-auvergne-rhone-alpes: #0094dd;
-    --white: #fff;
+
+    /* Fonds et surfaces */
+    --color-bg: #fdfaf6;
+    /* beige très clair pour le fond principal */
+    --color-surface: #f5ede4;
+    /* crème douce pour cartes et sections secondaires */
+
+    /* Texte */
+    --color-text: #3c2f2f;
+    /* brun très foncé pour contraste avec le fond */
+    --color-text-muted: #7a6a5e;
+    /* brun doux pour texte secondaire */
+
+    /* Accent & CTA */
+    --color-accent: #d4a373;
+    /* beige chaud, couleur naturelle */
+    --color-accent-dark: #a96f3c;
+    /* brun orangé pour hover ou détails */
+
+    /* Couleurs primaires */
+    --color-primary: #8b5e3c;
+    /* marron moyen pour boutons et liens */
+    --color-primary-hover: #a97451;
+    --color-primary-light: #c49f7d;
+    --color-primary-pale: #e6d5c5;
+
+    /* Couleurs secondaires */
+    --color-secondary: #bfa38a;
+    /* beige moyen, pour éléments secondaires */
+
+    /* FONDS pour logo / icones blanches */
+    --color-logo-bg: #8b5e3c;
+    /* marron profond pour contraste fort avec le blanc */
+    --color-logo-bg-alt: #a96f3c;
+    /* variante pour hover ou sections alternatives */
+    background-color: var(--color-bg);
 }
 
 body {
