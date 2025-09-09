@@ -8,24 +8,25 @@ import { BasketResponse } from '../../models/basket-model';
 })
 export class BasketService {
   private http = inject(HttpClient);
+
   getBasket(): Observable<BasketResponse> {
-    return this.http.get<BasketResponse>('https://www.regionoix.gasdev.fr/api/basket');
+    return this.http.get<BasketResponse>('/api/basket');
   }
 
-  addItem(product_id: number, quantity = 1) {
-    return this.http.post('https://www.regionoix.gasdev.fr/api/basket/items', { product_id, quantity });
+  addItem(product_id: number, quantity: number = 1) {
+    return this.http.post('/api/basket/items', { product_id, quantity });
   }
 
   updateItem(product_id: number, quantity: number) {
-    return this.http.patch(`https://www.regionoix.gasdev.fr/api/basket/items/${product_id}`, { quantity });
+    return this.http.patch(`/api/basket/items/${product_id}`, { quantity });
   }
 
   removeItem(product_id: number) {
-    return this.http.delete(`https://www.regionoix.gasdev.fr/api/basket/items/${product_id}`);
+    return this.http.delete(`/api/basket/items/${product_id}`);
   }
 
   empty() {
-    return this.http.delete('https://www.regionoix.gasdev.fr/api/basket');
+    return this.http.delete('/api/basket');
   }
 
 }
