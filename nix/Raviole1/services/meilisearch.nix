@@ -6,6 +6,12 @@
   port = 7700;
 in {
   sops.secrets."meilisearch/master_key".owner = "meilisearch";
+  sops.templates."meilisearch-masterkey.env" = {
+    content = ''
+      MEILI_MASTER_KEY=${config.sops.placeholder."postgres/password"}
+    '';
+    owner = "meilisearch";
+  };
 
   users.users.meilisearch = {
     name = "meilisearch";
@@ -17,7 +23,8 @@ in {
   services.meilisearch = {
     enable = true;
     listenPort = port;
-    masterKeyFile = config.sops.secrets."meilisearch/master_key".path;
+    environment = "production";
+    masterKeyEnvironmentFile = config.sops.templates."meilisearch-masterkey.env".path;
   };
 
   # User fix
