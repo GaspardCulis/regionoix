@@ -1,8 +1,10 @@
-use crate::prelude::*;
+use std::future::{Ready, ready};
+
+use crate::prelude::{sea_orm_active_enums::Roles, *};
 use actix_identity::Identity;
+use actix_web::{FromRequest, dev::Payload};
 use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
 use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
-use utoipa::ToSchema;
 
 use crate::{AppState, entities::user};
 
@@ -11,7 +13,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct LoginRequest {
+struct LoginRequest {
     pub email: String,
     pub password: String,
 }
@@ -24,9 +26,33 @@ struct JwtClaims {
     exp: usize,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LoggedUser {
+    pub id: i32,
+    pub email: String,
+    pub role: Roles,
+}
+
+impl FromRequest for LoggedUser {
+    type Error = actix_web::Error;
+    type Future = Ready<Result<LoggedUser, actix_web::Error>>;
+
+    fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
+        if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
+            if let Ok(user_json) = identity.id() {
+                if let Ok(user) = serde_json::from_str(&user_json) {
+                    return ready(Ok(user));
+                }
+            }
+        }
+
+        ready(Err(crate::Error::Unauthenticated.into()))
+    }
+}
+
 #[utoipa::path()]
 #[post("/login")]
-pub async fn login(
+async fn login(
     request: HttpRequest,
     login_request: Json<LoginRequest>,
     data: Data<AppState>,
@@ -42,8 +68,13 @@ pub async fn login(
 
     check_password(&login_request, &user)?;
 
-    Identity::login(&request.extensions(), format!("{}", user.id))
-        .map_err(|err| anyhow::Error::new(err))?;
+    let logged_user = LoggedUser {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+    };
+    let user_string = serde_json::to_string(&logged_user).unwrap();
+    Identity::login(&request.extensions(), user_string).map_err(|err| anyhow::Error::new(err))?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -59,12 +90,8 @@ async fn logout(user: Option<Identity>) -> impl Responder {
 
 #[utoipa::path()]
 #[get("/status")]
-async fn status(user: Option<Identity>) -> impl Responder {
-    if let Some(user) = user {
-        format!("authenticated as {}", user.id().unwrap())
-    } else {
-        "unauthenticated".to_owned()
-    }
+async fn status(logged_user: LoggedUser) -> impl Responder {
+    HttpResponse::Ok().json(logged_user)
 }
 
 fn check_password(login_request: &LoginRequest, user: &user::Model) -> crate::Result<()> {

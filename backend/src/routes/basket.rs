@@ -1,35 +1,25 @@
-use crate::{
-    AppState,
-    entities::{cart, cart_line, prelude::CartLine, prelude::Product, product},
-};
-use actix_web::{HttpRequest, HttpResponse, delete, get, patch, post, web};
+use crate::prelude::*;
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityName as _, EntityTrait, ModelTrait,
     QueryFilter,
 };
-use utoipa::ToSchema;
-use utoipa_actix_web::service_config::ServiceConfig;
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get_cart_by_user)
-        .service(add_product_to_cart)
-        .service(update_quantity_product_cart)
-        .service(remove_product_from_cart)
-        .service(empty_cart);
+    cfg.service(get_basket)
+        .service(add_item)
+        .service(update_item_quantity)
+        .service(remove_item)
+        .service(empty);
 }
 
 #[utoipa::path()]
-#[get("/{id}/cart")]
-async fn get_cart_by_user(
-    data: web::Data<AppState>,
-    req: HttpRequest,
-) -> crate::Result<HttpResponse> {
+#[get("")]
+async fn get_basket(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse()?;
 
     // Get cart
     let cart = cart::Entity::find()
-        .filter(cart::Column::UserId.eq(id))
+        .filter(cart::Column::UserId.eq(logged_user.id))
         .one(db)
         .await?
         .ok_or(crate::Error::EntityNotFound {
@@ -70,20 +60,19 @@ async fn get_cart_by_user(
 }
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
-struct FormDataAddProductToCart {
+struct FormAddToBasket {
     product_id: i32,
     quantity: Option<i32>,
 }
 
 #[utoipa::path()]
-#[post("/{id}/cart/products")]
-async fn add_product_to_cart(
-    data: web::Data<AppState>,
-    form_data: web::Json<FormDataAddProductToCart>,
-    req: HttpRequest,
+#[post("/items")]
+async fn add_item(
+    data: Data<AppState>,
+    form_data: Json<FormAddToBasket>,
+    logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse()?;
     let quantity = form_data.quantity.unwrap_or(1);
 
     let product = Product::find_by_id(form_data.product_id)
@@ -101,7 +90,7 @@ async fn add_product_to_cart(
     }
 
     let cart = cart::Entity::find()
-        .filter(cart::Column::UserId.eq(id))
+        .filter(cart::Column::UserId.eq(logged_user.id))
         .one(db)
         .await?
         .ok_or(crate::Error::EntityNotFound {
@@ -136,19 +125,19 @@ async fn add_product_to_cart(
 }
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
-struct FormDataUpdateQuantityProductCart {
+struct FormUpdateQuantityBasket {
     quantity: i32,
 }
 
 #[utoipa::path()]
-#[patch("/{id}/cart/products/{product_id}")]
-async fn update_quantity_product_cart(
-    data: web::Data<AppState>,
-    form_data: web::Json<FormDataUpdateQuantityProductCart>,
+#[patch("/items/{product_id}")]
+async fn update_item_quantity(
+    data: Data<AppState>,
+    form_data: Json<FormUpdateQuantityBasket>,
     req: HttpRequest,
+    logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse()?;
     let product_id: i32 = req.match_info().query("product_id").parse()?;
 
     let form_data = form_data.into_inner();
@@ -168,7 +157,7 @@ async fn update_quantity_product_cart(
         ));
     }
     let cart = cart::Entity::find()
-        .filter(cart::Column::UserId.eq(id))
+        .filter(cart::Column::UserId.eq(logged_user.id))
         .one(db)
         .await?
         .ok_or(crate::Error::EntityNotFound {
@@ -194,17 +183,17 @@ async fn update_quantity_product_cart(
 }
 
 #[utoipa::path()]
-#[delete("/{id}/cart/products/{product_id}")]
-async fn remove_product_from_cart(
-    data: web::Data<AppState>,
+#[delete("/items/{product_id}")]
+async fn remove_item(
+    data: Data<AppState>,
     req: HttpRequest,
+    logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse()?;
     let product_id: i32 = req.match_info().query("product_id").parse()?;
 
     let cart = cart::Entity::find()
-        .filter(cart::Column::UserId.eq(id))
+        .filter(cart::Column::UserId.eq(logged_user.id))
         .one(db)
         .await?
         .ok_or(crate::Error::EntityNotFound {
@@ -225,13 +214,12 @@ async fn remove_product_from_cart(
 }
 
 #[utoipa::path()]
-#[delete("/{id}/cart")]
-async fn empty_cart(data: web::Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
+#[delete("")]
+async fn empty(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id: i32 = req.match_info().query("id").parse()?;
 
     let cart = cart::Entity::find()
-        .filter(cart::Column::UserId.eq(id))
+        .filter(cart::Column::UserId.eq(logged_user.id))
         .one(db)
         .await?
         .ok_or(crate::Error::EntityNotFound {

@@ -2631,6 +2631,7 @@ dependencies = [
  "env_logger",
  "sea-orm",
  "serde",
+ "serde_json",
  "thiserror",
  "tracing",
  "tracing-actix-web",
