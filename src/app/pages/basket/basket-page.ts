@@ -1,62 +1,47 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
-import { Router } from '@angular/router';
+import { BasketService } from '../../utils/services/basket-service';
+import { BasketLine } from '../../models/basket-model';
 
 @Component({
   selector: 'app-basket',
   standalone: true,
-  imports: [CommonModule, ProductListItemComponent],
+  imports: [CommonModule, ProductListItemComponent, RouterModule,],
   templateUrl: './basket-page.html',
-  styleUrl: './basket-page.css'
+  styleUrls: ['./basket-page.css']
 })
-export class BasketPage {
-
-  products = [
-    {
-      title: 'Produit A',
-      quantity: 1,
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 9.99
-    },
-    {
-      title: 'Produit B',
-      quantity: 2,
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 19.99
-    },
-    {
-      title: 'Produit C',
-      quantity: 3,
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 29.99
-    },
-    {
-      title: 'Produit D',
-      quantity: 4,
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 39.99
-    },
-    {
-      title: 'Produit E',
-      quantity: 5,
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 49.99
-    },
-  ]
-
+export class BasketPage implements OnInit {
+  private basketService = inject(BasketService);
   private router = inject(Router);
+
+  lines: BasketLine[] = [];
+
+  ngOnInit(): void {
+    this.loadBasket();
+  }
+
+  loadBasket() {
+    this.basketService.getBasket().subscribe({
+      next: (data) => this.lines = data.lines,
+      error: (err) => console.error('Error during basket recuperation', err)
+    });
+  }
+
+  getTotalPrice(): number {
+    return this.lines.reduce((total, l) => total + l.product.price * l.quantity, 0);
+  }
 
   goToPayment() {
     this.router.navigate(['/payment']);
   }
 
-  getTotalPrice(): number {
-    let total = 0;
-    for (const product of this.products) {
-      total += product.price * product.quantity;
-    }
-    return total;
+  remove(productId: number) {
+    this.basketService.removeItem(productId).subscribe(() => this.loadBasket());
   }
 
+  changeQuantity(productId: number, quantity: number) {
+    this.basketService.updateItem(productId, quantity).subscribe(() => this.loadBasket());
+  }
 }

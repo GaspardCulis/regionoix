@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './product-list-item-component.css'
 })
 export class ProductListItemComponent {
-  @Input() title!: string;
+  @Input() name!: string;
   @Input() image!: string;
   @Input() price!: number;
   @Input() quantity!: number;
