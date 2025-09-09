@@ -1,5 +1,9 @@
-use crate::entities::product;
-use sea_orm::{DerivePartialModel, EntityTrait, Select, SelectModel, Selector};
+use crate::{
+    dtos::{DtoTrait, brand::BrandDto},
+    entities::product,
+    prelude::brand,
+};
+use sea_orm::{DerivePartialModel, Select};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -14,26 +18,11 @@ pub struct ProductDto {
     pub image: Option<String>,
     pub stock: i32,
     #[sea_orm(nested)]
-    brand: Option<Brand>,
+    brand: Option<BrandDto>,
 }
 
-impl ProductDto {
-    pub fn find() -> Selector<SelectModel<ProductDto>> {
-        product::Entity::find()
-            .left_join(crate::entities::brand::Entity)
-            .into_partial_model()
+impl DtoTrait<product::Entity> for ProductDto {
+    fn add_nested_joins(selector: Select<product::Entity>) -> Select<product::Entity> {
+        selector.left_join(brand::Entity)
     }
-
-    pub fn find_by_id(id: i32) -> Selector<SelectModel<ProductDto>> {
-        product::Entity::find_by_id(id)
-            .left_join(crate::entities::brand::Entity)
-            .into_partial_model()
-    }
-}
-
-#[derive(DerivePartialModel, Debug, Clone, Serialize, Deserialize, ToSchema)]
-#[sea_orm(entity = "crate::entities::brand::Entity", from_query_result)]
-struct Brand {
-    id: i32,
-    name: String,
 }

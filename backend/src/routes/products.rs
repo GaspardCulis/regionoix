@@ -1,3 +1,4 @@
+use crate::dtos::IntoDto;
 use crate::dtos::product::ProductDto;
 use crate::prelude::*;
 use crate::{
@@ -21,7 +22,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[get("")]
 pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let products: Vec<ProductDto> = ProductDto::find().all(db).await?;
+    let products: Vec<ProductDto> = Product::find().into_dto().all(db).await?;
 
     Ok(HttpResponse::Ok().json(products))
 }
@@ -30,10 +31,11 @@ pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
 #[get("/{id}")]
 pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let id = req.match_info().query("id").parse()?;
+    let id: i32 = req.match_info().query("id").parse()?;
 
-    let product =
-        ProductDto::find_by_id(id)
+    let product: ProductDto =
+        Product::find_by_id(id)
+            .into_dto()
             .one(db)
             .await?
             .ok_or(crate::Error::EntityNotFound {
