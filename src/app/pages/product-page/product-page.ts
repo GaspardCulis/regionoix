@@ -1,37 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../utils/model/product-model';
+import { ProductService } from '../../utils/services/product-service';
 
 @Component({
   selector: 'app-product-page',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   templateUrl: './product-page.html',
-  styleUrl: './product-page.css'
+  styleUrls: ['./product-page.css']
 })
 export class ProductPage implements OnInit {
   product!: Product;
   quantity = 1;
-  private http = inject(HttpClient);
+
+  private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.http.get<Product>(`/api/products/${id}`)
-      .subscribe({
+    if (id) {
+      this.productService.getProductById(id).subscribe({
         next: (data) => {
           this.product = {
             ...data,
             image: data.image ?? 'https://picsum.photos/400/250?random=1'
           };
         },
-        error: (err) => {
-          console.error('Something went wrong during product recuperation', err);
-        }
+        error: (err) => console.error('Erreur lors de la récupération du produit', err)
       });
+    }
   }
 
   increaseQuantity() {
