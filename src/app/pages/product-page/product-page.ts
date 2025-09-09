@@ -29,7 +29,7 @@ export class ProductPage implements OnInit {
           };
         },
         error: (err) => {
-          console.error('Erreur lors de la récupération du produit', err);
+          console.error('Something went wrong during product recuperation', err);
         }
       });
   }

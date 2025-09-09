@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-product-card-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './product-card-component.html',
   styleUrl: './product-card-component.css'
 })
@@ -15,10 +15,4 @@ export class ProductCardComponent {
   @Input() image: string | null = null;
   @Input() price!: number;
   @Input() id!: number;
-
-  private router = inject(Router);
-
-  goToProduct() {
-    this.router.navigate([`/products/${this.id}`])
-  }
 }

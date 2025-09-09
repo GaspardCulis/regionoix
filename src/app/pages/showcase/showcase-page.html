@@ -47,7 +47,7 @@
     </aside>
 
     <main class="product-grid">
-        <app-product-card-component *ngFor="let product of filteredProducts" [name]="product.name"
+        <app-product-card-component *ngFor="let product of filteredProducts" [id]="product.id" [name]="product.name"
             [description]="product.description" [image]="product.image" [price]="product.price">
         </app-product-card-component>
     </main>

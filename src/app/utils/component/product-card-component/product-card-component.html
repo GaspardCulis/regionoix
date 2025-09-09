@@ -1,10 +1,11 @@
 <div class="card">
     <figure>
-        <button (click)="goToProduct()">
-            <img [src]="image" [alt]="name" /></button>
+        <button class="card-link" [routerLink]="['/products', id]">
+            <img [src]="image" alt="{{ name }}" />
+        </button>
     </figure>
     <div class="card-content">
-        <button (click)="goToProduct()">
+        <button class="card-link" [routerLink]="['/products', id]">
             <h2>{{ name }}</h2>
         </button>
         <p class="price">{{ price | number:'1.2-2' }} €</p>
