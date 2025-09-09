@@ -1,7 +1,8 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserModel } from '../../models/user-model';
+import { UserAuthModel } from '../../models/user-model';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-connection-page',
@@ -13,22 +14,32 @@ export class ConnectionPage {
   email = '';
   password = '';
 
-  @Output() login = new EventEmitter<UserModel>();
-
-  private router = inject(Router);
-
-  //TODO: add constructor with service injection for actual login
-
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  
   onSubmit() {
     if (this.checkCredentials()) {
-      const user: UserModel = { email: this.email, password: this.password };
-      this.login.emit(user);
-      this.router.navigate(['/showcase']);
+      const user: UserAuthModel = { email: this.email, password: this.password };
+      this.authService.login(user.email, user.password).subscribe({
+        next: (response) => {
+          console.log('Login successful:', response);
+          this.router.navigate(['/showcase']);
+        },
+        error: (error) => {
+          console.error('Login failed:', error);
+        }
+      });
+    } else {
+      console.error('Invalid credential format');
     }
   }
 
   checkCredentials(): boolean {
-    //TODO: implement actual credential checking logic with backend
-    return true;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailVerification = emailPattern.test(this.email);
+
+    // Implement later password strength verification
+    const passwordVerification = true;
+    return emailVerification && passwordVerification;
   }
 }

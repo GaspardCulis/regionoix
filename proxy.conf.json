@@ -1,5 +1,5 @@
 {
-    "/api": {
+    "/": {
         "target": "https://www.regionoix.gasdev.fr",
         "secure": false,
         "changeOrigin": true,
