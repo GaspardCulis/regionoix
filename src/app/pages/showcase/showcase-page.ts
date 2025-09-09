@@ -4,19 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { OnInit } from '@angular/core';
+import { Product } from '../../utils/model/product-model';
 
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  weight: number;
-  price: number;
-  image: string | null;
-  stock: number;
-  region_id: number;
-  brand_id: number;
-  category_id: number;
-}
 
 @Component({
   selector: 'app-showcase',
@@ -25,6 +14,7 @@ interface Product {
   templateUrl: './showcase-page.html',
   styleUrl: './showcase-page.css'
 })
+
 export class ShowcasePage implements OnInit {
   private http = inject(HttpClient);
 

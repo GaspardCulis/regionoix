@@ -3,19 +3,7 @@ import { Component, inject } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  weight: number;
-  price: number;
-  image: string | null;
-  stock: number;
-  region_id: number;
-  brand_id: number;
-  category_id: number;
-}
+import { Product } from '../../utils/model/product-model';
 
 @Component({
   selector: 'app-product-page',
@@ -37,7 +25,6 @@ export class ProductPage implements OnInit {
         next: (data) => {
           this.product = {
             ...data,
-            price: Number(data.price),
             image: data.image ?? 'https://picsum.photos/400/250?random=1'
           };
         },
