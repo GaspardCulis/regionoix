@@ -62,6 +62,16 @@
       };
     };
 
+    packages = let
+      supportedSystems = ["x86_64-linux"];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      pkgsFor = nixpkgs.legacyPackages;
+    in
+      forAllSystems (system: {
+        regionoix-backend = pkgsFor.${system}.callPackage ./nix/pkgs/regionoix-backend {};
+        regionoix-frontend = pkgsFor.${system}.callPackage ./nix/pkgs/regionoix-frontend {};
+      });
+
     devShells.${system}.default = let
       rustVersion = "latest";
       rustToolchain = (pkgs.lib.importTOML ./rust-toolchain.toml).toolchain.channel;
