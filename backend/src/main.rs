@@ -11,6 +11,9 @@ mod error;
 mod prelude;
 mod routes;
 mod secrets;
+mod repositories;
+mod services;
+mod dtos;
 
 pub use error::*;
 
