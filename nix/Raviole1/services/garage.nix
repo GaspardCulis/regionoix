@@ -52,11 +52,11 @@ in {
       s3_api = {
         s3_region = "garage";
         api_bind_addr = "[::]:${toString apiPort}";
-        root_domain = "s3.${domain}";
+        root_domain = "${apiDomain}";
       };
       s3_web = {
         bind_addr = "[::]:${toString webPort}";
-        root_domain = ".${domain}";
+        root_domain = "${webDomain}";
         index = "index.html";
       };
     };
