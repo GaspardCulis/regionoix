@@ -17,7 +17,7 @@ in {
   services.meilisearch = {
     enable = true;
     listenPort = port;
-    masterKeyFile = config.sops.secrets."garage/rpc_secret".path;
+    masterKeyFile = config.sops.secrets."meilisearch/master_key".path;
   };
 
   # User fix
