@@ -11,7 +11,7 @@
   apiDomain = "s3.${domain}";
   webDomain = "s3web.${domain}";
 in {
-  sops.secrets."garage/rpc_secret".owner = "root";
+  sops.secrets."garage/rpc_secret".owner = "garage";
 
   services.caddy.virtualHosts."${apiDomain}".extraConfig = ''
     header {
@@ -25,6 +25,13 @@ in {
   services.caddy.virtualHosts."${webDomain}".extraConfig = ''
     reverse_proxy http://127.0.0.1:${toString webPort}
   '';
+
+  users.users.garage = {
+    name = "garage";
+    group = "garage";
+    isSystemUser = true;
+  };
+  users.groups.garage.name = "garage";
 
   services.garage = {
     enable = true;
@@ -53,5 +60,12 @@ in {
         index = "index.html";
       };
     };
+  };
+
+  # User fix
+  systemd.services.garage.serviceConfig = {
+    User = "garage";
+    Group = "garage";
+    DynamicUser = pkgs.lib.mkForce false;
   };
 }
