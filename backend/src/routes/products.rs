@@ -13,12 +13,21 @@ use actix_web::{HttpRequest, HttpResponse, get, web::Data};
 use sea_orm::{EntityName, EntityTrait as _, ModelTrait};
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get)
-        .service(get_by_id)
-        .service(get_by_id_expand);
+    cfg.service(get).service(get_by_id);
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary = "Returns product list",
+    tag="Products", 
+    responses(
+        (
+            status = 200, 
+            description="Product list successfully returned",  
+            content_type = "application/json", 
+            body=product::Model, 
+            example = json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region_id": 1, "brand_id" : 5, "category_id": null }])
+        )
+))]
 #[get("")]
 pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -27,7 +36,18 @@ pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     Ok(HttpResponse::Ok().json(products))
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary = "Returns single product", 
+    tag="Products", 
+    params (("id" = i32, Path, description = "Product id")),
+    responses(
+        (
+            status = 200, 
+            description="Product successfully returned",  
+            content_type = "application/json", 
+            body=ProductDto,  
+            example = json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region": {"id":1, "name": "Auvergne", "description": null}, "brand" : {"id": 3, "name": "Jaaj Coorp", "description": null}, "category": {"id": 7, "name": "Confiture", "category_parent": 6} }])
+        )))]
 #[get("/{id}")]
 pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -43,45 +63,4 @@ pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<
             })?;
 
     Ok(HttpResponse::Ok().json(product))
-}
-
-#[utoipa::path()]
-#[get("/{id}/expand")]
-pub async fn get_by_id_expand(
-    data: Data<AppState>,
-    req: HttpRequest,
-) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-    let id: u8 = req.match_info().query("id").parse()?;
-
-    let product = Product::find_by_id(id)
-        .one(db)
-        .await?
-        .ok_or(crate::Error::EntityNotFound {
-            table_name: product::Entity.table_name(),
-        })?;
-
-    let region = product.find_related(Region).one(db).await?;
-    let brand = product.find_related(Brand).one(db).await?;
-    let category = product.find_related(Category).one(db).await?;
-    let tags = product.find_related(Tag).all(db).await?;
-
-    #[derive(serde::Serialize)]
-    struct ProductExpanded {
-        product: product::Model,
-        region: Option<region::Model>,
-        brand: Option<brand::Model>,
-        category: Option<category::Model>,
-        tags: Vec<tag::Model>,
-    }
-
-    let response = ProductExpanded {
-        product,
-        region,
-        brand,
-        category,
-        tags,
-    };
-
-    Ok(HttpResponse::Ok().json(response))
 }
