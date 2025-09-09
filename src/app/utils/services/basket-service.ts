@@ -13,7 +13,7 @@ export class BasketService {
     return this.http.get<BasketResponse>('/api/basket');
   }
 
-  addItem(product_id: number, quantity: number = 1) {
+  addItem(product_id: number, quantity = 1) {
     return this.http.post('/api/basket/items', { product_id, quantity });
   }
 
