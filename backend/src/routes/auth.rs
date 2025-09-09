@@ -1,13 +1,15 @@
 use crate::prelude::*;
 use actix_identity::Identity;
-use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
-use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
 use utoipa::ToSchema;
+use actix_web::{web, HttpResponse};
 
-use crate::{AppState, entities::user};
+use crate::{dtos::user_dto::UserDto, services::auth_service::AuthService, Error};
 
-pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(login).service(logout).service(status);
+pub fn config(cfg: &mut web::ServiceConfig, auth_service: web::Data<AuthService>) {
+    cfg.app_data(auth_service.clone())
+        .service(login)
+        .service(logout)
+        .service(status);
 }
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
@@ -16,62 +18,40 @@ pub struct LoginRequest {
     pub password: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct JwtClaims {
-    /// User id
-    sub: i32,
-    /// Expiration time
-    exp: usize,
-}
-
 #[utoipa::path()]
 #[post("/login")]
 pub async fn login(
-    request: HttpRequest,
-    login_request: Json<LoginRequest>,
-    data: Data<AppState>,
-) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-    let user = user::Entity::find()
-        .filter(user::Column::Email.eq(&login_request.email))
-        .one(db)
-        .await?
-        .ok_or(crate::Error::EntityNotFound {
-            table_name: user::Entity.table_name(),
-        })?;
+    id: Identity,
+    auth_service: web::Data<AuthService>,
+    login_request: web::Json<LoginRequest>,
+) -> Result<HttpResponse, Error> {
+    // Authenticate via service
+    let user: UserDto = auth_service
+        .authenticate(&login_request.email, &login_request.password)
+        .await?;
 
-    check_password(&login_request, &user)?;
+    // Log in with Identity
+    id.login(format!("{}", user.id))
+        .map_err(|err| Error::InternalError(anyhow::Error::msg(err)))?;
 
-    Identity::login(&request.extensions(), format!("{}", user.id))
-        .map_err(|err| anyhow::Error::new(err))?;
-
-    Ok(HttpResponse::Ok().finish())
+    Ok(HttpResponse::Ok().json(user))
 }
 
 #[utoipa::path()]
 #[post("/logout")]
-async fn logout(user: Option<Identity>) -> impl Responder {
-    if let Some(user) = user {
+pub async fn logout(id: Option<Identity>) -> HttpResponse {
+    if let Some(user) = id {
         user.logout();
     }
-    HttpResponse::Ok()
+    HttpResponse::Ok().finish()
 }
 
 #[utoipa::path()]
 #[get("/status")]
-async fn status(user: Option<Identity>) -> impl Responder {
-    if let Some(user) = user {
-        format!("authenticated as {}", user.id().unwrap())
+pub async fn status(id: Option<Identity>) -> HttpResponse {
+    if let Some(user) = id {
+        HttpResponse::Ok().body(format!("authenticated as {}", user.id().unwrap()))
     } else {
-        "unauthenticated".to_owned()
+        HttpResponse::Ok().body("unauthenticated")
     }
-}
-
-fn check_password(login_request: &LoginRequest, user: &user::Model) -> crate::Result<()> {
-    let parsed_hash = PasswordHash::new(&user.password)
-        .map_err(|err| crate::Error::InternalError(anyhow::Error::msg(err)))?;
-
-    Argon2::default()
-        .verify_password(login_request.password.as_bytes(), &parsed_hash)
-        .map_err(|_| crate::Error::AuthenticationFailure)
 }

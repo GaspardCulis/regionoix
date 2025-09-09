@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use rust_decimal::Decimal;
 
 use crate::entities::product::Model as ProductModel;
 use crate::entities::region::Model as RegionModel;
@@ -13,7 +12,7 @@ pub struct ProductDto {
     pub name: String,
     pub description: Option<String>,
     pub weight: Option<f64>,
-    pub price: Option<Decimal>,
+    pub price: f32,
     pub image: Option<String>,
     pub stock: i32,
     pub region: Option<String>,
