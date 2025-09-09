@@ -1,9 +1,13 @@
+use sea_orm::DerivePartialModel;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use crate::dtos::DtoTrait;
 use crate::dtos::{brand::BrandDto, category::CategoryDto, region::RegionDto, tag::TagDto};
+use crate::prelude::*;
 
-#[derive(Serialize, Deserialize, ToSchema, Debug)]
+#[derive(DerivePartialModel, Serialize, Deserialize, ToSchema, Debug)]
+#[sea_orm(entity = "product::Entity", from_query_result)]
 pub struct ProductDto {
     pub id: i32,
     pub name: String,
@@ -12,8 +16,23 @@ pub struct ProductDto {
     pub price: f32,
     pub image: Option<String>,
     pub stock: i32,
+    #[sea_orm(nested)]
     pub brand: Option<BrandDto>,
+    #[sea_orm(nested)]
     pub region: Option<RegionDto>,
+    #[sea_orm(nested)]
     pub category: Option<CategoryDto>,
+    #[sea_orm(skip)]
     pub tags: Vec<TagDto>,
+}
+
+impl DtoTrait<product::Entity> for ProductDto {
+    fn add_nested_joins(
+        selector: sea_orm::Select<product::Entity>,
+    ) -> sea_orm::Select<product::Entity> {
+        selector
+            .left_join(brand::Entity)
+            .left_join(region::Entity)
+            .left_join(category::Entity)
+    }
 }
