@@ -2,9 +2,10 @@ import { Component, inject } from '@angular/core';
 import { ProductCardComponent } from '../../utils/component/product-card-component/product-card-component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { OnInit } from '@angular/core';
 import { Product } from '../../utils/model/product-model';
+import { ProductService } from '../../utils/services/product-service';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { Product } from '../../utils/model/product-model';
 })
 
 export class ShowcasePage implements OnInit {
-  private http = inject(HttpClient);
+  private productService = inject(ProductService);
 
   products: Product[] = [];
   categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
@@ -27,16 +28,12 @@ export class ShowcasePage implements OnInit {
   maxPrice: number | null = null;
 
   ngOnInit(): void {
-    this.http.get<Product[]>('/api/products')
-      .subscribe({
-        next: (data) => {
-          this.products = data;
-          console.log('Produits récupérés depuis l’API :', this.products);
-        },
-        error: (err) => {
-          console.error('Somethings went wrong during products recuperation', err);
-        }
-      });
+    this.productService.getProducts().subscribe({
+      next: (data) => this.products = data,
+      error: (err) => {
+        console.error('Somethings went wrong during products recuperation', err);
+      }
+    });
   }
 
 
