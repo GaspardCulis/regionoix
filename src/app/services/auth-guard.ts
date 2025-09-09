@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthService } from './auth-service';
 import { Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
       map(() => {
         return true;
       }),
-      catchError((err) => {
+      catchError(() => {
         return of(this.router.createUrlTree(['/showcase']));
       })
     );

@@ -36,10 +36,10 @@ export class ConnectionPage {
 
   checkCredentials(): boolean {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let emailVerification = emailPattern.test(this.email);
+    const emailVerification = emailPattern.test(this.email);
 
     // Implement later password strength verification
-    let passwordVerification = true;
+    const passwordVerification = true;
     return emailVerification && passwordVerification;
   }
 }
