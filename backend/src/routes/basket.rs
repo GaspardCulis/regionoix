@@ -1,4 +1,4 @@
-use crate::prelude::{sea_orm_active_enums::OrderStatus, *};
+use crate::{dtos::{cart::CartDto, cart_line::CartLineDto}, prelude::{sea_orm_active_enums::OrderStatus, *}};
 use actix_web::web;
 use chrono::{Duration, Utc};
 use sea_orm::{
@@ -17,7 +17,15 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(make_order);
 }
 
-#[utoipa::path()]
+#[utoipa::path(summary = "Returns basket details of current user",
+tag="Basket", 
+responses(
+    (
+        status = 200, 
+        description="Basket details successfully returned",  
+        content_type = "application/json", 
+        body=CartDto
+        )))]
 #[get("")]
 async fn get_basket(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -70,7 +78,18 @@ struct FormAddToBasket {
     quantity: Option<i32>,
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary = "Add product to basket of current user",
+    tag="Basket", 
+    request_body(content= FormAddToBasket, content_type= "Application/Json"),
+    responses(
+    (
+        status = 200, 
+        description="Product successfully added to basket",  
+        content_type = "application/json", 
+        body=CartLineDto
+    )
+    ))]
 #[post("/items")]
 async fn add_item(
     data: Data<AppState>,
@@ -134,7 +153,20 @@ struct FormUpdateQuantityBasket {
     quantity: i32,
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary = "Update quantity of product in current user's basket",
+    tag="Basket", 
+    request_body(content_type = "Application/Json", 
+    content = FormUpdateQuantityBasket),
+    params (("product_id" = i32, Path, description = "Product id")),
+    responses(
+        (
+            status = 200, 
+            description="Basket details successfully returned",  
+            content_type = "application/json", 
+            body=CartLineDto
+        )
+))]
 #[patch("/items/{product_id}")]
 async fn update_item_quantity(
     data: Data<AppState>,
@@ -187,7 +219,17 @@ async fn update_item_quantity(
     Ok(HttpResponse::Ok().json(res))
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary = "Remove product from current user's basket",
+    params (("product_id" = i32, Path, description = "Product id")),
+    tag="Basket", 
+    responses(
+        (
+            status = 200, 
+            description="Product successfully removed from basket",  
+        )
+    )
+)]
 #[delete("/items/{product_id}")]
 async fn remove_item(
     data: Data<AppState>,
@@ -218,7 +260,16 @@ async fn remove_item(
     Ok(HttpResponse::Ok().body("Product successfully removed from cart"))
 }
 
-#[utoipa::path()]
+#[utoipa::path(    
+    summary = "Empty current user's basket",
+    tag="Basket", 
+    responses(
+        (
+            status = 200, 
+            description="Basket successfully emptied",  
+        )
+    )
+)]
 #[delete("")]
 async fn empty(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -248,7 +299,18 @@ struct FormDataMakeOrder {
     street: String,
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary = "Make order from current user's basket",
+    tag="Basket", 
+    request_body(content_type = "Application/Json", 
+    content = FormDataMakeOrder),
+    responses(
+        (
+            status = 200, 
+            description="Order successfully created",  
+        )
+)
+)]
 #[post("/order")]
 async fn make_order(
     data: web::Data<AppState>,

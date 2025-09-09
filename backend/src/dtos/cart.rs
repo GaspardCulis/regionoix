@@ -7,5 +7,5 @@ use utoipa::ToSchema;
 pub struct CartDto {
     pub id: i32,
     pub user_id: i32,
-    pub cart_lines: Vec<CartLineDto>,
+    pub lines: Vec<CartLineDto>,
 }
