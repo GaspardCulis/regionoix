@@ -4,12 +4,14 @@ import { BasketPage } from './pages/basket/basket-page';
 import { PaymentPage } from './pages/payment/payment-page';
 import { ConnectionPage } from './pages/connection-page/connection-page';
 import { ProductPage } from './pages/product-page/product-page';
+import { NoAuthGuard } from './services/no-auth-guard';
+import { AuthGuard } from './services/auth-guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'showcase', pathMatch: 'full' },
     { path: 'showcase', component: ShowcasePage },
-    { path: 'basket', component: BasketPage },
-    { path: 'payment', component: PaymentPage },
-    { path: 'connection', component: ConnectionPage },
+    { path: 'basket', component: BasketPage, canActivate: [AuthGuard] },
+    { path: 'payment', component: PaymentPage, canActivate: [AuthGuard] },
+    { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
     { path: 'products/:id', component: ProductPage }
 ];
