@@ -2,8 +2,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct BrandDto {
+pub struct TagDto {
     id: i32,
     name: String,
-    description: Option<String>,
 }

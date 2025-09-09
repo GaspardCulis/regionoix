@@ -2,8 +2,8 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
-pub struct BrandDto {
+pub struct CategoryDto {
     id: i32,
     name: String,
-    description: Option<String>,
+    category_parent: Option<i32>,
 }
