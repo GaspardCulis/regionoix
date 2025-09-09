@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
   styleUrl: './product-card-component.css'
 })
 export class ProductCardComponent {
-  @Input() title!: string;
+  @Input() name!: string;
   @Input() description!: string;
-  @Input() image!: string;
+  @Input() image: string | null = null;
   @Input() price!: number;
   @Input() id!: number;
 

@@ -1,100 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProductCardComponent } from '../../utils/component/product-card-component/product-card-component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { OnInit } from '@angular/core';
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+  price: number;
+  image: string | null;
+  stock: number;
+  region_id: number;
+  brand_id: number;
+  category_id: number;
+}
 
 @Component({
   selector: 'app-showcase',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, FormsModule],
+  imports: [CommonModule, ProductCardComponent, FormsModule, HttpClientModule],
   templateUrl: './showcase-page.html',
   styleUrl: './showcase-page.css'
 })
-export class ShowcasePage {
+export class ShowcasePage implements OnInit {
+  private http = inject(HttpClient);
 
-  products = [
-    {
-      title: 'Produit A',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 9.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit B',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 19.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit C',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 29.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit D',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 39.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit E',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 49.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit A',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 9.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit B',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 19.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit C',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 29.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit D',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 39.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit E',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 49.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-  ]
-
+  products: Product[] = [];
   categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
   regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace'];
 
@@ -102,11 +36,25 @@ export class ShowcasePage {
   selectedRegion = '';
   maxPrice: number | null = null;
 
+  ngOnInit(): void {
+    this.http.get<Product[]>('/api/products')
+      .subscribe({
+        next: (data) => {
+          this.products = data;
+          console.log('Produits récupérés depuis l’API :', this.products);
+        },
+        error: (err) => {
+          console.error('Somethings went wrong during products recuperation', err);
+        }
+      });
+  }
+
+
   get filteredProducts() {
     return this.products.filter(p => {
       return (
-        (!this.selectedCategory || p.category === this.selectedCategory) &&
-        (!this.selectedRegion || p.region === this.selectedRegion) &&
+        (!this.selectedCategory || p.category_id === +this.selectedCategory) &&
+        (!this.selectedRegion || p.region_id === +this.selectedRegion) &&
         (!this.maxPrice || p.price <= this.maxPrice)
       );
     });
