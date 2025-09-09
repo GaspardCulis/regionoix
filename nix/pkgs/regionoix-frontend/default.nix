@@ -3,7 +3,7 @@ pkgs.buildNpmPackage {
   pname = "regionoix-frontend";
   version = "0.1.0";
 
-  src = ../..;
+  src = ../../..;
 
   npmDepsHash = "sha256-v/M93gyHmFhUHa3oXHOJa3eRpI4TCSFfeENWGkix8L8=";
   npmBuildScript = "build";
