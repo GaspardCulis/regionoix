@@ -30,7 +30,9 @@ export class ProductPage implements OnInit {
             image: data.image ?? 'https://picsum.photos/400/250?random=1'
           };
         },
-        error: (err) => console.error('Erreur lors de la récupération du produit', err)
+        error: (err) => {
+          console.error('Something went wrong during product recuperation', err);
+        }
       });
     }
   }
