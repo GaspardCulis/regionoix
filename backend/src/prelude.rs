@@ -1,4 +1,6 @@
 #[allow(unused_imports)]
+pub use crate::dtos::{IntoDto as _, PartialDto as _};
+#[allow(unused_imports)]
 pub use crate::{
     AppState,
     entities::{prelude::*, *},
