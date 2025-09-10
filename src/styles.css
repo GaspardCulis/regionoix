@@ -40,6 +40,11 @@
     --color-logo-bg-alt: #a96f3c;
     /* variante pour hover ou sections alternatives */
     background-color: var(--color-bg);
+
+    /*Couleurs snackbar*/
+    --snackbar-success: darkGreen;
+    --snackbar-error: darkRed;
+    --snackbar-info: darkBlue;
 }
 
 body {

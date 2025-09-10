@@ -1,0 +1,54 @@
+.snackbar-container {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 28rem;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  color: white;
+  font-size: 1rem;
+  animation: slide-in 0.3s ease-out;
+  z-index: 1000;
+}
+
+.snackbar-message {
+  flex: 1;
+}
+
+.snackbar-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: white;
+}
+
+.success {
+  background-color: var(--snackbar-success);
+}
+
+.error {
+  background-color: var(--snackbar-error);
+}
+
+.info {
+  background-color: var(--snackbar-info);
+}
+
+/* Slide-in animation */
+@keyframes slide-in {
+  0% {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
