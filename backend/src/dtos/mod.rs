@@ -1,4 +1,7 @@
-use sea_orm::{EntityTrait, FromQueryResult, PartialModelTrait, Select, SelectModel, Selector};
+use sea_orm::{
+    DatabaseConnection, EntityTrait, FromQueryResult, PartialModelTrait, Select, SelectModel,
+    Selector,
+};
 
 pub mod brand;
 pub mod cart;
@@ -10,6 +13,10 @@ pub mod tag;
 
 pub trait DtoTrait<E: EntityTrait>: FromQueryResult + PartialModelTrait {
     fn add_nested_joins(selector: Select<E>) -> Select<E>;
+}
+
+pub trait PartialDto: FromQueryResult + PartialModelTrait {
+    async fn finalize(self, db: &DatabaseConnection) -> crate::Result<Self>;
 }
 
 pub trait IntoDto<E: EntityTrait> {

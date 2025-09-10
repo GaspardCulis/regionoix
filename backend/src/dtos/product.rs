@@ -1,8 +1,8 @@
-use sea_orm::DerivePartialModel;
+use sea_orm::{DerivePartialModel, EntityTrait, ModelTrait, Related};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::dtos::DtoTrait;
+use crate::dtos::{DtoTrait, PartialDto};
 use crate::dtos::{brand::BrandDto, category::CategoryDto, region::RegionDto, tag::TagDto};
 use crate::prelude::*;
 
@@ -34,5 +34,24 @@ impl DtoTrait<product::Entity> for ProductDto {
             .left_join(brand::Entity)
             .left_join(region::Entity)
             .left_join(category::Entity)
+    }
+}
+
+impl PartialDto for ProductDto {
+    async fn finalize(mut self, db: &sea_orm::DatabaseConnection) -> crate::Result<Self> {
+        let product = product::Entity::find_by_id(self.id)
+            .one(db)
+            .await?
+            .expect("should exist");
+
+        let tags = product
+            .find_related(tag::Entity)
+            .into_partial_model()
+            .all(db)
+            .await?;
+
+        self.tags = tags;
+
+        Ok(self)
     }
 }

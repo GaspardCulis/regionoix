@@ -1,4 +1,3 @@
-use crate::dtos::IntoDto;
 use crate::dtos::product::ProductDto;
 use crate::prelude::*;
 use crate::{
@@ -33,14 +32,15 @@ pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<
     let db = &data.db;
     let id: i32 = req.match_info().query("id").parse()?;
 
-    let product: ProductDto =
-        Product::find_by_id(id)
-            .into_dto()
-            .one(db)
-            .await?
-            .ok_or(crate::Error::EntityNotFound {
-                table_name: product::Entity.table_name(),
-            })?;
+    let product = Product::find_by_id(id)
+        .into_dto::<ProductDto>()
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: product::Entity.table_name(),
+        })?
+        .finalize(db)
+        .await?;
 
     Ok(HttpResponse::Ok().json(product))
 }
