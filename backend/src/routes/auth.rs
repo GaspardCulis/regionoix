@@ -92,12 +92,12 @@ async fn login(
     Ok(HttpResponse::Ok().finish())
 }
 
-#[utoipa::path( 
+#[utoipa::path(
     summary = "Logs user out",
     tag="Authentification", 
     responses(
         (
-            status = 200, 
+            status = 200,
             description="Logged out successfully",  
         ),
 ))]
@@ -114,7 +114,7 @@ async fn logout(user: Option<Identity>) -> impl Responder {
     tag="Authentification", 
     responses(
         (
-            status = 200, 
+            status = 200,
             content_type = "Application/Json",
             body = LoggedUser
         ),

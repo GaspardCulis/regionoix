@@ -1,4 +1,7 @@
-use crate::{dtos::{cart::CartDto, cart_line::CartLineDto}, prelude::{sea_orm_active_enums::OrderStatus, *}};
+use crate::{
+    dtos::{cart::CartDto, cart_line::CartLineDto},
+    prelude::{sea_orm_active_enums::OrderStatus, *},
+};
 use actix_web::web;
 use chrono::{Duration, Utc};
 use sea_orm::{
@@ -21,7 +24,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 tag="Basket", 
 responses(
     (
-        status = 200, 
+        status = 200,
         description="Basket details successfully returned",  
         content_type = "application/json", 
         body=CartDto
@@ -84,12 +87,12 @@ struct FormAddToBasket {
     request_body(content= FormAddToBasket, content_type= "Application/Json"),
     responses(
     (
-        status = 200, 
+        status = 200,
         description="Product successfully added to basket",  
         content_type = "application/json", 
         body=CartLineDto
     )
-    ))]
+))]
 #[post("/items")]
 async fn add_item(
     data: Data<AppState>,
@@ -161,7 +164,7 @@ struct FormUpdateQuantityBasket {
     params (("product_id" = i32, Path, description = "Product id")),
     responses(
         (
-            status = 200, 
+            status = 200,
             description="Basket details successfully returned",  
             content_type = "application/json", 
             body=CartLineDto
