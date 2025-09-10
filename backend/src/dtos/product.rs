@@ -23,7 +23,8 @@ pub struct ProductDto {
     #[sea_orm(nested)]
     pub category: Option<CategoryDto>,
     #[sea_orm(skip)]
-    pub tags: Vec<TagDto>,
+    /// Won't be fectched unless `finalize` is called.
+    pub tags: Option<Vec<TagDto>>,
 }
 
 impl DtoTrait<product::Entity> for ProductDto {
@@ -50,7 +51,7 @@ impl PartialDto for ProductDto {
             .all(db)
             .await?;
 
-        self.tags = tags;
+        self.tags = Some(tags);
 
         Ok(self)
     }
