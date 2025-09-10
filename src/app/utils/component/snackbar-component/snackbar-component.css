@@ -1,18 +1,18 @@
 .snackbar-container {
   position: fixed;
-  bottom: 1.5rem;           /* a bit higher from bottom */
-  left: 50%;                /* center horizontally */
-  transform: translateX(-50%); /* center it perfectly */
-  max-width: 28rem;          /* a bit wider */
-  width: 90%;                /* responsive width */
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 28rem;
+  width: 90%;
   display: flex;
   align-items: center;
-  gap: 0.75rem;             /* slightly bigger gap */
-  padding: 1.25rem;         /* bigger padding */
-  border-radius: 0.75rem;    /* slightly more rounded */
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
   color: white;
-  font-size: 1rem;           /* slightly larger text */
+  font-size: 1rem;
   animation: slide-in 0.3s ease-out;
   z-index: 1000;
 }
@@ -25,11 +25,10 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 1rem;           /* bigger close button */
+  font-size: 1rem;
   color: white;
 }
 
-/* DaisyUI colors */
 .success {
   background-color: var(--snackbar-success);
 }
