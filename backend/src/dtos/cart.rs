@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use crate::dtos::cart_line::CartLineDto;
-use crate::dtos::{DtoTrait, PartialDto};
+use crate::dtos::{DtoTrait, IntoDto, PartialDto};
 use crate::entities::{cart, cart_line};
 
 #[derive(DerivePartialModel, Serialize, Deserialize, ToSchema, Debug)]
@@ -27,7 +27,7 @@ impl PartialDto for CartDto {
 
         let cart_lines = cart
             .find_related(cart_line::Entity)
-            .into_partial_model()
+            .into_dto::<CartLineDto>()
             .all(db)
             .await?;
 

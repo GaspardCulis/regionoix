@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-pub use crate::dtos::{IntoDto as _, PartialDto as _};
+pub use crate::dtos::{DtoTrait, IntoDto as _, PartialDto};
 #[allow(unused_imports)]
 pub use crate::{
     AppState,
