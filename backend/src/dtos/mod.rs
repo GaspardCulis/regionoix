@@ -18,7 +18,10 @@ pub trait DtoTrait: FromQueryResult + PartialModelTrait {
 }
 
 pub trait PartialDto: FromQueryResult + PartialModelTrait {
-    async fn finalize(self, db: &DatabaseConnection) -> Result<Self, DbErr>;
+    fn finalize(
+        self,
+        db: &DatabaseConnection,
+    ) -> impl std::future::Future<Output = Result<Self, DbErr>> + Send;
 }
 
 pub trait IntoDto<E: EntityTrait> {
