@@ -52,16 +52,16 @@ impl FromRequest for LoggedUser {
 
 #[utoipa::path(
     summary = "Logs user",
-    tag="Authentification", 
+    tag="Authentification",
     request_body(content_type = "application/json", content= LoginRequest),
     responses(
         (
-            status = 200, 
-            description="Logged in successfully",  
+            status = 200,
+            description="Logged in successfully",
         ),
         (
-            status = 404, 
-            description="Email not found",  
+            status = 404,
+            description="Email not found",
         )
 ))]
 #[post("/login")]

@@ -222,11 +222,11 @@ async fn update_item_quantity(
 #[utoipa::path(
     summary = "Remove product from current user's basket",
     params (("product_id" = i32, Path, description = "Product id")),
-    tag="Basket", 
+    tag="Basket",
     responses(
         (
-            status = 200, 
-            description="Product successfully removed from basket",  
+            status = 200,
+            description="Product successfully removed from basket",
         )
     )
 )]
@@ -260,13 +260,13 @@ async fn remove_item(
     Ok(HttpResponse::Ok().body("Product successfully removed from cart"))
 }
 
-#[utoipa::path(    
+#[utoipa::path(
     summary = "Empty current user's basket",
-    tag="Basket", 
+    tag="Basket",
     responses(
         (
-            status = 200, 
-            description="Basket successfully emptied",  
+            status = 200,
+            description="Basket successfully emptied",
         )
     )
 )]
@@ -301,13 +301,13 @@ struct FormDataMakeOrder {
 
 #[utoipa::path(
     summary = "Make order from current user's basket",
-    tag="Basket", 
-    request_body(content_type = "Application/Json", 
+    tag="Basket",
+    request_body(content_type = "Application/Json",
     content = FormDataMakeOrder),
     responses(
         (
-            status = 200, 
-            description="Order successfully created",  
+            status = 200,
+            description="Order successfully created",
         )
 )
 )]
