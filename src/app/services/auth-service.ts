@@ -7,7 +7,7 @@ import { UserStatusModel } from '../models/user-status-model';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly endpoint = 'https://www.regionoix.gasdev.frapi/auth/';
+  private readonly endpoint = 'api/auth/';
 
   private readonly httpClient = inject(HttpClient);
 
