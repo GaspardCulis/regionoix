@@ -1,4 +1,4 @@
-use sea_orm::{DerivePartialModel, EntityTrait, ModelTrait, Related};
+use sea_orm::{DerivePartialModel, EntityTrait, ModelTrait};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
