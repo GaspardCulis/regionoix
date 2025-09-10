@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { UserAuthModel } from '../../models/user-model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
+import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-connection-page',
@@ -16,21 +17,24 @@ export class ConnectionPage {
 
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly snackBar = inject(SnackbarService);
   
   onSubmit() {
     if (this.checkCredentials()) {
       const user: UserAuthModel = { email: this.email, password: this.password };
       this.authService.login(user.email, user.password).subscribe({
-        next: (response) => {
-          console.log('Login successful:', response);
+        next: () => {
+          this.snackBar.show(`Connexion réussie. Bienvenue, ${user.email} !`, 'success');
+
           this.router.navigate(['/showcase']);
         },
-        error: (error) => {
-          console.error('Login failed:', error);
-        }
+        error: () => {
+          this.snackBar.show('Échec de la connexion. Veuillez vérifier vos identifiants et réessayer.', 'error');
+        },
       });
     } else {
-      console.error('Invalid credential format');
+
+      this.snackBar.show('L’adresse e-mail saisie est invalide.', 'error');
     }
   }
 
