@@ -8,6 +8,7 @@ use utoipa::OpenApi;
 use utoipa_actix_web::AppExt;
 use utoipa_swagger_ui::SwaggerUi;
 
+mod dtos;
 pub mod entities;
 mod error;
 mod prelude;
