@@ -45,11 +45,7 @@ impl PartialDto for ProductDto {
             .await?
             .expect("should exist");
 
-        let tags = product
-            .find_related(tag::Entity)
-            .into_partial_model()
-            .all(db)
-            .await?;
+        let tags = product.find_related(tag::Entity).into_dto().all(db).await?;
 
         self.tags = Some(tags);
 
