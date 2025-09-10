@@ -7,8 +7,8 @@ use chrono::{Duration, Utc};
 use sea_orm::{
     ActiveModelTrait,
     ActiveValue::{NotSet, Set},
-    ColumnTrait, EntityName as _, EntityTrait, ModelTrait, QueryFilter, QueryOrder, QuerySelect,
-    TransactionTrait,
+    ColumnTrait, EntityName as _, EntityTrait, ModelTrait, PaginatorTrait as _, QueryFilter,
+    QueryOrder, QuerySelect, TransactionTrait,
 };
 
 pub fn config(cfg: &mut ServiceConfig) {
@@ -432,14 +432,12 @@ async fn get_count(data: Data<AppState>, logged_user: LoggedUser) -> crate::Resu
             table_name: cart::Entity.table_name(),
         })?;
 
-    // Get all cart lines with at least quantity of 1
-    let cart_lines = CartLine::find()
+    // Get count of all cart lines with at least quantity of 1
+    let count = CartLine::find()
         .filter(cart_line::Column::CartId.eq(cart.id))
         .filter(cart_line::Column::Quantity.gte(1))
-        .all(db)
-        .await?;
-
-    let count = cart_lines.len() as i32;
+        .count(db)
+        .await? as i32;
 
     Ok(HttpResponse::Ok().json(CountBasket { count }))
 }
