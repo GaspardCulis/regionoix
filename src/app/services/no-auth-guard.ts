@@ -14,7 +14,7 @@ export class NoAuthGuard implements CanActivate {
   canActivate(): Observable<boolean | UrlTree> {
     return this.authService.status().pipe(
       map(() => {
-        return this.router.createUrlTree(['/connection']);
+        return this.router.createUrlTree(['/profile']);
       }),
       catchError(() => {
         return of(true);
