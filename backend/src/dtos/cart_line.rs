@@ -1,4 +1,4 @@
-use sea_orm::{DerivePartialModel, JoinType, QuerySelect, RelationTrait as _};
+use sea_orm::{DerivePartialModel, EntityTrait, JoinType, QuerySelect, RelationTrait as _};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -14,15 +14,10 @@ pub struct CartLineDto {
     pub quantity: i32,
 }
 
-impl DtoTrait<cart_line::Entity> for CartLineDto {
-    fn add_nested_joins(
-        selector: sea_orm::Select<cart_line::Entity>,
-    ) -> sea_orm::Select<cart_line::Entity> {
-        selector
-            .left_join(product::Entity)
-            // We also need to three-way join the product nested DTOs
-            .join(JoinType::LeftJoin, product::Relation::Brand.def())
-            .join(JoinType::LeftJoin, product::Relation::Region.def())
-            .join(JoinType::LeftJoin, product::Relation::Category.def())
+impl DtoTrait for CartLineDto {
+    fn add_nested_joins<E: EntityTrait>(selector: sea_orm::Select<E>) -> sea_orm::Select<E> {
+        let selector = selector.join(JoinType::LeftJoin, cart_line::Relation::Product.def());
+        // We also need to three-way join the product nested DTOs
+        ProductDto::add_nested_joins(selector)
     }
 }

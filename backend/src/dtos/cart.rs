@@ -16,7 +16,7 @@ pub struct CartDto {
     pub lines: Option<Vec<CartLineDto>>,
 }
 
-impl DtoTrait<cart::Entity> for CartDto {}
+impl DtoTrait for CartDto {}
 
 impl PartialDto for CartDto {
     async fn finalize(mut self, db: &sea_orm::DatabaseConnection) -> crate::Result<Self> {

@@ -1,4 +1,6 @@
-use sea_orm::{DerivePartialModel, EntityTrait, ModelTrait};
+use sea_orm::{
+    DerivePartialModel, EntityTrait, JoinType, ModelTrait, QuerySelect as _, RelationTrait as _,
+};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -27,14 +29,12 @@ pub struct ProductDto {
     pub tags: Option<Vec<TagDto>>,
 }
 
-impl DtoTrait<product::Entity> for ProductDto {
-    fn add_nested_joins(
-        selector: sea_orm::Select<product::Entity>,
-    ) -> sea_orm::Select<product::Entity> {
+impl DtoTrait for ProductDto {
+    fn add_nested_joins<E: EntityTrait>(selector: sea_orm::Select<E>) -> sea_orm::Select<E> {
         selector
-            .left_join(brand::Entity)
-            .left_join(region::Entity)
-            .left_join(category::Entity)
+            .join(JoinType::LeftJoin, product::Relation::Brand.def())
+            .join(JoinType::LeftJoin, product::Relation::Region.def())
+            .join(JoinType::LeftJoin, product::Relation::Category.def())
     }
 }
 

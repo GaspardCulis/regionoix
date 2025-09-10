@@ -11,4 +11,4 @@ pub struct TagDto {
     name: String,
 }
 
-impl DtoTrait<tag::Entity> for TagDto {}
+impl DtoTrait for TagDto {}

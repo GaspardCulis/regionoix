@@ -11,8 +11,8 @@ pub mod product;
 pub mod region;
 pub mod tag;
 
-pub trait DtoTrait<E: EntityTrait>: FromQueryResult + PartialModelTrait {
-    fn add_nested_joins(selector: Select<E>) -> Select<E> {
+pub trait DtoTrait: FromQueryResult + PartialModelTrait {
+    fn add_nested_joins<E: EntityTrait>(selector: Select<E>) -> Select<E> {
         selector
     }
 }
@@ -22,11 +22,11 @@ pub trait PartialDto: FromQueryResult + PartialModelTrait {
 }
 
 pub trait IntoDto<E: EntityTrait> {
-    fn into_dto<D: DtoTrait<E>>(self) -> Selector<SelectModel<D>>;
+    fn into_dto<D: DtoTrait>(self) -> Selector<SelectModel<D>>;
 }
 
 impl<E: EntityTrait> IntoDto<E> for Select<E> {
-    fn into_dto<D: DtoTrait<E>>(self) -> Selector<SelectModel<D>> {
+    fn into_dto<D: DtoTrait>(self) -> Selector<SelectModel<D>> {
         D::add_nested_joins(self).into_partial_model()
     }
 }
