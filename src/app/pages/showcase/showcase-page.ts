@@ -5,14 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { Product } from '../../utils/model/product-model';
 import { ProductService } from '../../utils/services/product-service';
-import { HttpClientModule } from '@angular/common/http';
 import { BasketService } from '../../utils/services/basket-service';
 
 
 @Component({
   selector: 'app-showcase',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent, FormsModule, HttpClientModule],
+  imports: [CommonModule, ProductCardComponent, FormsModule],
   templateUrl: './showcase-page.html',
   styleUrl: './showcase-page.css'
 })

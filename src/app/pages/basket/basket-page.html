@@ -3,7 +3,7 @@
         [quantity]="line.quantity" [price]="line.product.price">
     </app-product-list-item-component>
     <div class="basket-actions">
-        <p>Total {{getTotalPrice()}} €</p>
+        <p>Total {{getTotalPrice() | number:'1.2-2' }} €</p>
         <button class="btn-validate" [routerLink]="['/payment']">Commander</button>
     </div>
 </div>
