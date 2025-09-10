@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ProductService {
 
-  private apiUrl = '/api/products';
+  private apiUrl = 'https://www.regionoix.gasdev.fr/api/products';
   private http = inject(HttpClient);
 
   getProducts(): Observable<Product[]> {
