@@ -12,7 +12,9 @@ pub mod region;
 pub mod tag;
 
 pub trait DtoTrait<E: EntityTrait>: FromQueryResult + PartialModelTrait {
-    fn add_nested_joins(selector: Select<E>) -> Select<E>;
+    fn add_nested_joins(selector: Select<E>) -> Select<E> {
+        selector
+    }
 }
 
 pub trait PartialDto: FromQueryResult + PartialModelTrait {
