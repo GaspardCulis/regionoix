@@ -31,15 +31,15 @@
 
 /* DaisyUI colors */
 .success {
-  background-color: #4ade80; /* green */
+  background-color: var(--snackbar-success);
 }
 
 .error {
-  background-color: #f87171; /* red */
+  background-color: var(--snackbar-error);
 }
 
 .info {
-  background-color: #60a5fa; /* blue */
+  background-color: var(--snackbar-info);
 }
 
 /* Slide-in animation */
