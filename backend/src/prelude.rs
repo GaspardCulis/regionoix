@@ -1,11 +1,7 @@
 #[allow(unused_imports)]
 pub use crate::dtos::{DtoTrait, IntoDto as _, PartialDto};
 #[allow(unused_imports)]
-pub use crate::{
-    AppState,
-    entities::{prelude::*, *},
-    routes::auth::LoggedUser,
-};
+pub use crate::entities::{prelude::*, *};
 #[allow(unused_imports)]
 pub use actix_web::{
     HttpMessage as _, HttpRequest, HttpResponse, Responder, delete, get, patch, post, put,

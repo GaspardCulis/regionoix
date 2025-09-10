@@ -1,6 +1,6 @@
 use sea_orm::{
-    DatabaseConnection, EntityTrait, FromQueryResult, PartialModelTrait, Select, SelectModel,
-    Selector,
+    DatabaseConnection, DbErr, EntityTrait, FromQueryResult, PartialModelTrait, Select,
+    SelectModel, Selector,
 };
 
 pub mod brand;
@@ -18,7 +18,7 @@ pub trait DtoTrait: FromQueryResult + PartialModelTrait {
 }
 
 pub trait PartialDto: FromQueryResult + PartialModelTrait {
-    async fn finalize(self, db: &DatabaseConnection) -> crate::Result<Self>;
+    async fn finalize(self, db: &DatabaseConnection) -> Result<Self, DbErr>;
 }
 
 pub trait IntoDto<E: EntityTrait> {

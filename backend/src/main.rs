@@ -8,14 +8,11 @@ use utoipa::OpenApi;
 use utoipa_actix_web::AppExt;
 use utoipa_swagger_ui::SwaggerUi;
 
-mod dtos;
-pub mod entities;
 mod error;
-mod prelude;
 mod routes;
-mod secrets;
 
 pub use error::*;
+use regionoix::*;
 
 pub struct AppState {
     db: DatabaseConnection,
