@@ -4,11 +4,15 @@ use crate::{
     AppState,
     entities::{prelude::Product, product},
 };
+use actix_web::web;
 use actix_web::{HttpRequest, HttpResponse, get, web::Data};
-use sea_orm::{EntityName, EntityTrait as _};
+use sea_orm::prelude::Expr;
+use sea_orm::sea_query::{ExprTrait, Func};
+use sea_orm::{Condition, EntityName, EntityTrait as _, QueryFilter};
+use utoipa::IntoParams;
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get).service(get_by_id);
+    cfg.service(get).service(search).service(get_by_id);
 }
 
 #[utoipa::path(
@@ -62,4 +66,44 @@ pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<
         .await?;
 
     Ok(HttpResponse::Ok().json(product))
+}
+
+#[derive(Deserialize, Serialize, ToSchema, IntoParams)]
+struct SearchQuery {
+    name: Option<String>,
+}
+
+#[utoipa::path(
+    summary="Returns products with name matching",
+    tag="Products",
+    params(SearchQuery),
+    responses(
+        (
+            status=200,
+            description="Products successfully returned",
+            content_type="application/json",
+            body=[ProductDto],
+            example = json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region": {"id":1, "name": "Auvergne", "description": null}, "brand" : {"id": 3, "name": "Jaaj Coorp", "description": null}, "category": {"id": 7, "name": "Confiture", "category_parent": 6} }]),
+        ),
+    ),
+)]
+#[get("/search")]
+pub async fn search(
+    data: Data<AppState>,
+    search_query: web::Query<SearchQuery>,
+) -> crate::Result<HttpResponse> {
+    let db = &data.db;
+
+    let mut query = Product::find();
+
+    if let Some(name) = &search_query.name {
+        let pattern = format!("%{}%", name.to_lowercase());
+        let cond =
+            Condition::all().add(Func::lower(Expr::col(product::Column::Name)).like(pattern));
+        query = query.filter(cond);
+    }
+
+    let products = query.all(db).await?;
+
+    Ok(HttpResponse::Ok().json(products))
 }
