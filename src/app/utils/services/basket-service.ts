@@ -40,8 +40,4 @@ export class BasketService {
     return this.http.delete(this.apiUrl);
   }
 
-  addOrUpdateItem(product_id: number, quantity: number) {
-
-  }
-
 }
