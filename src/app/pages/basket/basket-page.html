@@ -1,9 +1,9 @@
 <div class="basket-list">
-    <app-product-list-item-component *ngFor="let product of products" [title]="product.title" [image]="product.image"
-        [quantity]="product.quantity" [price]="product.price">
+    <app-product-list-item-component *ngFor="let line of lines" [name]="line.product.name" [image]="line.product.image"
+        [quantity]="line.quantity" [price]="line.product.price">
     </app-product-list-item-component>
     <div class="basket-actions">
-        <p>Total {{getTotalPrice()}} €</p>
-        <button class="btn-validate" (click)="goToPayment()">Commander</button>
+        <p>Total {{getTotalPrice() | number:'1.2-2' }} €</p>
+        <button class="btn-validate" [routerLink]="['/payment']">Commander</button>
     </div>
 </div>
