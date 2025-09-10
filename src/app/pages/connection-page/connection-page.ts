@@ -24,7 +24,7 @@ export class ConnectionPage {
       const user: UserAuthModel = { email: this.email, password: this.password };
       this.authService.login(user.email, user.password).subscribe({
         next: () => {
-          this.snackBar.show(`Connexion réussie. Bienvenue, ${user.email} !`, 'success');
+          this.snackBar.show(`Connexion réussie. Bienvenue, ${user.email}!`, 'success');
 
           this.router.navigate(['/showcase']);
         },

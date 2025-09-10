@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { SnackbarService } from '../../../services/snackbar-service';
 import { CommonModule } from '@angular/common';
 
@@ -8,12 +8,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './snackbar-component.html',
   styleUrl: './snackbar-component.css',
 })
-export class SnackbarComponent {
+export class SnackbarComponent implements OnInit {
   message = '';
   type: 'success' | 'error' | 'info' = 'info';
-  timeoutId: any;
+  timeoutId!: number;
 
-  constructor(private snackbarService: SnackbarService) {
+  private readonly snackbarService = inject(SnackbarService);
+
+  ngOnInit() {
     this.snackbarService.snackbarState.subscribe((state) => {
       this.show(state.message, state.type, state.duration);
     });
