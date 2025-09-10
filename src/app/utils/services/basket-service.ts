@@ -7,7 +7,7 @@ import { BasketResponse } from '../../models/basket-model';
   providedIn: 'root'
 })
 export class BasketService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private readonly apiUrl = '/api/basket';
 
   getBasket(): Observable<BasketResponse> {
