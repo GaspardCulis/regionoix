@@ -34,47 +34,18 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[get("")]
 async fn get_basket(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
-
-    // Get cart
-    let cart = cart::Entity::find()
+    let basket = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
+        .into_dto::<CartDto>()
         .one(db)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
-        })?;
+        })?
+        .finalize(db)
+        .await?;
 
-    // Get all linked lines
-    let lines: Vec<cart_line::Model> = cart.find_related(cart_line::Entity).all(db).await?;
-
-    // Add each line with product
-    #[derive(serde::Serialize)]
-    struct LineWithProduct {
-        product: product::Model,
-        quantity: i32,
-    }
-
-    let mut enriched_lines = Vec::new();
-
-    for line in lines {
-        if let Some(prod) = line.find_related(product::Entity).one(db).await? {
-            enriched_lines.push(LineWithProduct {
-                product: prod,
-                quantity: line.quantity,
-            });
-        }
-    }
-    // Final result
-    #[derive(serde::Serialize)]
-    struct CartWithLines {
-        cart: cart::Model,
-        lines: Vec<LineWithProduct>,
-    }
-
-    Ok(HttpResponse::Ok().json(CartWithLines {
-        cart,
-        lines: enriched_lines,
-    }))
+    Ok(HttpResponse::Ok().json(basket))
 }
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
