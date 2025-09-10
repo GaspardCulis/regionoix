@@ -2,31 +2,28 @@ use crate::dtos::product::ProductDto;
 use crate::prelude::*;
 use crate::{
     AppState,
-    entities::{
-        brand, category,
-        prelude::{Brand, Category, Product, Region, Tag},
-        product, region, tag,
-    },
+    entities::{prelude::Product, product},
 };
 use actix_web::{HttpRequest, HttpResponse, get, web::Data};
-use sea_orm::{EntityName, EntityTrait as _, ModelTrait};
+use sea_orm::{EntityName, EntityTrait as _};
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get).service(get_by_id);
 }
 
 #[utoipa::path(
-    summary = "Returns product list",
+    summary="Returns product list",
     tag="Products",
     responses(
         (
-            status = 200,
+            status=200,
             description="Product list successfully returned",
-            content_type = "application/json",
+            content_type="application/json",
             body=product::Model,
-            example = json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region_id": 1, "brand_id" : 5, "category_id": null }])
-        )
-))]
+            example=json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region_id": 1, "brand_id" : 5, "category_id": null }]),
+        ),
+    ),
+)]
 #[get("")]
 pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -36,17 +33,19 @@ pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
 }
 
 #[utoipa::path(
-    summary = "Returns single product",
+    summary="Returns single product",
     tag="Products",
-    params (("id" = i32, Path, description = "Product id")),
+    params(("id" = i32, Path, description = "Product id")),
     responses(
         (
-            status = 200,
+            status=200,
             description="Product successfully returned",
-            content_type = "application/json",
+            content_type="application/json",
             body=ProductDto,
-            example = json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region": {"id":1, "name": "Auvergne", "description": null}, "brand" : {"id": 3, "name": "Jaaj Coorp", "description": null}, "category": {"id": 7, "name": "Confiture", "category_parent": 6} }])
-        )))]
+            example = json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region": {"id":1, "name": "Auvergne", "description": null}, "brand" : {"id": 3, "name": "Jaaj Coorp", "description": null}, "category": {"id": 7, "name": "Confiture", "category_parent": 6} }]),
+        ),
+    ),
+)]
 #[get("/{id}")]
 pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
     let db = &data.db;

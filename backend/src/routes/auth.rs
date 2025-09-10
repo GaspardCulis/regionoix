@@ -51,19 +51,20 @@ impl FromRequest for LoggedUser {
 }
 
 #[utoipa::path(
-    summary = "Logs user",
+    summary="Logs user in",
     tag="Authentification",
-    request_body(content_type = "application/json", content= LoginRequest),
+    request_body(content_type="application/json", content=LoginRequest),
     responses(
         (
-            status = 200,
+            status=200,
             description="Logged in successfully",
         ),
         (
-            status = 404,
+            status=404,
             description="Email not found",
-        )
-))]
+        ),
+    ),
+)]
 #[post("/login")]
 async fn login(
     request: HttpRequest,
@@ -93,14 +94,15 @@ async fn login(
 }
 
 #[utoipa::path(
-    summary = "Logs user out",
-    tag="Authentification", 
+    summary="Logs user out",
+    tag="Authentification",
     responses(
         (
-            status = 200,
-            description="Logged out successfully",  
+            status=200,
+            description="Logged out successfully",
         ),
-))]
+    ),
+)]
 #[post("/logout")]
 async fn logout(user: Option<Identity>) -> impl Responder {
     if let Some(user) = user {
@@ -110,15 +112,16 @@ async fn logout(user: Option<Identity>) -> impl Responder {
 }
 
 #[utoipa::path(
-    summary = "Returns user currently authentified",
-    tag="Authentification", 
+    summary="Get user authentication status",
+    tag="Authentification",
     responses(
         (
-            status = 200,
-            content_type = "Application/Json",
-            body = LoggedUser
+            status=200,
+            content_type="Application/Json",
+            body=LoggedUser,
         ),
-))]
+    ),
+)]
 #[get("/status")]
 async fn status(logged_user: LoggedUser) -> impl Responder {
     HttpResponse::Ok().json(logged_user)

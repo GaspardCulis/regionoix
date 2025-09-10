@@ -20,15 +20,17 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(make_order);
 }
 
-#[utoipa::path(summary = "Returns basket details of current user",
-tag="Basket", 
-responses(
-    (
-        status = 200,
-        description="Basket details successfully returned",  
-        content_type = "application/json", 
-        body=CartDto
-        )))]
+#[utoipa::path(
+    summary = "Returns basket details of current user",
+    tag="Basket",
+    responses(
+      (
+          status = 200,
+          description="Basket details successfully returned",
+          content_type = "application/json",
+          body=CartDto,
+      ),
+))]
 #[get("")]
 async fn get_basket(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
     let db = &data.db;
@@ -83,15 +85,15 @@ struct FormAddToBasket {
 
 #[utoipa::path(
     summary = "Add product to basket of current user",
-    tag="Basket", 
+    tag="Basket",
     request_body(content= FormAddToBasket, content_type= "Application/Json"),
     responses(
     (
         status = 200,
-        description="Product successfully added to basket",  
-        content_type = "application/json", 
-        body=CartLineDto
-    )
+        description="Product successfully added to basket",
+        content_type = "application/json",
+        body=CartLineDto,
+    ),
 ))]
 #[post("/items")]
 async fn add_item(
@@ -158,17 +160,17 @@ struct FormUpdateQuantityBasket {
 
 #[utoipa::path(
     summary = "Update quantity of product in current user's basket",
-    tag="Basket", 
-    request_body(content_type = "Application/Json", 
+    tag="Basket",
+    request_body(content_type = "Application/Json",
     content = FormUpdateQuantityBasket),
     params (("product_id" = i32, Path, description = "Product id")),
     responses(
         (
             status = 200,
-            description="Basket details successfully returned",  
-            content_type = "application/json", 
-            body=CartLineDto
-        )
+            description="Basket details successfully returned",
+            content_type = "application/json",
+            body=CartLineDto,
+        ),
 ))]
 #[patch("/items/{product_id}")]
 async fn update_item_quantity(
@@ -223,15 +225,15 @@ async fn update_item_quantity(
 }
 
 #[utoipa::path(
-    summary = "Remove product from current user's basket",
-    params (("product_id" = i32, Path, description = "Product id")),
+    summary="Remove product from current user's basket",
     tag="Basket",
+    params(("product_id" = i32, Path, description = "Product id")),
     responses(
         (
             status = 200,
             description="Product successfully removed from basket",
-        )
-    )
+        ),
+    ),
 )]
 #[delete("/items/{product_id}")]
 async fn remove_item(
@@ -264,14 +266,14 @@ async fn remove_item(
 }
 
 #[utoipa::path(
-    summary = "Empty current user's basket",
+    summary="Empty current user's basket",
     tag="Basket",
     responses(
         (
             status = 200,
             description="Basket successfully emptied",
-        )
-    )
+        ),
+    ),
 )]
 #[delete("")]
 async fn empty(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
@@ -311,8 +313,8 @@ struct FormDataMakeOrder {
         (
             status = 200,
             description="Order successfully created",
-        )
-)
+        ),
+    ),
 )]
 #[post("/order")]
 async fn make_order(
