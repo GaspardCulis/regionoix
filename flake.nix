@@ -93,6 +93,7 @@
           deploy-rs.packages."${system}".deploy-rs
           sops
           sops-nix.packages."${system}".sops-install-secrets
+          nix
         ];
         nativeBuildInputs = with pkgs; [
           rust
