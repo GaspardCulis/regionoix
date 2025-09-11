@@ -10,6 +10,7 @@ pub mod category;
 pub mod product;
 pub mod product_index;
 pub mod region;
+pub mod subcategory;
 pub mod tag;
 
 pub trait DtoTrait: FromQueryResult + PartialModelTrait {
