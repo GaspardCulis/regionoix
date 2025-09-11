@@ -8,7 +8,11 @@
         <div class="info">
             <p class="price">{{ price }} €</p>
             <div class="details">
-                <p class="quantity">x{{ quantity }}</p>
+                <div class="qty-control">
+                    <button class="qty-btn" id="decrease">-</button>
+                    <span id="quantity"> {{ quantity }} </span>
+                    <button class="qty-btn" id="increase">+</button>
+                </div>
                 <p class="subtotal">{{ price*quantity | number:'1.2-2' }}€</p>
             </div>
         </div>
