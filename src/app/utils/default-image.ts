@@ -1,10 +1,10 @@
 import { Directive, HostListener, Input } from '@angular/core';
 
 @Directive({
-    selector: 'img[defaultImage]'
+    selector: 'img[appDefaultImage]'
 })
 export class DefaultImageDirective {
-    @Input() defaultImage: string = 'assets/idefault.png';
+    @Input() defaultImage = 'assets/idefault.png';
 
     @HostListener('error', ['$event'])
     onError(event: Event) {
