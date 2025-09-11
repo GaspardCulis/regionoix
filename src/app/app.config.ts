@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import { Configuration, provideApi } from './regionoix-client';
+import { Configuration, provideApi } from './generated/clients/regionoix-client';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideApi(
       new Configuration({
-        basePath: 'https://www.regionoix.gasdev.fr',
+        basePath: '',
         withCredentials: true,
       })),
   ]

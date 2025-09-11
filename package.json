@@ -4,12 +4,12 @@
   "scripts": {
     "ng": "ng",
     "fetch:apiswagger": "./scripts/get-swagger.sh",
-    "generate:client": "npm run fetch:apiswagger && openapi-generator-cli generate -i ./src/swaggers/regionoix.json -g typescript-angular -o src/app/regionoix-client --skip-validate-spec",
+    "generate:client": "npm run fetch:apiswagger && openapi-generator-cli generate -i ./src/swaggers/regionoix.json -g typescript-angular -o src/app/generated/clients/regionoix-client --skip-validate-spec",
     "start": "npm run generate:client && ng serve",
     "start:local": "npm run generate:client && ng serve --proxy-config ./proxy.conf.json",
-    "build": "npm run generate:client && ng build",
+    "build": "ng build",
     "watch": "npm run generate:client && ng build --watch --configuration development",
-    "test": "npm run generate:client && ng test",
+    "test": "ng test",
     "lint": "ng lint"
   },
   "prettier": {

@@ -49,7 +49,3 @@ Thumbs.db
 
 # Environnement variable
 .env
-
-# OpenApi generated files
-/src/swaggers
-/src/app/regionoix-client
