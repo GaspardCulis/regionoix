@@ -7,6 +7,10 @@ use meilisearch_sdk::client::Client;
 use sea_orm::{Database, EntityTrait};
 use tracing::info;
 
+use crate::product_index::ProductIndex;
+
+mod product_index;
+
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
@@ -23,8 +27,6 @@ async fn main() {
     info!("Connecting to Meilisearch API");
     let client = Client::new(meili_secrets.api_url, Some(meili_secrets.admin_api_key)).unwrap();
 
-    let products_index = client.index("products");
-
     info!("Querying products");
     let products = entities::product::Entity::find()
         .into_dto::<dtos::product::ProductDto>()
@@ -38,9 +40,25 @@ async fn main() {
             .await
             .unwrap();
 
-    info!("Adding {} products to index", products.len());
+    // Index
+    let products_index = client.index("products");
+
+    info!("Clearing previous documents");
     products_index
-        .add_documents(products.as_slice(), Some("id"))
+        .delete_all_documents()
+        .await
+        .expect("Failed to delete all documents");
+
+    let indexed_products: Vec<ProductIndex> = products.into_iter().map(|p| p.into()).collect();
+
+    products_index
+        .set_filterable_attributes(ProductIndex::filterable_attributes())
+        .await
+        .expect("Failed to set filterable attributes");
+
+    info!("Adding {} products to index", indexed_products.len());
+    products_index
+        .add_documents(indexed_products.as_slice(), Some("id"))
         .await
         .expect("Failed to index");
 }
