@@ -3,10 +3,13 @@ use sea_orm::{
     Selector,
 };
 
+pub mod address;
 pub mod brand;
 pub mod cart;
 pub mod cart_line;
 pub mod category;
+pub mod order;
+pub mod order_line;
 pub mod product;
 pub mod region;
 pub mod tag;
