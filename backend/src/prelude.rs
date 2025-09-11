@@ -10,6 +10,8 @@ pub use actix_web::{
 #[allow(unused_imports)]
 pub use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
+pub use tracing::{debug, info, warn};
+#[allow(unused_imports)]
 pub use utoipa::ToSchema;
 #[allow(unused_imports)]
 pub use utoipa_actix_web::{scope, service_config::ServiceConfig};

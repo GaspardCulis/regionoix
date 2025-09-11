@@ -46,7 +46,7 @@ async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Resul
     let db = &data.db;
     let search = &data.search;
 
-    let results = search
+    let search_results = search
         .index("products")
         .search()
         .with_query(&query.query)
@@ -56,7 +56,11 @@ async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Resul
         .await
         .map_err(|e| anyhow::Error::from(e))?;
 
-    let ids: Vec<_> = results.hits.iter().map(|hit| hit.result.id).collect();
+    let ids: Vec<_> = search_results
+        .hits
+        .iter()
+        .map(|hit| hit.result.id)
+        .collect();
     let id_to_order: HashMap<_, _> = ids.iter().enumerate().map(|(i, &id)| (id, i)).collect();
 
     let mut product_results = Product::find()
@@ -64,6 +68,10 @@ async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Resul
         .into_dto::<ProductDto>()
         .all(db)
         .await?;
+
+    if product_results.len() != search_results.hits.len() {
+        warn!("Some indexed products are missing from the database (sync to be checked)");
+    }
 
     product_results.sort_by_key(|p| id_to_order[&p.id]);
 
