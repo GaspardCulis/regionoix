@@ -27,7 +27,7 @@ export class ProductPage implements OnInit {
         next: (data) => {
           this.product = {
             ...data,
-            image: data.image ?? 'https://picsum.photos/400/250?random=1'
+            image: data.image ?? 'assets/default.png'
           };
         },
         error: (err) => console.error('Erreur lors de la récupération du produit', err)
