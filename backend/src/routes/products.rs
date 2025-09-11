@@ -4,15 +4,11 @@ use crate::{
     AppState,
     entities::{prelude::Product, product},
 };
-use actix_web::web;
 use actix_web::{HttpRequest, HttpResponse, get, web::Data};
-use sea_orm::prelude::Expr;
-use sea_orm::sea_query::{ExprTrait, Func};
-use sea_orm::{Condition, EntityName, EntityTrait as _, QueryFilter};
-use utoipa::IntoParams;
+use sea_orm::{EntityName, EntityTrait as _};
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get).service(search).service(get_by_id);
+    cfg.service(get).service(get_by_id);
 }
 
 #[utoipa::path(
