@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Product } from '../../utils/model/product-model';
-import { ProductService } from '../../utils/services/product-service';
-import { BasketService } from '../../utils/services/basket-service';
+import { Product } from '../../models/product-model';
+import { BasketService } from '../../services/basket-service';
+import { ProductService } from '../../services/product-service';
+import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-product-page',
@@ -19,6 +20,7 @@ export class ProductPage implements OnInit {
   private basketService = inject(BasketService);
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
+  private snackbarService = inject(SnackbarService);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -27,7 +29,7 @@ export class ProductPage implements OnInit {
         next: (data) => {
           this.product = {
             ...data,
-            image: data.image ?? 'https://picsum.photos/400/250?random=1'
+            image: data.image ?? 'assets/default.png'
           };
         },
         error: (err) => console.error('Erreur lors de la récupération du produit', err)
@@ -36,10 +38,17 @@ export class ProductPage implements OnInit {
   }
 
   addItem(productId: number) {
-    this.basketService.addItem(productId).subscribe({
-      next: () => console.log('Product add to basket'),
-      error: (err) => console.error(err)
+    this.basketService.addItem(productId, this.quantity).subscribe({
+      next: () => {
+        console.log('Product add to basket');
+        this.snackbarService.show('Produit ajouté au panier ✅', 'success');
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackbarService.show('Stock insuffisant !', 'error');
+      }
     });
+
   }
 
   increaseQuantity() {

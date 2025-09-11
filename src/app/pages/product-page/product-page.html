@@ -1,11 +1,33 @@
 <div class="product" *ngIf="product">
+    <!-- Product image-->
     <div class="image-wrapper">
-        <img src="{{product.image}}" alt="{{ product.name }}" />
+        <img src="{{product.image}}" alt="{{ product.name }}" appDefaultImage />
     </div>
+
+    <!--Details-->
     <div class="product-details">
         <h1 class="product-name">{{ product.name }}</h1>
         <p class="product-price">{{ product.price | number:'1.2-2' }} €</p>
+
+        <!--Description-->
         <p class="product-description">{{ product.description }}</p>
+
+        <!--Complements-->
+        <div class="extra-info">
+            <p><strong>Poids :</strong> {{ product.weight }} kg</p>
+            <p><strong>Catégorie :</strong> {{ product.category.name }}</p>
+            <p><strong>Région :</strong> {{ product.region.name }}</p>
+            <p><strong>Marque :</strong> {{ product.brand.name }}</p>
+        </div>
+
+        <!--Tags-->
+        <div class="tags" *ngIf="product.tags && product.tags.length > 0">
+            <span *ngFor="let tag of product.tags" class="tag">
+                #{{ tag.name }}
+            </span>
+        </div>
+
+        <!--Basket actions-->
         <div class="cart-actions">
             <div class="quantity-control">
                 <button class="qty-btn" id="decrease" (click)="decreaseQuantity()">-</button>
