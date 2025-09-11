@@ -22,7 +22,7 @@ export class ShowcasePage implements OnInit {
 
   products: Product[] = [];
   categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
-  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace'];
+  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
 
   selectedCategory = '';
   selectedRegion = '';
@@ -47,8 +47,8 @@ export class ShowcasePage implements OnInit {
   get filteredProducts() {
     return this.products.filter(p => {
       return (
-        (!this.selectedCategory || p.category_id === +this.selectedCategory) &&
-        (!this.selectedRegion || p.region_id === +this.selectedRegion) &&
+        (!this.selectedCategory || p.category.name === this.selectedCategory) &&
+        (!this.selectedRegion || p.region.name === this.selectedRegion) &&
         (!this.maxPrice || p.price <= this.maxPrice)
       );
     });
