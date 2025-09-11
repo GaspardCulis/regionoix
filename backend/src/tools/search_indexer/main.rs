@@ -17,7 +17,6 @@ async fn main() {
 
     info!("Loading environment variables from .env");
     let secrets = secrets::Secrets::load().expect("load secrets");
-    let meili_secrets = secrets::MeiliSecrets::load().expect("load secrets");
 
     info!("Connecting to database");
     let db = Database::connect(secrets.database_url)
@@ -25,7 +24,7 @@ async fn main() {
         .expect("Failed to connect to database");
 
     info!("Connecting to Meilisearch API");
-    let client = Client::new(meili_secrets.api_url, Some(meili_secrets.admin_api_key)).unwrap();
+    let client = Client::new(secrets.meili.api_url, Some(secrets.meili.admin_api_key)).unwrap();
 
     info!("Querying products");
     let products = entities::product::Entity::find()
