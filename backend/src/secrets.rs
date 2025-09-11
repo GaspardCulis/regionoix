@@ -14,7 +14,7 @@ pub struct Secrets {
 
 pub struct MeiliSecrets {
     pub api_url: String,
-    pub api_key: String,
+    pub admin_api_key: String,
 }
 
 impl Secrets {
@@ -41,7 +41,7 @@ impl MeiliSecrets {
 
         Ok(Self {
             api_url: get_env_var("MEILISEARCH_URL")?,
-            api_key: get_env_var("MEILISEARCH_API_KEY")?,
+            admin_api_key: get_env_var("MEILISEARCH_ADMIN_KEY")?,
         })
     }
 }

@@ -21,7 +21,7 @@ async fn main() {
         .expect("Failed to connect to database");
 
     info!("Connecting to Meilisearch API");
-    let client = Client::new(meili_secrets.api_url, Some(meili_secrets.api_key)).unwrap();
+    let client = Client::new(meili_secrets.api_url, Some(meili_secrets.admin_api_key)).unwrap();
 
     let products_index = client.index("products");
 
