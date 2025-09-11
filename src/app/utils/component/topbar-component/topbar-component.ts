@@ -2,6 +2,7 @@ import { Component, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthCookieService } from '../../../services/auth-cookie';
 
 @Component({
   selector: 'app-topbar',
@@ -20,7 +21,14 @@ export class TopbarComponent {
   @Input() user!: string | null;
   @Output() searchText = '';
 
-  private router = inject(Router);
+  constructor(
+    private router: Router,
+    private authCookieService: AuthCookieService
+  ) {
+    this.authCookieService.user$.subscribe(user => {
+      this.user = user;
+    });
+  }
 
   onProfileClick() {
     if (this.user) {
