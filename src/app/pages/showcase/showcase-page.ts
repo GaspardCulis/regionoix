@@ -28,9 +28,9 @@ export class ShowcasePage implements OnInit {
   regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
   tags = ['vegan', 'bio', 'nouveauté', 'végétarien'];
 
-  selectedCategory = '';
-  selectedRegion = '';
-  selectedTags = '';
+  selectedCategories: string[] = [];
+  selectedRegions: string[] = [];
+  selectedTags: string[] = [];
   filterAvailable = false;
   filterUnavailable = false;
 
@@ -66,6 +66,29 @@ export class ShowcasePage implements OnInit {
     }
   }
 
+  toggleCategory(cat: string, checked: boolean) {
+    if (checked) {
+      this.selectedCategories.push(cat);
+    } else {
+      this.selectedCategories = this.selectedCategories.filter(c => c !== cat);
+    }
+  }
+
+  toggleRegion(region: string, checked: boolean) {
+    if (checked) {
+      this.selectedRegions.push(region);
+    } else {
+      this.selectedRegions = this.selectedRegions.filter(r => r !== region);
+    }
+  }
+
+  toggleTag(tag: string, checked: boolean) {
+    if (checked) {
+      this.selectedTags.push(tag);
+    } else {
+      this.selectedTags = this.selectedTags.filter(t => t !== tag);
+    }
+  }
 
   get filteredProducts() {
     return this.products.filter((p) => {
@@ -73,10 +96,10 @@ export class ShowcasePage implements OnInit {
       if (p.price < this.minPrice || p.price > this.maxPrice) return false;
 
       // categories
-      if (this.selectedCategory && p.category.name !== this.selectedCategory) return false;
+      if (this.selectedCategories.length && !this.selectedCategories.includes(p.category.name)) return false;
 
       // regions
-      if (this.selectedRegion && p.region.name !== this.selectedRegion) return false;
+      if (this.selectedRegions.length && !this.selectedRegions.includes(p.region.name)) return false;
 
       // tags
       //TODO

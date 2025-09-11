@@ -10,29 +10,45 @@
                 <input type="number" [(ngModel)]="maxPrice" placeholder="Max" />
             </div>
         </label>
-        <label>
-            Catégorie :
-            <select [(ngModel)]="selectedCategory">
-                <option value="">Toutes</option>
-                <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
-            </select>
-        </label>
 
-        <label>
-            Région :
-            <select [(ngModel)]="selectedRegion">
-                <option value="">Toutes</option>
-                <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
-            </select>
-        </label>
+        <fieldset class="availability">
+            <legend>Disponibilité</legend>
+            <label>
+                <input type="checkbox" [(ngModel)]="filterAvailable" />
+                En stock
+            </label>
+            <label>
+                <input type="checkbox" [(ngModel)]="filterUnavailable" />
+                Rupture
+            </label>
+        </fieldset>
 
-        <label>
-            Propriétés :
-            <select [(ngModel)]="selectedTags">
-                <option value="">Toutes</option>
-                <option *ngFor="let t of tags" [value]="t">{{ t }}</option>
-            </select>
-        </label>
+        <!-- Catégories -->
+        <fieldset class="availability">
+            <legend>Catégories</legend>
+            <label *ngFor="let c of categories">
+                <input type="checkbox" [value]="c" (change)="toggleCategory(c, $event.target.checked)" />
+                {{ c }}
+            </label>
+        </fieldset>
+
+        <!-- Régions -->
+        <fieldset class="availability">
+            <legend>Régions</legend>
+            <label *ngFor="let r of regions">
+                <input type="checkbox" [value]="r" (change)="toggleRegion(r, $event.target.checked)" />
+                {{ r }}
+            </label>
+        </fieldset>
+
+        <!-- Propriétés -->
+        <fieldset class="availability">
+            <legend>Propriétés</legend>
+            <label *ngFor="let t of tags">
+                <input type="checkbox" [value]="t" (change)="toggleTag(t, $event.target.checked)" />
+                {{ t }}
+            </label>
+        </fieldset>
     </aside>
 
     <main class="product-grid">
