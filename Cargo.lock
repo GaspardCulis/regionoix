@@ -2930,6 +2930,7 @@ dependencies = [
  "chrono",
  "dotenv",
  "env_logger",
+ "futures",
  "meilisearch-sdk",
  "sea-orm",
  "serde",
