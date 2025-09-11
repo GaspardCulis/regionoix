@@ -12,6 +12,11 @@ pub struct Secrets {
     pub secret_key: String,
 }
 
+pub struct MeiliSecrets {
+    pub api_url: String,
+    pub api_key: String,
+}
+
 impl Secrets {
     pub fn load() -> anyhow::Result<Self> {
         if dotenv().is_err() {
@@ -24,6 +29,19 @@ impl Secrets {
             database_url: get_env_var("DATABASE_URL")?,
             redis_url: get_env_var("REDIS_URL")?,
             secret_key: get_env_var("SECRET_KEY")?,
+        })
+    }
+}
+
+impl MeiliSecrets {
+    pub fn load() -> anyhow::Result<Self> {
+        if dotenv().is_err() {
+            println!("Failed to read .env, falling back to existing env vars");
+        }
+
+        Ok(Self {
+            api_url: get_env_var("MEILISEARCH_URL")?,
+            api_key: get_env_var("MEILISEARCH_API_KEY")?,
         })
     }
 }
