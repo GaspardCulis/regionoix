@@ -1,6 +1,7 @@
 use actix_identity::IdentityMiddleware;
 use actix_session::{SessionMiddleware, storage::RedisSessionStore};
 use actix_web::{App, HttpServer, cookie::Key, web::Data};
+use meilisearch_sdk::client::Client;
 use sea_orm::{Database, DatabaseConnection};
 use tracing::info;
 use tracing_actix_web::TracingLogger;
@@ -16,6 +17,7 @@ use regionoix::*;
 
 pub struct AppState {
     db: DatabaseConnection,
+    search: Client,
 }
 
 #[derive(OpenApi)]
@@ -43,6 +45,9 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Failed to connect to Redis session store");
 
+    info!("Connecting to Meilisearch indexer");
+    let search = Client::new(secrets.meili.api_url, Some(secrets.meili.search_api_key)).unwrap();
+
     info!("Starting server app");
 
     HttpServer::new(move || {
@@ -53,7 +58,10 @@ async fn main() -> std::io::Result<()> {
                 redis_store.clone(),
                 Key::from(secrets.secret_key.as_bytes()),
             ))
-            .app_data(Data::new(AppState { db: db.clone() }))
+            .app_data(Data::new(AppState {
+                db: db.clone(),
+                search: search.clone(),
+            }))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
             .service(utoipa_actix_web::scope("/api").configure(routes::config))
