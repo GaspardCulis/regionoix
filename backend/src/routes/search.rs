@@ -22,8 +22,9 @@ struct SearchQuery {
     /// The list of filterable attributes is `["weight", "price", "categories", "tags"]`.
     /// See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
     filters: Option<String>,
-    /// Sort by some specific attribute in the format `attribute:method` where `method: asc | desc` .
+    /// Sort by some specific attribute in the format `attribute:method` where `method: asc | desc`.
     /// Ex: `price:asc`.
+    /// The list of sortable attributes is `["name", "price"]`.
     /// See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
     sort: Option<String>,
 }

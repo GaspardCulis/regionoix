@@ -21,7 +21,7 @@ impl ProductIndex {
     }
 
     pub fn sortable_attributes() -> &'static [&'static str] {
-        &["price"]
+        &["name", "price"]
     }
 }
 
