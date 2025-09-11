@@ -52,7 +52,14 @@ async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Resul
         .search()
         .with_query(&query.query)
         .with_filter(query.filters.as_ref().unwrap_or(&String::new()))
-        .with_sort(&[query.sort.as_ref().map(|s| s.as_str()).unwrap_or("")])
+        .with_sort(
+            query
+                .sort
+                .as_ref()
+                .map(|s| vec![s.as_str()])
+                .unwrap_or(vec![])
+                .as_slice(),
+        )
         .execute::<ProductIndex>()
         .await
         .map_err(|e| anyhow::Error::from(e))?;
