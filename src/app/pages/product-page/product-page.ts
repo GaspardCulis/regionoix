@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../models/product-model';
 import { BasketService } from '../../services/basket-service';
 import { ProductService } from '../../services/product-service';
+import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-product-page',
@@ -19,6 +20,7 @@ export class ProductPage implements OnInit {
   private basketService = inject(BasketService);
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
+  private snackbarService = inject(SnackbarService);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -37,9 +39,16 @@ export class ProductPage implements OnInit {
 
   addItem(productId: number) {
     this.basketService.addItem(productId, this.quantity).subscribe({
-      next: () => console.log('Product add to basket'),
-      error: (err) => console.error(err)
+      next: () => {
+        console.log('Product add to basket');
+        this.snackbarService.show('Produit ajouté au panier ✅', 'success');
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackbarService.show('Stock insuffisant !', 'error');
+      }
     });
+
   }
 
   increaseQuantity() {
@@ -52,5 +61,24 @@ export class ProductPage implements OnInit {
     if (this.quantity > 1) {
       this.quantity--;
     }
+  }
+
+  showToast(message: string, type: 'success' | 'error') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `alert shadow-lg ${type === 'success' ? 'alert-success' : 'alert-error'}`;
+    toast.innerHTML = `
+      <div>
+        <span>${message}</span>
+      </div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      container.removeChild(toast);
+    }, 3000);
   }
 }
