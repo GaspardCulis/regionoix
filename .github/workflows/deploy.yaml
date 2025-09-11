@@ -21,5 +21,5 @@ jobs:
           nix_path: nixpkgs=channel:nixos-25.05
     - name: Deploy to Raviole1 with deploy-rs
       shell: 'nix develop --ignore-environment -c bash -e {0}'
-      run: deploy .#Raviole1
+      run: PATH="/usr/bin:$PATH" deploy .#Raviole1
 
