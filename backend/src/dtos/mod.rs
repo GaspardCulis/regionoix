@@ -8,6 +8,7 @@ pub mod cart;
 pub mod cart_line;
 pub mod category;
 pub mod product;
+pub mod product_index;
 pub mod region;
 pub mod tag;
 

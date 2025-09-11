@@ -1,5 +1,6 @@
-use regionoix::dtos::product::ProductDto;
 use serde::{Deserialize, Serialize};
+
+use crate::dtos::product::ProductDto;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ProductIndex {

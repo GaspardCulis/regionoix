@@ -1,15 +1,11 @@
 use regionoix::{
-    dtos::{IntoDto, PartialDto},
+    dtos::{IntoDto, PartialDto, product_index::ProductIndex},
     *,
 };
 
 use meilisearch_sdk::client::Client;
 use sea_orm::{Database, EntityTrait};
 use tracing::info;
-
-use crate::product_index::ProductIndex;
-
-mod product_index;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
