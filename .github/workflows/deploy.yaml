@@ -16,7 +16,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "Deploying to ${{ vars.DEPLOY_HOST }}"
           ssh-keyscan -p 22 ${{ vars.DEPLOY_HOST }} >> ~/.ssh/known_hosts
-    - uses: cachix/install-nix-action@v25
+    - uses: cachix/install-nix-action@v31
       with:
           nix_path: nixpkgs=channel:nixos-25.05
     - name: Run a command with nix develop
