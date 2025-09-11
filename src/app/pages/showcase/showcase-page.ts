@@ -26,10 +26,16 @@ export class ShowcasePage implements OnInit {
   products: Product[] = [];
   categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
   regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
+  tags = ['vegan', 'bio', 'nouveauté', 'végétarien'];
 
   selectedCategory = '';
   selectedRegion = '';
-  maxPrice: number | null = null;
+  selectedTags = '';
+  filterAvailable = false;
+  filterUnavailable = false;
+
+  minPrice = 0;
+  maxPrice = 500;
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
@@ -52,13 +58,34 @@ export class ShowcasePage implements OnInit {
     });
   }
 
+  updatePriceRange() {
+    if (this.minPrice > this.maxPrice) {
+      const temp = this.minPrice;
+      this.minPrice = this.maxPrice;
+      this.maxPrice = temp;
+    }
+  }
+
+
   get filteredProducts() {
-    return this.products.filter(p => {
-      return (
-        (!this.selectedCategory || p.category.name === this.selectedCategory) &&
-        (!this.selectedRegion || p.region.name === this.selectedRegion) &&
-        (!this.maxPrice || p.price <= this.maxPrice)
-      );
+    return this.products.filter((p) => {
+      // price
+      if (p.price < this.minPrice || p.price > this.maxPrice) return false;
+
+      // categories
+      if (this.selectedCategory && p.category.name !== this.selectedCategory) return false;
+
+      // regions
+      if (this.selectedRegion && p.region.name !== this.selectedRegion) return false;
+
+      // tags
+      //TODO
+
+      // availabilty
+      if (this.filterAvailable && !p.stock) return false;
+      if (this.filterUnavailable && p.stock) return false;
+
+      return true;
     });
   }
 }

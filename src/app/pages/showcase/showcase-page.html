@@ -2,12 +2,14 @@
     <!-- Sidebar + Produits -->
     <aside class="filters">
         <h3>Filtres</h3>
-
-        <label>
-            Prix max :
-            <input type="number" [(ngModel)]="maxPrice" placeholder="Ex: 50" />
+        <label class="price-filter">
+            Prix :
+            <div class="inputs">
+                <input type="number" [(ngModel)]="minPrice" placeholder="Min" />
+                <span> - </span>
+                <input type="number" [(ngModel)]="maxPrice" placeholder="Max" />
+            </div>
         </label>
-
         <label>
             Catégorie :
             <select [(ngModel)]="selectedCategory">
@@ -21,6 +23,14 @@
             <select [(ngModel)]="selectedRegion">
                 <option value="">Toutes</option>
                 <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
+            </select>
+        </label>
+
+        <label>
+            Propriétés :
+            <select [(ngModel)]="selectedTags">
+                <option value="">Toutes</option>
+                <option *ngFor="let t of tags" [value]="t">{{ t }}</option>
             </select>
         </label>
     </aside>
