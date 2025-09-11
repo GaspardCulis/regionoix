@@ -51,4 +51,5 @@ Thumbs.db
 .env
 
 # OpenApi generated files
-/src/app/api-client
+/src/swaggers
+/src/app/regionoix-client
