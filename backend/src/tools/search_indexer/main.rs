@@ -51,6 +51,11 @@ async fn main() {
         .await
         .expect("Failed to set filterable attributes");
 
+    products_index
+        .set_sortable_attributes(ProductIndex::sortable_attributes())
+        .await
+        .expect("Failed to set sortable attributes");
+
     info!("Adding {} products to index", indexed_products.len());
     products_index
         .add_documents(indexed_products.as_slice(), Some("id"))

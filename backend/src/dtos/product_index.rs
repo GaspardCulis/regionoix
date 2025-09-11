@@ -19,6 +19,10 @@ impl ProductIndex {
     pub fn filterable_attributes() -> &'static [&'static str] {
         &["weight", "price", "categories", "tags"]
     }
+
+    pub fn sortable_attributes() -> &'static [&'static str] {
+        &["price"]
+    }
 }
 
 impl From<ProductDto> for ProductIndex {
