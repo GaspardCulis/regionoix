@@ -6,49 +6,94 @@
 </ul>
 
 <div class="purchaseForm">
+
     <!-- Step 1 : Informations -->
     <form *ngIf="currentStep === 1" #infoForm="ngForm" (ngSubmit)="nextStep()">
+        <h2 class="text-xl font-bold">Informations personnelles</h2>
+
         <label class="form-control">
             <span class="label-text">Nom</span>
-            <input type="text" name="name" ngModel required class="input" />
+            <input type="text" [(ngModel)]="client.lastname" name="lastname" class="input" />
+        </label>
+
+        <label class="form-control">
+            <span class="label-text">Prénom</span>
+            <input type="text" [(ngModel)]="client.firstname" name="firstname" class="input" />
         </label>
 
         <label class="form-control">
             <span class="label-text">Email</span>
-            <input type="email" name="email" ngModel required class="input" />
+            <input type="text" [(ngModel)]="client.email" name="email" class="input" readonly />
         </label>
 
-        <button type="submit" class="btn mt-6">Suivant</button>
+        <p class="text-sm mt-1">
+            <a class="text-blue-600 hover:underline" (click)="wrongEmail()">
+                Ce n'est pas votre email ?
+            </a>
+        </p>
+
+        <button type="submit" class="btn mt-4" [disabled]="infoForm.invalid">
+            Suivant
+        </button>
     </form>
 
     <!-- Step 2 : Adresse -->
     <form *ngIf="currentStep === 2" #addressForm="ngForm" (ngSubmit)="nextStep()">
-        <label class="form-control ">
-            <span class="label-text">Adresse</span>
-            <input type="text" name="address" ngModel required class="input" />
+        <h2 class="text-xl font-bold">Informations de livraison</h2>
+
+        <label class="form-control">
+            <span class="label-text">Rue</span>
+            <input type="text" [(ngModel)]="address.address" name="address" required class="input" />
+        </label>
+
+        <label class="form-control">
+            <span class="label-text">Ville</span>
+            <input type="text" [(ngModel)]="address.city" name="city" required class="input" />
         </label>
 
         <label class="form-control">
             <span class="label-text">Code postal</span>
-            <input type="text" name="zip" ngModel required class="input" />
+            <input type="text" [(ngModel)]="address.postalCode" name="postalCode" required class="input" />
         </label>
 
-        <div>
+        <label class="form-control">
+            <span class="label-text">Pays</span>
+            <input type="text" [(ngModel)]="address.country" name="country" required class="input" />
+        </label>
+
+        <div class="flex gap-2 mt-4">
             <button type="button" class="btn" (click)="prevStep()">Précédent</button>
-            <button type="submit" class="btn">Suivant</button>
+            <button type="submit" class="btn" [disabled]="addressForm.invalid">Soumettre</button>
         </div>
     </form>
 
     <!-- Step 3 : Payment -->
     <form *ngIf="currentStep === 3" #paymentForm="ngForm" (ngSubmit)="nextStep()">
-        <label class="form-control ">
+        <h2 class="text-xl font-bold mb-4">Informations de paiement</h2>
+
+        <label class="form-control mb-3">
             <span class="label-text">Numéro de carte</span>
-            <input type="text" name="card" ngModel required class="input" />
+            <input type="text" name="card" ngModel required maxlength="19" class="input"
+                placeholder="1234 5678 9012 3456" (input)="onCardInput($event)" />
         </label>
 
-        <div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <label class="form-control">
+                <span class="label-text">Date d'expiration</span>
+                <input type="text" name="expiry" ngModel required maxlength="5" class="input" placeholder="MM/AA"
+                    (input)="onExpiryInput($event)" />
+            </label>
+
+            <label class="form-control">
+                <span class="label-text">CVV</span>
+                <input type="text" name="cvv" ngModel required maxlength="3" class="input" placeholder="123"
+                    (input)="onCVVInput($event)"/>
+            </label>
+        </div>
+
+        <div class="flex gap-2">
             <button type="button" class="btn" (click)="prevStep()">Précédent</button>
-            <button type="submit" class="btn">Payer</button>
+            <button type="submit" class="btn" [disabled]="paymentForm.invalid">Payer</button>
         </div>
     </form>
 
@@ -57,10 +102,6 @@
         <h2>Merci pour votre commande !</h2>
         <p>Vous recevrez bientôt une confirmation par email.</p>
         <button class="btn" (click)="finish()">Retour à l'accueil</button>
-    </div>
-    <!-- Snackbar de confirmation -->
-    <div class="snackbar" *ngIf="showSnackbar">
-        Paiement validé avec succès !
     </div>
 
 </div>
