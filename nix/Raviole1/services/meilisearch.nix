@@ -1,6 +1,7 @@
 {
-  pkgs,
   config,
+  domain,
+  pkgs,
   ...
 }: let
   port = 7700;
@@ -12,6 +13,10 @@ in {
     '';
     owner = "meilisearch";
   };
+
+  services.caddy.virtualHosts."search.${domain}".extraConfig = ''
+    reverse_proxy http://127.0.0.1:${toString port}
+  '';
 
   users.users.meilisearch = {
     name = "meilisearch";
