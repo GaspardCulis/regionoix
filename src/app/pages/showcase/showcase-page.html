@@ -27,8 +27,8 @@
         <fieldset class="availability">
             <legend>Catégories</legend>
             <label *ngFor="let c of categories">
-                <input type="checkbox" [value]="c" (change)="toggleCategory(c, $event.target.checked)" />
-                {{ c }}
+                <input type="checkbox" [value]="c.name" (change)="toggleCategory(c.name, $event.target.checked)" />
+                {{ c.name }}
             </label>
         </fieldset>
 
@@ -36,8 +36,8 @@
         <fieldset class="availability">
             <legend>Régions</legend>
             <label *ngFor="let r of regions">
-                <input type="checkbox" [value]="r" (change)="toggleRegion(r, $event.target.checked)" />
-                {{ r }}
+                <input type="checkbox" [value]="r.name" (change)="toggleRegion(r.name, $event.target.checked)" />
+                {{ r.name }}
             </label>
         </fieldset>
 
@@ -45,8 +45,8 @@
         <fieldset class="availability">
             <legend>Propriétés</legend>
             <label *ngFor="let t of tags">
-                <input type="checkbox" [value]="t" (change)="toggleTag(t, $event.target.checked)" />
-                {{ t }}
+                <input type="checkbox" [value]="t.name" (change)="toggleTag(t.name, $event.target.checked)" />
+                {{ t.name }}
             </label>
         </fieldset>
     </aside>

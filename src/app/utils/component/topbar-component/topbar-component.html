@@ -42,11 +42,7 @@
                 {{ cat.name }}
             </button>
 
-            <div class="dropdown-content">
-                <button *ngFor="let child of cat.children" (click)="selectedSubCategory = child">
-                    {{ child }}
-                </button>
-            </div>
+
         </div>
     </nav>
 </div>

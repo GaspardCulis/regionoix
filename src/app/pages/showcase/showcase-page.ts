@@ -8,6 +8,9 @@ import { BasketService } from '../../services/basket-service';
 import { ProductService } from '../../services/product-service';
 import { SnackbarService } from '../../services/snackbar-service';
 import { BasketStateService } from '../../services/basket-state-service';
+import { Category, CategoryService } from '../../services/category-service';
+import { Tag, TagService } from '../../services/tag-service';
+import { Region, RegionService } from '../../services/region-service';
 
 @Component({
   selector: 'app-showcase',
@@ -22,12 +25,14 @@ export class ShowcasePage implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly snackbarService = inject(SnackbarService);
   private readonly basketState = inject(BasketStateService);
+  private categoryService = inject(CategoryService);
+  private tagService = inject(TagService);
+  private regionService = inject(RegionService);
 
   products: Product[] = [];
-  categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
-  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
-  tags = ['vegan', 'bio', 'nouveauté', 'végétarien'];
-
+  categories: Category[] = [];
+  regions: Region[] = [];
+  tags: Tag[] = [];
   selectedCategories: string[] = [];
   selectedRegions: string[] = [];
   selectedTags: string[] = [];
@@ -38,11 +43,30 @@ export class ShowcasePage implements OnInit {
   maxPrice = 500;
 
   ngOnInit(): void {
+    //products
     this.productService.getProducts().subscribe({
       next: (data) => this.products = data,
       error: (err) => {
-        console.error('Somethings went wrong during products recuperation', err);
+        console.error('Something went wrong during products recuperation', err);
       }
+    });
+
+    //categories
+    this.categoryService.getCategories().subscribe({
+      next: (data) => this.categories = data,
+      error: (err) => console.error('Something went wrong during categories recuperation', err)
+    });
+
+    // regions
+    this.regionService.getRegions().subscribe({
+      next: (data) => this.regions = data,
+      error: (err) => console.error('Something went wrong during regions recuperation', err)
+    });
+
+    // tags
+    this.tagService.getTags().subscribe({
+      next: (data) => this.tags = data,
+      error: (err) => console.error('Something went wrong during tags recuperation', err)
     });
   }
 

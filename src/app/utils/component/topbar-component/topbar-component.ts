@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthCookieService } from '../../../services/auth-cookie';
+import { Category, CategoryService } from '../../../services/category-service';
 
 @Component({
   selector: 'app-topbar',
@@ -29,6 +30,13 @@ export class TopbarComponent implements OnInit {
       this.user = user;
     });
   }
+  private categoryService = inject(CategoryService);
+
+  categories: Category[] = [];
+  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
+  selectedCategory = '';
+  selectedSubCategory = '';
+  selectedRegion = '';
 
   onProfileClick() {
     if (this.user) {
