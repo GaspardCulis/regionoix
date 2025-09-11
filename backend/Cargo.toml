@@ -4,6 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+default-run = "regionoix-backend"
 
 [lib]
 name = "regionoix"
@@ -12,6 +13,10 @@ path = "src/lib.rs"
 [[bin]]
 name = "regionoix-backend"
 path = "src/main.rs"
+
+[[bin]]
+name = "regionoix-indexer"
+path = "src/tools/search_indexer/main.rs"
 
 [dependencies]
 actix-web = "4"
