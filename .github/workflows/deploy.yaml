@@ -19,7 +19,7 @@ jobs:
     - uses: cachix/install-nix-action@v31
       with:
           nix_path: nixpkgs=channel:nixos-25.05
-    - name: Run a command with nix develop
+    - name: Deploy to Raviole1 with deploy-rs
       shell: 'nix develop --ignore-environment -c bash -e {0}'
       run: deploy .#Raviole1
 
