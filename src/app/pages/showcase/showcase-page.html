@@ -1,25 +1,4 @@
 <div class="page-container">
-    <!-- Navbar en haut -->
-    <nav class="navbar">
-        <div class="nav-left">
-            <span class="brand">Produits Régionaux</span>
-        </div>
-        <div class="nav-right">
-            <div class="dropdown">
-                <button class="dropbtn">Catégories</button>
-                <div class="dropdown-content">
-                    <button *ngFor="let c of categories" (click)="selectedCategory = c">{{ c }}</button>
-                </div>
-            </div>
-            <div class="dropdown">
-                <button class="dropbtn">Régions</button>
-                <div class="dropdown-content">
-                    <button *ngFor="let r of regions" (click)="selectedRegion = r">{{ r }}</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
     <!-- Sidebar + Produits -->
     <aside class="filters">
         <h3>Filtres</h3>

@@ -21,3 +21,32 @@
         </button>
     </div>
 </div>
+<div class="bottom">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <!-- Dropdown régions -->
+        <div class="dropdown">
+            <button class="dropbtn">
+                Régions {{ selectedRegion ? ': ' + selectedRegion : '' }}
+            </button>
+            <div class="dropdown-content">
+                <button *ngFor="let r of regions" (click)="selectedRegion = r">
+                    {{ r }}
+                </button>
+            </div>
+        </div>
+        <!-- Dropdown catégories -->
+        <div class="dropdown" *ngFor="let cat of categories">
+
+            <button class="dropbtn">
+                {{ cat.name }}
+            </button>
+
+            <div class="dropdown-content">
+                <button *ngFor="let child of cat.children" (click)="selectedSubCategory = child">
+                    {{ child }}
+                </button>
+            </div>
+        </div>
+    </nav>
+</div>
