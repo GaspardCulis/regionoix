@@ -44,4 +44,5 @@ utoipa-actix-web = "0.1"
 utoipa-swagger-ui = { version = "9.0", features = ["actix-web"] }
 chrono = "0.4"
 
+tokio = { version = "1.47", features = ["full"] }
 meilisearch-sdk = "0.29"
