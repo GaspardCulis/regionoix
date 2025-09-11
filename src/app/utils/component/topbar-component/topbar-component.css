@@ -40,18 +40,6 @@
     background-color: var(--color-bg);
 }
 
-.user-basket,
-.user-profile {
-    background: none;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    margin-left: 0.5rem;
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
-
 .user-basket img {
     width: 40px;
     height: 40px;
