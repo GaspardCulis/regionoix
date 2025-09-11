@@ -9,10 +9,15 @@
 in {
   sops.secrets."backend/database_url".owner = "regionoix";
   sops.secrets."backend/secret_key".owner = "regionoix";
+  sops.secrets."backend/meilisearch_admin_key".owner = "regionoix";
+  sops.secrets."backend/meilisearch_search_key".owner = "regionoix";
   sops.templates."regionoix-backend.env" = {
     content = ''
       DATABASE_URL=${config.sops.placeholder."backend/database_url"}
       SECRET_KEY=${config.sops.placeholder."backend/secret_key"}
+
+      MEILISEARCH_ADMIN_KEY=${config.sops.placeholder."backend/meilisearch_admin_key"}
+      MEILISEARCH_SEARCH_KEY=${config.sops.placeholder."backend/meilisearch_search_key"}
     '';
     owner = "regionoix";
   };
@@ -52,6 +57,7 @@ in {
       API_HOST = "127.0.0.1";
       API_PORT = toString port;
       REDIS_URL = "redis://127.0.0.1:6379";
+      MEILISEARCH_URL = "http://127.0.0.1:${toString config.services.meilisearch.listenPort}";
     };
   };
 }
