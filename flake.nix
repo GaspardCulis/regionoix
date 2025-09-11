@@ -94,7 +94,7 @@
           sops
           sops-nix.packages."${system}".sops-install-secrets
           nix
-          openssh
+          openssh_gssapi
         ];
         nativeBuildInputs = with pkgs; [
           rust
