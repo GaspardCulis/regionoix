@@ -1,5 +1,5 @@
 <div class="topbar">
-    <img class="logo" src={{pathLogo}} alt="Logo de la region">
+    <img class="logo" src={{pathLogo}} (click)="goHome()" alt="Logo de la region">
     <h1 class="title">{{ title }}</h1>
     <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher...">
     <div class="topbar-actions">

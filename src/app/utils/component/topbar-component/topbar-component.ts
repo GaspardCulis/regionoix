@@ -34,4 +34,8 @@ export class TopbarComponent {
   goToBasket() {
     this.router.navigate(['/basket'])
   }
+
+  goHome() {
+    this.router.navigate(['/showcase']);
+  }
 }
