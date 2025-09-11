@@ -32,7 +32,7 @@ in {
     masterKeyEnvironmentFile = config.sops.templates."meilisearch-masterkey.env".path;
   };
 
-  # User fix
+  # Override default DynamicUser to use custom meilisearch user and group for proper access to SOPS-managed secrets
   systemd.services.meilisearch.serviceConfig = {
     User = "meilisearch";
     Group = "meilisearch";
