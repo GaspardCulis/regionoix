@@ -18,10 +18,12 @@ export class PaymentPage implements OnInit {
   @Input() totalPrice!: number;
   client!: UserModel;
   address: AddressModel = {
-    address: '',
     city: '',
-    postalCode: '',
-    country: ''
+    country: '',
+    firstname: '',
+    lastname: '',
+    postal_code: '',
+    street: ''
   };
 
   private readonly router = inject(Router);
@@ -107,7 +109,7 @@ export class PaymentPage implements OnInit {
 
     let month = parseInt(value.substring(0, 2), 10);
     if (month === 0) month = 1;
-    if (month > 12) month = 12; 
+    if (month > 12) month = 12;
 
     value = month.toString().padStart(2, '0') + value.substring(2);
 

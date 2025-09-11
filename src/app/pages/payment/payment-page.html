@@ -13,12 +13,12 @@
 
         <label class="form-control">
             <span class="label-text">Nom</span>
-            <input type="text" [(ngModel)]="client.lastname" name="lastname" class="input" />
+            <input type="text" [(ngModel)]="address.lastname" name="lastname" class="input" />
         </label>
 
         <label class="form-control">
             <span class="label-text">Prénom</span>
-            <input type="text" [(ngModel)]="client.firstname" name="firstname" class="input" />
+            <input type="text" [(ngModel)]="address.firstname" name="firstname" class="input" />
         </label>
 
         <label class="form-control">
@@ -43,7 +43,7 @@
 
         <label class="form-control">
             <span class="label-text">Rue</span>
-            <input type="text" [(ngModel)]="address.address" name="address" required class="input" />
+            <input type="text" [(ngModel)]="address.street" name="address" required class="input" />
         </label>
 
         <label class="form-control">
@@ -53,7 +53,7 @@
 
         <label class="form-control">
             <span class="label-text">Code postal</span>
-            <input type="text" [(ngModel)]="address.postalCode" name="postalCode" required class="input" />
+            <input type="text" [(ngModel)]="address.postal_code" name="postalCode" required class="input" />
         </label>
 
         <label class="form-control">
