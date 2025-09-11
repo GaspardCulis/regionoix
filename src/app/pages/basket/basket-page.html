@@ -5,6 +5,9 @@
     </app-product-list-item-component>
     <div class="basket-actions">
         <p>Total {{getTotalPrice() | number:'1.2-2' }} €</p>
-        <button class="btn-validate" [routerLink]="['/payment']">Commander</button>
+        <div class="actions">
+            <button class="btn-validate" [routerLink]="['/payment']">Commander</button>
+            <button class="btn-empty">Vider le panier</button>
+        </div>
     </div>
 </div>
