@@ -1,4 +1,4 @@
-import { Component, inject, Input, Output } from '@angular/core';
+import { Component, Input, Output, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,17 +14,17 @@ import { AuthCookieService } from '../../../services/auth-cookie';
   templateUrl: './topbar-component.html',
   styleUrl: './topbar-component.css'
 })
-export class TopbarComponent {
+export class TopbarComponent implements OnInit {
+  private router = inject(Router);
+  private authCookieService = inject(AuthCookieService);
+
   @Input() pathLogo!: string;
   @Input() title!: string;
   @Input() basketCount = 0;
   @Input() user!: string | null;
   @Output() searchText = '';
 
-  constructor(
-    private router: Router,
-    private authCookieService: AuthCookieService
-  ) {
+  ngOnInit(): void {
     this.authCookieService.user$.subscribe(user => {
       this.user = user;
     });
