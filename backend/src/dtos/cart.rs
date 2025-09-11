@@ -1,4 +1,4 @@
-use sea_orm::{DerivePartialModel, EntityTrait as _, ModelTrait as _};
+use sea_orm::{DbErr, DerivePartialModel, EntityTrait as _, ModelTrait as _};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -19,7 +19,7 @@ pub struct CartDto {
 impl DtoTrait for CartDto {}
 
 impl PartialDto for CartDto {
-    async fn finalize(mut self, db: &sea_orm::DatabaseConnection) -> crate::Result<Self> {
+    async fn finalize(mut self, db: &sea_orm::DatabaseConnection) -> Result<Self, DbErr> {
         let cart = cart::Entity::find_by_id(self.id)
             .one(db)
             .await?

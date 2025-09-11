@@ -1,48 +1,43 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { BasketResponse } from '../models/basket-model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BasketService {
-  private readonly endpoint = 'api/basket/';
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = '/api/basket';
 
-  private readonly httpClient = inject(HttpClient);
-
-  public getBasketDetails(): Observable<BasketResponse> {
-    const url = `${this.endpoint}`;
-    return this.httpClient.get<BasketResponse>(url);
+  getBasket(): Observable<BasketResponse> {
+    return this.http.get<BasketResponse>(this.apiUrl);
   }
 
-  public emptyBasket(): Observable<object> {
-    const url = `${this.endpoint}`;
-    return this.httpClient.delete<object>(url);
+  addItem(product_id: number, quantity: number) {
+    return this.getBasket().pipe(
+      switchMap((basket) => {
+        const existing = basket.lines.find(line => line.product.id === product_id);
+        if (existing) {
+          const newQuantity = existing.quantity + quantity;
+          return this.updateItem(product_id, newQuantity);
+        } else {
+          return this.http.post(this.apiUrl + '/items', { product_id, quantity });
+        }
+      })
+    );
   }
 
-  public getNumberOfItems(): Observable<number> {
-    const url = `${this.endpoint}count`;
-    return this.httpClient.get<number>(url);
+  updateItem(product_id: number, quantity: number) {
+    return this.http.patch(this.apiUrl + `/items/${product_id}`, { quantity });
   }
 
-  public addProduct(): Observable<object> {
-    const url = `${this.endpoint}items`;
-    return this.httpClient.post<object>(url, {});
+  removeItem(product_id: number) {
+    return this.http.delete(this.apiUrl + `/items/${product_id}`);
   }
 
-  public removeProduct(id: number): Observable<object> {
-    const url = `${this.endpoint}items/${id}`;
-    return this.httpClient.delete<object>(url);
+  empty() {
+    return this.http.delete(this.apiUrl);
   }
 
-  public updateProductQuantity(id: number): Observable<object> {
-    const url = `${this.endpoint}items/${id}`;
-    return this.httpClient.patch<object>(url, {});
-  }
-
-  public orderBasket(): Observable<object> {
-    const url = `${this.endpoint}order`;
-    return this.httpClient.post<object>(url, {});
-  }
 }

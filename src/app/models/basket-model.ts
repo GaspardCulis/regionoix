@@ -1,4 +1,4 @@
-import { Product } from "../utils/model/product-model";
+import { Product } from "./product-model";
 
 export interface BasketLine {
     product: Product;

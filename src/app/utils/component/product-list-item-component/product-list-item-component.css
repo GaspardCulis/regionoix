@@ -34,6 +34,29 @@
     margin-bottom: 0.5rem;
 }
 
+.qty-control {
+    display: inline-block;
+    width: auto;
+    align-items: center;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: var(--color-primary-pale);
+    color: var(--color-text-muted);
+}
+
+.qty-btn {
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.qty-btn:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+}
+
 .subtotal {
     font-weight: bold;
     font-size: 0.95rem;

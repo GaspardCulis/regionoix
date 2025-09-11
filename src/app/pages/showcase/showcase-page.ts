@@ -3,10 +3,10 @@ import { ProductCardComponent } from '../../utils/component/product-card-compone
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
-import { Product } from '../../utils/model/product-model';
-import { ProductService } from '../../utils/services/product-service';
-import { BasketService } from '../../utils/services/basket-service';
-
+import { Product } from '../../models/product-model';
+import { BasketService } from '../../services/basket-service';
+import { ProductService } from '../../services/product-service';
+import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-showcase',
@@ -19,10 +19,11 @@ import { BasketService } from '../../utils/services/basket-service';
 export class ShowcasePage implements OnInit {
   private basketService = inject(BasketService);
   private productService = inject(ProductService);
+  private snackbarService = inject(SnackbarService);
 
   products: Product[] = [];
   categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
-  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace'];
+  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
 
   selectedCategory = '';
   selectedRegion = '';
@@ -38,17 +39,23 @@ export class ShowcasePage implements OnInit {
   }
 
   addItem(productId: number) {
-    this.basketService.addItem(productId).subscribe({
-      next: () => console.log('Product add to basket'),
-      error: (err) => console.error(err)
+    this.basketService.addItem(productId, 1).subscribe({
+      next: () => {
+        console.log('Product add to basket');
+        this.snackbarService.show('Produit ajouté au panier ✅', 'success');
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackbarService.show('Stock insuffisant !', 'error');
+      }
     });
   }
 
   get filteredProducts() {
     return this.products.filter(p => {
       return (
-        (!this.selectedCategory || p.category_id === +this.selectedCategory) &&
-        (!this.selectedRegion || p.region_id === +this.selectedRegion) &&
+        (!this.selectedCategory || p.category.name === this.selectedCategory) &&
+        (!this.selectedRegion || p.region.name === this.selectedRegion) &&
         (!this.maxPrice || p.price <= this.maxPrice)
       );
     });
