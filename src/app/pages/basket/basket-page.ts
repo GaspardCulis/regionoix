@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
-import { BasketService } from '../../utils/services/basket-service';
 import { BasketLine } from '../../models/basket-model';
+import { BasketService } from '../../services/basket-service';
 
 @Component({
   selector: 'app-basket',

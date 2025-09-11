@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, switchMap } from 'rxjs';
-import { BasketResponse } from '../../models/basket-model';
+import { BasketResponse } from '../models/basket-model';
 
 @Injectable({
   providedIn: 'root'
