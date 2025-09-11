@@ -9,6 +9,7 @@ pub mod cart_line;
 pub mod category;
 pub mod product;
 pub mod region;
+pub mod subcategory;
 pub mod tag;
 
 pub trait DtoTrait: FromQueryResult + PartialModelTrait {
