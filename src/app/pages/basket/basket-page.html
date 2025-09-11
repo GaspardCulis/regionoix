@@ -7,7 +7,7 @@
         <p>Total {{getTotalPrice() | number:'1.2-2' }} €</p>
         <div class="actions">
             <button class="btn-validate" [routerLink]="['/payment']">Commander</button>
-            <button class="btn-empty">Vider le panier</button>
+            <button class="btn-empty" (click)="emptyBasket()">Vider le panier</button>
         </div>
     </div>
 </div>

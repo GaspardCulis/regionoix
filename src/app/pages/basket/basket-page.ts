@@ -45,4 +45,9 @@ export class BasketPage implements OnInit {
   changeQuantity(productId: number, quantity: number) {
     this.basketService.updateItem(productId, quantity).subscribe(() => this.loadBasket());
   }
+
+  emptyBasket() {
+    this.basketService.empty().subscribe();
+    this.loadBasket();
+  }
 }
