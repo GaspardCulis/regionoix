@@ -1,9 +1,9 @@
 <li class="list-row">
     <figure>
-        <img [src]="image" alt="{{ title }}" />
+        <img [src]="image" alt="{{ name }}" appDefaultImage />
     </figure>
     <div class="content">
-        <div class="title">{{ title }}</div>
+        <div class="name">{{ name }}</div>
 
         <div class="info">
             <p class="price">{{ price }} €</p>
@@ -14,7 +14,7 @@
         </div>
 
         <div class="list-action">
-            <button class="btn">Supprimer</button>
+            <button class="btn" (click)="onRemoveFromBasket()">Supprimer</button>
         </div>
     </div>
 </li>

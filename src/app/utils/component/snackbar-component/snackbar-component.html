@@ -1,0 +1,8 @@
+<div *ngIf="message" class="snackbar-container" [ngClass]="type">
+  <span class="snackbar-message">{{ message }}</span>
+
+  <button class="snackbar-close" (click)="close()" aria-label="Close">
+    ✖
+  </button>
+</div>
+

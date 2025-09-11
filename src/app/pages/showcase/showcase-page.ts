@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProductCardComponent } from '../../utils/component/product-card-component/product-card-component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { OnInit } from '@angular/core';
+import { Product } from '../../models/product-model';
+import { BasketService } from '../../services/basket-service';
+import { ProductService } from '../../services/product-service';
 
 @Component({
   selector: 'app-showcase',
@@ -10,103 +14,40 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './showcase-page.html',
   styleUrl: './showcase-page.css'
 })
-export class ShowcasePage {
 
-  products = [
-    {
-      title: 'Produit A',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 9.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit B',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 19.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit C',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 29.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit D',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 39.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit E',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 49.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit A',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 9.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit B',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur condimentum  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 19.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit C',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur  ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 29.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit D',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 39.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-    {
-      title: 'Produit E',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      image: 'https://picsum.photos/400/250?random=1',
-      price: 49.99,
-      category: 'vin',
-      region: 'grenoble'
-    },
-  ]
+export class ShowcasePage implements OnInit {
+  private basketService = inject(BasketService);
+  private productService = inject(ProductService);
 
+  products: Product[] = [];
   categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
-  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace'];
+  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
 
   selectedCategory = '';
   selectedRegion = '';
   maxPrice: number | null = null;
 
+  ngOnInit(): void {
+    this.productService.getProducts().subscribe({
+      next: (data) => this.products = data,
+      error: (err) => {
+        console.error('Somethings went wrong during products recuperation', err);
+      }
+    });
+  }
+
+  addItem(productId: number) {
+    this.basketService.addItem(productId, 1).subscribe({
+      next: () => console.log('Product add to basket'),
+      error: (err) => console.error(err)
+    });
+  }
+
   get filteredProducts() {
     return this.products.filter(p => {
       return (
-        (!this.selectedCategory || p.category === this.selectedCategory) &&
-        (!this.selectedRegion || p.region === this.selectedRegion) &&
+        (!this.selectedCategory || p.category.name === this.selectedCategory) &&
+        (!this.selectedRegion || p.region.name === this.selectedRegion) &&
         (!this.maxPrice || p.price <= this.maxPrice)
       );
     });

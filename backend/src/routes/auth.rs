@@ -1,9 +1,9 @@
 use std::future::{Ready, ready};
 
-use crate::prelude::{sea_orm_active_enums::Roles, *};
 use actix_identity::Identity;
 use actix_web::{FromRequest, dev::Payload};
 use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
+use regionoix::prelude::{sea_orm_active_enums::Roles, *};
 use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
 
 use crate::{AppState, entities::user};
@@ -31,6 +31,8 @@ pub struct LoggedUser {
     pub id: i32,
     pub email: String,
     pub role: Roles,
+    pub firstname: Option<String>,
+    pub lastname: Option<String>,
 }
 
 impl FromRequest for LoggedUser {
@@ -86,6 +88,8 @@ async fn login(
         id: user.id,
         email: user.email,
         role: user.role,
+        lastname: user.lastname,
+        firstname: user.fistname,
     };
     let user_string = serde_json::to_string(&logged_user).unwrap();
     Identity::login(&request.extensions(), user_string).map_err(|err| anyhow::Error::new(err))?;

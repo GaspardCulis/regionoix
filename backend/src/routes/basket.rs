@@ -1,14 +1,16 @@
 use crate::{
+    AppState,
     dtos::{cart::CartDto, cart_line::CartLineDto},
     prelude::{sea_orm_active_enums::OrderStatus, *},
+    routes::auth::LoggedUser,
 };
 use actix_web::web;
 use chrono::{Duration, Utc};
 use sea_orm::{
     ActiveModelTrait,
     ActiveValue::{NotSet, Set},
-    ColumnTrait, EntityName as _, EntityTrait, ModelTrait, QueryFilter, QueryOrder, QuerySelect,
-    TransactionTrait,
+    ColumnTrait, EntityName as _, EntityTrait, ModelTrait, PaginatorTrait as _, QueryFilter,
+    QueryOrder, QuerySelect, TransactionTrait,
 };
 
 pub fn config(cfg: &mut ServiceConfig) {
@@ -17,7 +19,8 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(update_item_quantity)
         .service(remove_item)
         .service(empty)
-        .service(make_order);
+        .service(make_order)
+        .service(get_count);
 }
 
 #[utoipa::path(
@@ -400,4 +403,43 @@ async fn make_order(
     txn.commit().await?;
 
     Ok(HttpResponse::Ok().body("Order successfully created"))
+}
+
+#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
+struct CountBasket {
+    count: i32,
+}
+
+#[utoipa::path(
+    summary = "Returns basket count of current user",
+    description = "Returns count of differents products in cart of current user.",
+    tag="Basket",
+    responses(
+      (
+          status = 200,
+          description="Basket count successfully returned",
+          content_type = "application/json",
+          body=CountBasket,
+      ),
+))]
+#[get("/count")]
+async fn get_count(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
+    let db = &data.db;
+
+    let cart = cart::Entity::find()
+        .filter(cart::Column::UserId.eq(logged_user.id))
+        .one(db)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
+
+    // Get count of all cart lines with at least quantity of 1
+    let count = CartLine::find()
+        .filter(cart_line::Column::CartId.eq(cart.id))
+        .filter(cart_line::Column::Quantity.gte(1))
+        .count(db)
+        .await? as i32;
+
+    Ok(HttpResponse::Ok().json(CountBasket { count }))
 }

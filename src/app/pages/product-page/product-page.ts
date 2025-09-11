@@ -1,50 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  weight: number;
-  price: number;
-  image: string | null;
-  stock: number;
-  region_id: number;
-  brand_id: number;
-  category_id: number;
-}
+import { Product } from '../../models/product-model';
+import { BasketService } from '../../services/basket-service';
+import { ProductService } from '../../services/product-service';
 
 @Component({
   selector: 'app-product-page',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   templateUrl: './product-page.html',
-  styleUrl: './product-page.css'
+  styleUrls: ['./product-page.css']
 })
 export class ProductPage implements OnInit {
   product!: Product;
   quantity = 1;
-  private http = inject(HttpClient);
+
+  private basketService = inject(BasketService);
+  private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.http.get<Product>(`/api/products/${id}`)
-      .subscribe({
+    if (id) {
+      this.productService.getProductById(id).subscribe({
         next: (data) => {
           this.product = {
             ...data,
-            price: Number(data.price),
-            image: data.image ?? 'https://picsum.photos/400/250?random=1'
+            image: data.image ?? 'assets/default.png'
           };
         },
-        error: (err) => {
-          console.error('Erreur lors de la récupération du produit', err);
-        }
+        error: (err) => console.error('Erreur lors de la récupération du produit', err)
       });
+    }
+  }
+
+  addItem(productId: number) {
+    this.basketService.addItem(productId, this.quantity).subscribe({
+      next: () => console.log('Product add to basket'),
+      error: (err) => console.error(err)
+    });
   }
 
   increaseQuantity() {

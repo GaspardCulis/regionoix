@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-product-list-item-component',
@@ -9,9 +9,16 @@ import { Component, Input } from '@angular/core';
   styleUrl: './product-list-item-component.css'
 })
 export class ProductListItemComponent {
-  @Input() title!: string;
+  @Input() name!: string;
   @Input() image!: string;
   @Input() price!: number;
   @Input() quantity!: number;
+  @Input() id!: number;
+
+  @Output() removeFromBasket = new EventEmitter<number>();
+
+  onRemoveFromBasket() {
+    this.removeFromBasket.emit(this.id);
+  }
 }
 

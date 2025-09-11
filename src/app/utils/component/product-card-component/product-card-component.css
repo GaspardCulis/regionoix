@@ -39,12 +39,6 @@
     color: var(--color-text);
 }
 
-.card-content p {
-    margin-bottom: 0.5rem;
-    text-align: justify;
-    color: var(--color-text-muted);
-}
-
 .card-content .price {
     font-weight: bold;
     font-size: 1.125rem;
