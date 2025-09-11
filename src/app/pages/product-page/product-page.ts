@@ -62,23 +62,4 @@ export class ProductPage implements OnInit {
       this.quantity--;
     }
   }
-
-  showToast(message: string, type: 'success' | 'error') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
-
-    const toast = document.createElement('div');
-    toast.className = `alert shadow-lg ${type === 'success' ? 'alert-success' : 'alert-error'}`;
-    toast.innerHTML = `
-      <div>
-        <span>${message}</span>
-      </div>
-    `;
-
-    container.appendChild(toast);
-
-    setTimeout(() => {
-      container.removeChild(toast);
-    }, 3000);
-  }
 }
