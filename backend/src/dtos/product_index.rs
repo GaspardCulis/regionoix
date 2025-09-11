@@ -6,7 +6,7 @@ use crate::dtos::product::ProductDto;
 pub struct ProductIndex {
     pub id: i32,
     pub name: String,
-    pub decription: Option<String>,
+    pub description: Option<String>,
     pub weight: Option<f64>,
     pub price: f32,
     pub brand_name: Option<String>,
@@ -30,7 +30,7 @@ impl From<ProductDto> for ProductIndex {
         Self {
             id: value.id,
             name: value.name,
-            decription: value.description,
+            description: value.description,
             weight: value.weight,
             price: value.price,
             brand_name: if let Some(brand) = value.brand {
