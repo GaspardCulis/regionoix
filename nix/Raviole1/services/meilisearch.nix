@@ -9,7 +9,7 @@ in {
   sops.secrets."meilisearch/master_key".owner = "meilisearch";
   sops.templates."meilisearch-masterkey.env" = {
     content = ''
-      MEILI_MASTER_KEY=${config.sops.placeholder."postgres/password"}
+      MEILI_MASTER_KEY=${config.sops.placeholder."meilisearch/master_key"}
     '';
     owner = "meilisearch";
   };
