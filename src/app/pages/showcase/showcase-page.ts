@@ -3,10 +3,9 @@ import { ProductCardComponent } from '../../utils/component/product-card-compone
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
-import { Product } from '../../utils/model/product-model';
-import { ProductService } from '../../utils/services/product-service';
-import { BasketService } from '../../utils/services/basket-service';
-
+import { Product } from '../../models/product-model';
+import { BasketService } from '../../services/basket-service';
+import { ProductService } from '../../services/product-service';
 
 @Component({
   selector: 'app-showcase',
