@@ -37,8 +37,9 @@ export class BasketPage implements OnInit {
     this.router.navigate(['/payment']);
   }
 
-  remove(productId: number) {
-    this.basketService.removeItem(productId).subscribe(() => this.loadBasket());
+  removeItem(productId: number) {
+    this.basketService.removeItem(productId).subscribe();
+    this.loadBasket()
   }
 
   changeQuantity(productId: number, quantity: number) {

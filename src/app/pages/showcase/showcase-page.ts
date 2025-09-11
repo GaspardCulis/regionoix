@@ -38,7 +38,7 @@ export class ShowcasePage implements OnInit {
   }
 
   addItem(productId: number) {
-    this.basketService.addItem(productId).subscribe({
+    this.basketService.addItem(productId, 1).subscribe({
       next: () => console.log('Product add to basket'),
       error: (err) => console.error(err)
     });

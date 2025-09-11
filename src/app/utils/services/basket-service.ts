@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { BasketResponse } from '../../models/basket-model';
 
 @Injectable({
@@ -14,8 +14,18 @@ export class BasketService {
     return this.http.get<BasketResponse>(this.apiUrl);
   }
 
-  addItem(product_id: number, quantity = 1) {
-    return this.http.post(this.apiUrl + '/items', { product_id, quantity });
+  addItem(product_id: number, quantity: number) {
+    return this.getBasket().pipe(
+      switchMap((basket) => {
+        const existing = basket.lines.find(line => line.product.id === product_id);
+        if (existing) {
+          const newQuantity = existing.quantity + quantity;
+          return this.updateItem(product_id, newQuantity);
+        } else {
+          return this.http.post(this.apiUrl + '/items', { product_id, quantity });
+        }
+      })
+    );
   }
 
   updateItem(product_id: number, quantity: number) {
