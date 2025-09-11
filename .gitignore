@@ -49,3 +49,6 @@ Thumbs.db
 
 # Environnement variable
 .env
+
+# OpenApi generated files
+/src/app/api-client
