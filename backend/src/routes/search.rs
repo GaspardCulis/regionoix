@@ -16,8 +16,9 @@ pub fn config(cfg: &mut ServiceConfig) {
 struct SearchQuery {
     /// The raw search query
     query: String,
-    /// Search filters in SQL form (eg: id > 1 AND genres = Action).
+    /// Search filters in this example form: `id > 1 AND genres = Action`.
     /// The list of filterable attributes is `["weight", "price", "categories", "tags"]`.
+    /// See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
     filters: Option<String>,
 }
 
