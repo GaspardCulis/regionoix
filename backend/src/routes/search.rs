@@ -51,7 +51,7 @@ async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Resul
         .search()
         .with_query(&query.query)
         .with_filter(query.filters.as_ref().unwrap_or(&String::new()))
-        .with_sort(&[query.sort.as_ref().unwrap_or(&String::new()).as_str()])
+        .with_sort(&[query.sort.as_ref().map(|s| s.as_str()).unwrap_or("")])
         .execute::<ProductIndex>()
         .await
         .map_err(|e| anyhow::Error::from(e))?;
@@ -60,7 +60,7 @@ async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Resul
     let id_to_order: HashMap<_, _> = ids.iter().enumerate().map(|(i, &id)| (id, i)).collect();
 
     let mut product_results = Product::find()
-        .filter(product::Column::Id.is_in(ids.clone()))
+        .filter(product::Column::Id.is_in(ids))
         .into_dto::<ProductDto>()
         .all(db)
         .await?;
