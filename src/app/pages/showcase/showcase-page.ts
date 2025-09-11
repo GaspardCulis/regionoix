@@ -47,8 +47,8 @@ export class ShowcasePage implements OnInit {
   get filteredProducts() {
     return this.products.filter(p => {
       return (
-        (!this.selectedCategory || p.category_id === +this.selectedCategory) &&
-        (!this.selectedRegion || p.region_id === +this.selectedRegion) &&
+        (!this.selectedCategory || p.category.id === +this.selectedCategory) &&
+        (!this.selectedRegion || p.region.id === +this.selectedRegion) &&
         (!this.maxPrice || p.price <= this.maxPrice)
       );
     });

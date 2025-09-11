@@ -6,7 +6,27 @@ export interface Product {
     price: number;
     image: string;
     stock: number;
-    region_id: number;
-    brand_id: number;
-    category_id: number;
+
+    brand: {
+        id: number;
+        name: string;
+        description?: string;
+    };
+
+    region: {
+        id: number;
+        name: string;
+        description?: string;
+    };
+
+    category: {
+        id: number;
+        name: string;
+        category_parent?: number | null;
+    };
+
+    tags: {
+        id: number;
+        name: string;
+    }[];
 }
