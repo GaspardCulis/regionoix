@@ -63,7 +63,6 @@ export class PaymentPage implements OnInit {
   }
 
   finish() {
-    this.snackBarService.show('Commande validée ✅', "success");
     this.router.navigate(['/showcase']);
   }
 
