@@ -9,46 +9,53 @@
                 <span> - </span>
                 <input type="number" [(ngModel)]="maxPrice" placeholder="Max" />
             </div>
-        </label>
+            <label class="price-filter">
+                Prix :
+                <div class="inputs">
+                    <input type="number" [(ngModel)]="minPrice" placeholder="Min" />
+                    <span> - </span>
+                    <input type="number" [(ngModel)]="maxPrice" placeholder="Max" />
+                </div>
+            </label>
 
-        <fieldset class="availability">
-            <legend>Disponibilité</legend>
-            <label>
-                <input type="checkbox" [(ngModel)]="filterAvailable" />
-                En stock
-            </label>
-            <label>
-                <input type="checkbox" [(ngModel)]="filterUnavailable" />
-                Rupture
-            </label>
-        </fieldset>
+            <fieldset class="availability">
+                <legend>Disponibilité</legend>
+                <label>
+                    <input type="checkbox" [(ngModel)]="filterAvailable" />
+                    En stock
+                </label>
+                <label>
+                    <input type="checkbox" [(ngModel)]="filterUnavailable" />
+                    Rupture
+                </label>
+            </fieldset>
 
-        <!-- Catégories -->
-        <fieldset class="availability">
-            <legend>Catégories</legend>
-            <label *ngFor="let c of categories">
-                <input type="checkbox" [value]="c.name" (change)="toggleCategory(c.name, $event.target.checked)" />
-                {{ c.name }}
-            </label>
-        </fieldset>
+            <!-- Catégories -->
+            <fieldset class="availability">
+                <legend>Catégories</legend>
+                <label *ngFor="let c of categories">
+                    <input type="checkbox" [value]="c.name" (change)="toggleCategory(c.name, $event.target.checked)" />
+                    {{ c.name }}
+                </label>
+            </fieldset>
 
-        <!-- Régions -->
-        <fieldset class="availability">
-            <legend>Régions</legend>
-            <label *ngFor="let r of regions">
-                <input type="checkbox" [value]="r.name" (change)="toggleRegion(r.name, $event.target.checked)" />
-                {{ r.name }}
-            </label>
-        </fieldset>
+            <!-- Régions -->
+            <fieldset class="availability">
+                <legend>Régions</legend>
+                <label *ngFor="let r of regions">
+                    <input type="checkbox" [value]="r.name" (change)="toggleRegion(r.name, $event.target.checked)" />
+                    {{ r.name }}
+                </label>
+            </fieldset>
 
-        <!-- Propriétés -->
-        <fieldset class="availability">
-            <legend>Propriétés</legend>
-            <label *ngFor="let t of tags">
-                <input type="checkbox" [value]="t.name" (change)="toggleTag(t.name, $event.target.checked)" />
-                {{ t.name }}
-            </label>
-        </fieldset>
+            <!-- Propriétés -->
+            <fieldset class="availability">
+                <legend>Propriétés</legend>
+                <label *ngFor="let t of tags">
+                    <input type="checkbox" [value]="t.name" (change)="toggleTag(t.name, $event.target.checked)" />
+                    {{ t.name }}
+                </label>
+            </fieldset>
     </aside>
 
     <main class="product-grid">
