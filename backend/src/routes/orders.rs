@@ -6,7 +6,33 @@ use chrono::Utc;
 use sea_orm::{ColumnTrait, EntityTrait as _, QueryFilter};
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get_in_progress).service(get_past);
+    cfg.service(get).service(get_in_progress).service(get_past);
+}
+
+#[utoipa::path(
+    summary="Returns orders",
+    description="Orders for current user",
+    tag="Orders",
+    responses(
+        (
+            status=200,
+            description="Orders successfully returned",
+            content_type="application/json",
+            body=[OrderDto],
+        ),
+    ),
+)]
+#[get("")]
+pub async fn get(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
+    let db = &data.db;
+
+    let orders: Vec<OrderDto> = Order::find()
+        .filter(order::Column::UserId.eq(logged_user.id))
+        .into_dto()
+        .all(db)
+        .await?;
+
+    Ok(HttpResponse::Ok().json(orders))
 }
 
 #[utoipa::path(
