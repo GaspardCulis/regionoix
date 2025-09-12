@@ -19,7 +19,7 @@ pub fn config(cfg: &mut ServiceConfig) {
             status=200,
             description="Product list successfully returned",
             content_type="application/json",
-            body=ProductDto,
+            body=Vec<ProductDto>,
             example=json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region_id": 1, "brand_id" : 5, "category_id": null }]),
         ),
     ),

@@ -16,7 +16,7 @@ pub fn config(cfg: &mut ServiceConfig) {
             status=200,
             description="Region list successfully returned",
             content_type="application/json",
-            body=CategoryDto,
+            body=Vec<RegionDto>,
             example=json!([{"id": 1, "name": "Auvergne-Rhône-Alpes", "description": null}, {"id": 2, "name": "Grand Est", "description": null}]),
         ),
     ),

@@ -18,7 +18,7 @@ pub fn config(cfg: &mut ServiceConfig) {
             status=200,
             description="Orders successfully returned",
             content_type="application/json",
-            body=[OrderDto],
+            body=Vec<OrderDto>,
         ),
     ),
 )]
@@ -50,7 +50,7 @@ pub async fn get(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result
             status=200,
             description="Order list in progress successfully returned",
             content_type="application/json",
-            body=[OrderDto],
+            body=Vec<OrderDto>,
         ),
     ),
 )]
@@ -87,7 +87,7 @@ pub async fn get_in_progress(
             status=200,
             description="Order completed list successfully returned",
             content_type="application/json",
-            body=[OrderDto],
+            body=Vec<OrderDto>,
         ),
     ),
 )]

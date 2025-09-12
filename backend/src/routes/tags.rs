@@ -16,7 +16,7 @@ pub fn config(cfg: &mut ServiceConfig) {
             status=200,
             description="Tag list successfully returned",
             content_type="application/json",
-            body=CategoryDto,
+            body=Vec<TagDto>,
             example=json!([{"id": 1, "name": "Vegan"}, {"id": 2, "name": "Végétarien"}]),
         ),
     ),
