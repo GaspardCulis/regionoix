@@ -46,8 +46,9 @@ async fn upload(
     data: Data<AppState>,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let bucket = &data.s3.0;
-    let credentials = &data.s3.1;
+    let bucket = &data.s3.api_bucket;
+    let web_bucket = &data.s3.web_bucket;
+    let credentials = &data.s3.credentials;
 
     let client = Client::new();
 
@@ -119,10 +120,9 @@ async fn upload(
 
     info!("Upload successful!");
 
-    let upload_url = format!(
-        "https://images-bucket.s3web.regionoix.gasdev.fr/{}",
-        image_name
-    );
+    let upload_url = web_bucket
+        .object_url(&image_name)
+        .map_err(|e| anyhow::Error::new(e))?;
 
     info!("Begginning INSERT new product to database");
     let meta = form.meta;
@@ -136,11 +136,11 @@ async fn upload(
         stock: Set(meta.stock.to_owned()),
         region_id: Set(meta.region_id.to_owned()),
         category_id: Set(meta.category_id.to_owned()),
-        image: Set(Some(upload_url)),
+        image: Set(Some(upload_url.to_string())),
         ..Default::default()
     };
 
-    new_product.save(db).await?;
+    new_product.save(&db.conn).await?;
 
     info!("Successfully created new product");
     Ok(HttpResponse::Ok().finish())

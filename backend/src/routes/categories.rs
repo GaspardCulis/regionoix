@@ -24,7 +24,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[get("")]
 pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let categories: Vec<CategoryDto> = Category::find().into_dto().all(db).await?;
+    let categories: Vec<CategoryDto> = Category::find().into_dto().all(&db.conn).await?;
 
     Ok(HttpResponse::Ok().json(categories))
 }
@@ -49,11 +49,11 @@ pub async fn get_parents(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let categories_parents: Vec<CategoryDto> = Category::find()
         .filter(category::Column::CategoryParent.is_null())
         .into_dto()
-        .all(db)
+        .all(&db.conn)
         .await?;
 
     for category in categories_parents {
-        result.push(category.finalize(db).await?);
+        result.push(category.finalize(&db.conn).await?);
     }
 
     Ok(HttpResponse::Ok().json(result))

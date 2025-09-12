@@ -29,13 +29,13 @@ pub async fn get(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result
     let orders: Vec<OrderDto> = Order::find()
         .filter(order::Column::UserId.eq(logged_user.id))
         .into_dto()
-        .all(db)
+        .all(&db.conn)
         .await?;
 
     let mut results: Vec<OrderDto> = Vec::new();
 
     for o in orders {
-        results.push(o.finalize(db).await?);
+        results.push(o.finalize(&db.conn).await?);
     }
 
     Ok(HttpResponse::Ok().json(results))
@@ -66,13 +66,13 @@ pub async fn get_in_progress(
         .filter(order::Column::UserId.eq(logged_user.id))
         .filter(order::Column::ArrivalDate.gte(today))
         .into_dto()
-        .all(db)
+        .all(&db.conn)
         .await?;
 
     let mut results: Vec<OrderDto> = Vec::new();
 
     for o in orders {
-        results.push(o.finalize(db).await?);
+        results.push(o.finalize(&db.conn).await?);
     }
 
     Ok(HttpResponse::Ok().json(results))
@@ -103,13 +103,13 @@ pub async fn get_past(
         .filter(order::Column::UserId.eq(logged_user.id))
         .filter(order::Column::ArrivalDate.lt(today))
         .into_dto()
-        .all(db)
+        .all(&db.conn)
         .await?;
 
     let mut results: Vec<OrderDto> = Vec::new();
 
     for o in orders {
-        results.push(o.finalize(db).await?);
+        results.push(o.finalize(&db.conn).await?);
     }
 
     Ok(HttpResponse::Ok().json(results))

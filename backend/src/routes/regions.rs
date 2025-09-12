@@ -24,7 +24,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[get("")]
 pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let regions: Vec<RegionDto> = Region::find().into_dto().all(db).await?;
+    let regions: Vec<RegionDto> = Region::find().into_dto().all(&db.conn).await?;
 
     Ok(HttpResponse::Ok().json(regions))
 }

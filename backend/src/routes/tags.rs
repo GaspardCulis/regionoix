@@ -24,7 +24,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[get("")]
 pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let tags: Vec<TagDto> = Tag::find().into_dto().all(db).await?;
+    let tags: Vec<TagDto> = Tag::find().into_dto().all(&db.conn).await?;
 
     Ok(HttpResponse::Ok().json(tags))
 }
