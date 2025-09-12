@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Product } from '../../models/product-model';
-import { BasketService } from '../../services/basket-service';
-import { ProductService } from '../../services/product-service';
 import { SnackbarService } from '../../services/snackbar-service';
+import { BasketService, ProductDto, ProductsService } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-product-page',
@@ -14,18 +12,18 @@ import { SnackbarService } from '../../services/snackbar-service';
   styleUrls: ['./product-page.css']
 })
 export class ProductPage implements OnInit {
-  product!: Product;
+  product!: ProductDto;
   quantity = 1;
 
   private basketService = inject(BasketService);
-  private productService = inject(ProductService);
+  private productService = inject(ProductsService);
   private route = inject(ActivatedRoute);
   private snackbarService = inject(SnackbarService);
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
-      this.productService.getProductById(id).subscribe({
+      this.productService.getById(id).subscribe({
         next: (data) => {
           this.product = {
             ...data,
@@ -38,7 +36,7 @@ export class ProductPage implements OnInit {
   }
 
   addItem(productId: number) {
-    this.basketService.addItem(productId, this.quantity).subscribe({
+    this.basketService.addItem({ product_id: productId, quantity: this.quantity }).subscribe({
       next: () => {
         this.snackbarService.show('Produit ajouté au panier ✅', 'success');
       },

@@ -2,7 +2,7 @@ import { Component, Input, Output, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthentificationService, CategoriesService, CategoryDto, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
+import { AuthentificationService, CategoriesService, CategoryDto, LoggedUser, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
 @Component({
   selector: 'app-topbar',
   standalone: true,
@@ -15,19 +15,20 @@ import { AuthentificationService, CategoriesService, CategoryDto, RegionDto, Reg
 })
 export class TopbarComponent implements OnInit {
   private router = inject(Router);
-  private authCookieService = inject(AuthentificationService);
+  private userService = inject(AuthentificationService);
 
   @Input() pathLogo!: string;
   @Input() title!: string;
   @Input() basketCount = 0;
-  @Input() user!: string | null;
-  @Output() searchText = '';
+  @Input() user!: LoggedUser | null;;
+  searchText = '';
 
   ngOnInit(): void {
-    this.authCookieService.user$.subscribe(user => {
-      this.user = user;
+    this.userService.status().subscribe({
+      next: (user) => this.user = user,
+      error: () => this.user = null
     });
-    this.categoryService.getHierarchy().subscribe({
+    this.categoryService.getParents().subscribe({
       next: (data) => {
         this.categories = data;
       },
@@ -35,7 +36,7 @@ export class TopbarComponent implements OnInit {
         console.error('Something went wrong during categories recuperation', err);
       }
     });
-    this.regionService.getRegions().subscribe({
+    this.regionService.get().subscribe({
       next: (data) => {
         this.regions = data;
       },

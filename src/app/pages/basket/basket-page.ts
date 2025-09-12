@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
-import { BasketLine } from '../../models/basket-model';
-import { BasketService } from '../../services/basket-service';
 import { BasketStateService } from '../../services/basket-state-service';
+import { BasketService, CartLineDto } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-basket',
@@ -18,7 +17,7 @@ export class BasketPage implements OnInit {
   private readonly basketState = inject(BasketStateService);
   private router = inject(Router);
 
-  lines: BasketLine[] = [];
+  lines: CartLineDto[] = [];
 
   ngOnInit(): void {
     this.loadBasket();
@@ -27,7 +26,7 @@ export class BasketPage implements OnInit {
   loadBasket() {
     this.basketService.getBasket().subscribe({
       next: (data) => {
-        this.lines = data.lines;
+        this.lines = data.lines!;
         this.basketState.refreshCount();
       },
       error: (err) => console.error('Error during basket recuperation', err)
@@ -48,7 +47,7 @@ export class BasketPage implements OnInit {
   }
 
   changeQuantity(productId: number, quantity: number) {
-    this.basketService.updateItem(productId, quantity).subscribe(() => this.loadBasket());
+    this.basketService.updateItemQuantity(productId, { quantity: quantity }).subscribe(() => this.loadBasket());
   }
 
   emptyBasket() {

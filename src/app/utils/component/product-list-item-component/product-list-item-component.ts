@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Product } from '../../../models/product-model';
+import { ProductDto } from '../../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-product-list-item-component',
@@ -10,7 +10,7 @@ import { Product } from '../../../models/product-model';
   styleUrl: './product-list-item-component.css'
 })
 export class ProductListItemComponent {
-  @Input() product!: Product;
+  @Input() product!: ProductDto;
   @Input() quantity!: number;
 
   @Output() removeFromBasket = new EventEmitter<number>();

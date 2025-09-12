@@ -3,10 +3,9 @@ import { ProductCardComponent } from '../../utils/component/product-card-compone
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
-import { Product } from '../../models/product-model';
 import { SnackbarService } from '../../services/snackbar-service';
 import { BasketStateService } from '../../services/basket-state-service';
-import { BasketService, CategoriesService, CategoryDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
+import { BasketService, CategoriesService, CategoryDto, ProductDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-showcase',
@@ -25,7 +24,7 @@ export class ShowcasePage implements OnInit {
   private tagService = inject(TagsService);
   private regionService = inject(RegionsService);
 
-  products: Product[] = [];
+  products: ProductDto[] = [];
   categories: CategoryDto[] = [];
   regions: RegionDto[] = [];
   tags: TagDto[] = [];
@@ -67,7 +66,7 @@ export class ShowcasePage implements OnInit {
   }
 
   addItem(productId: number) {
-    this.basketService.addItem(productId, 1).subscribe({
+    this.basketService.addItem({ product_id: productId, quantity: 1 }).subscribe({
       next: () => {
         this.snackbarService.show('Produit ajouté au panier ✅', 'success');
         this.basketState.refreshCount();
@@ -116,10 +115,10 @@ export class ShowcasePage implements OnInit {
       if (p.price < this.minPrice || p.price > this.maxPrice) return false;
 
       // categories
-      if (this.selectedCategories.length && !this.selectedCategories.includes(p.category.name)) return false;
+      if (this.selectedCategories.length && !this.selectedCategories.includes(p.category!.name)) return false;
 
       // regions
-      if (this.selectedRegions.length && !this.selectedRegions.includes(p.region.name)) return false;
+      if (this.selectedRegions.length && !this.selectedRegions.includes(p.region!.name)) return false;
 
       // tags
       //TODO
