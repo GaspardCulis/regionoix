@@ -8,12 +8,14 @@ import { NoAuthGuard } from './services/no-auth-guard';
 import { AuthGuard } from './services/auth-guard';
 import { AdminGuard } from './services/auth-admin';
 import { BackofficeDashboard } from './pages/backoffice-dashboard/backoffice-dashboard';
+import { BackofficeProducts } from './pages/backoffice-products/backoffice-products';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'showcase', pathMatch: 'full' },
     { path: 'showcase', component: ShowcasePage },
     { path: 'basket', component: BasketPage, canActivate: [AuthGuard] },
     { path: 'backoffice', component: BackofficeDashboard, canActivate: [AdminGuard] },
+    { path: 'backoffice/products', component: BackofficeProducts },
     { path: 'payment', component: PaymentPage, canActivate: [AuthGuard] },
     { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
     { path: 'products/:id', component: ProductPage }

@@ -1,0 +1,39 @@
+<h1 class="text-xl font-bold">Produits</h1>
+<div class="divider"></div>
+<div class="overflow-x-auto">
+    <table class="table table-zebra">
+        <!-- head -->
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Région</th>
+                <th>Catégorie</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (product of products; track product.id) {
+            <tr>
+                <th>{{product.id}}</th>
+                <th>{{product.name}}</th>
+                <th class="truncate">{{product.description}}</th>
+                <th>{{product.price}}</th>
+                <th>{{product?.region?.name}}</th>
+                <th>{{product?.category?.name}}</th>
+                <th>
+                    <div class="join">
+                        <button class="btn btn-outline btn-primary join-item">Voir</button>
+                        <button class="btn btn-outline btn-secondary join-item">Modifier</button>
+                        <button class="btn btn-outline btn-error join-item">Supprimer</button>
+                    </div>
+                </th>
+            </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
