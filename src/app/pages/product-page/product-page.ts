@@ -40,7 +40,6 @@ export class ProductPage implements OnInit {
   addItem(productId: number) {
     this.basketService.addItem(productId, this.quantity).subscribe({
       next: () => {
-        console.log('Product add to basket');
         this.snackbarService.show('Produit ajouté au panier ✅', 'success');
       },
       error: (err) => {
