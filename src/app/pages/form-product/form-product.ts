@@ -18,6 +18,7 @@ export class FormProduct {
 
 
   onBack(): void {
+    console.log("cc")
     this.router.navigate(['/backoffice/products']);
   }
 }
