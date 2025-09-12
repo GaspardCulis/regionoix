@@ -56,8 +56,8 @@ export class PaymentPage implements OnInit {
       this.basketService.getBasket().subscribe({
         next: (basket) => {
           console.log(basket);
-          }
         }
+      }
       );
 
       this.basketService.makeOrder(this.address).subscribe({
@@ -86,38 +86,37 @@ export class PaymentPage implements OnInit {
     this.snackBarService.show('Veuillez vous déconnecter et vous reconnecter avec le bon compte.', 'info');
   }
 
-  onCardInput(event: any) {
-    let value: string = event.target.value.replace(/\D/g, '');
+  onCardInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value: string = input.value.replace(/\D/g, '');
     value = value.substring(0, 16);
 
-    const parts = [];
+    const parts: string[] = [];
     for (let i = 0; i < value.length; i += 4) {
       parts.push(value.substring(i, i + 4));
     }
 
-    event.target.value = parts.join(' ');
+    input.value = parts.join(' ');
   }
 
-  onCVVInput(event: any) {
-    let value: string = event.target.value.replace(/\D/g, '');
-    event.target.value = value.substring(0, 3);
+  onCVVInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value: string = input.value.replace(/\D/g, '');
+    input.value = value.substring(0, 3);
   }
 
-  onExpiryInput(event: any) {
-    let value = event.target.value.replace(/\D/g, ''); // remove non-digits
+  onExpiryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '');
 
     if (value.length === 0) {
-      event.target.value = '';
+      input.value = '';
       return;
     }
 
     if (value.length === 1) {
       const firstDigit = parseInt(value[0], 10);
-      if (firstDigit === 0 || firstDigit === 1) {
-        event.target.value = value;
-      } else {
-        event.target.value = '0' + value[0];
-      }
+      input.value = (firstDigit === 0 || firstDigit === 1) ? value : '0' + value[0];
       return;
     }
 
@@ -131,7 +130,7 @@ export class PaymentPage implements OnInit {
       value = value.slice(0, 2) + '/' + value.slice(2, 4);
     }
 
-    event.target.value = value;
+    input.value = value;
   }
 
 }

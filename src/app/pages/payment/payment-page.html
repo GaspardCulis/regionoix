@@ -27,7 +27,8 @@
         </label>
 
         <p class="text-sm mt-1">
-            <a class="text-blue-600 hover:underline" (click)="wrongEmail()">
+            <a role="button" tabindex="0" class="text-blue-600 hover:underline" (click)="wrongEmail()"
+                (keyup.enter)="wrongEmail()" (keyup.space)="wrongEmail()">
                 Ce n'est pas votre email ?
             </a>
         </p>
@@ -87,7 +88,7 @@
             <label class="form-control">
                 <span class="label-text">CVV</span>
                 <input type="text" name="cvv" ngModel required maxlength="3" class="input" placeholder="123"
-                    (input)="onCVVInput($event)"/>
+                    (input)="onCVVInput($event)" />
             </label>
         </div>
 
