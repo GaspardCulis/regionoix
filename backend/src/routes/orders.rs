@@ -1,6 +1,6 @@
-use crate::AppState;
 use crate::dtos::order::OrderDto;
 use crate::prelude::*;
+use crate::{AppState, routes::auth::LoggedUser};
 use actix_web::{HttpResponse, get, web::Data};
 use chrono::Utc;
 use sea_orm::{ColumnTrait, EntityTrait as _, QueryFilter};

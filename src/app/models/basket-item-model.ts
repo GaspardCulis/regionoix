@@ -1,4 +1,5 @@
-import { Product } from '../../utils/model/product-model';
+import { Product } from "./product-model";
+
 
 export interface BasketItem extends Product {
     quantity: number;

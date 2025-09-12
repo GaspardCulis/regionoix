@@ -11,6 +11,13 @@
     color: var(--color-text);
 }
 
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
 .btn-validate {
     background-color: var(--color-primary);
     color: var(--color-bg);
@@ -25,6 +32,23 @@
 
 .btn-validate:hover {
     background-color: var(--color-primary-hover);
+    color: var(--color-bg);
+}
+
+.btn-empty {
+    background-color: var(--color-primary-light);
+    color: var(--color-bg);
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-empty:hover {
+    background-color: var(--color-primary-pale);
     color: var(--color-bg);
 }
 

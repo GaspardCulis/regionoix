@@ -1,9 +1,9 @@
 use std::future::{Ready, ready};
 
-use crate::prelude::{sea_orm_active_enums::Roles, *};
 use actix_identity::Identity;
 use actix_web::{FromRequest, dev::Payload};
 use argon2::{Argon2, PasswordHash, PasswordVerifier as _};
+use regionoix::prelude::{sea_orm_active_enums::Roles, *};
 use sea_orm::{ColumnTrait, EntityName, EntityTrait as _, QueryFilter};
 
 use crate::{AppState, entities::user};
