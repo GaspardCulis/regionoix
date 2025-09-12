@@ -4,6 +4,7 @@ import { ProductService } from '../../services/product-service';
 import { AdminMenu } from "../../utils/admin-menu/admin-menu";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-backoffice-products',
@@ -16,7 +17,7 @@ export class BackofficeProducts implements OnInit {
 
   products: Product[] = [];
   private readonly productService = inject(ProductService);
-
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
@@ -25,6 +26,10 @@ export class BackofficeProducts implements OnInit {
         console.error('Somethings went wrong during products recuperation', err);
       }
     });
+  }
+
+  onCreateProduct(): void {
+    this.router.navigate(["/backoffice/create-product"]);
   }
 
 }
