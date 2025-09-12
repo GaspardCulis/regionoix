@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
 import { BasketLine } from '../../models/basket-model';
 import { BasketService } from '../../services/basket-service';
+import { BasketStateService } from '../../services/basket-state-service';
 
 @Component({
   selector: 'app-basket',
@@ -14,6 +15,7 @@ import { BasketService } from '../../services/basket-service';
 })
 export class BasketPage implements OnInit {
   private basketService = inject(BasketService);
+  private readonly basketState = inject(BasketStateService);
   private router = inject(Router);
 
   lines: BasketLine[] = [];
@@ -24,7 +26,10 @@ export class BasketPage implements OnInit {
 
   loadBasket() {
     this.basketService.getBasket().subscribe({
-      next: (data) => this.lines = data.lines,
+      next: (data) => {
+        this.lines = data.lines;
+        this.basketState.refreshCount();
+      },
       error: (err) => console.error('Error during basket recuperation', err)
     });
   }
