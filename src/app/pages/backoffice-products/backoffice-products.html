@@ -5,7 +5,11 @@
 
     <div class="flex-1 p-6 bg-base-100">
 
-        <h1 class="text-xl font-bold">Produits</h1>
+        <div class="flex justify-between items-center">
+            <h1 class="text-xl font-bold">Produits</h1>
+            <button class="btn btn-primary"><fa-icon [icon]="faPlus" />Ajouter</button>
+        </div>
+
         <div class="divider"></div>
         <div class="overflow-x-auto">
             <table class="table table-zebra">
