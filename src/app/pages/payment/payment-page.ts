@@ -2,10 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserModel } from '../../models/user-model';
-import { AuthService } from '../../services/auth-service';
 import { SnackbarService } from '../../services/snackbar-service';
-import { AddressModel } from '../../models/address-model';
+import { AuthentificationService, BasketService, FormDataMakeOrder, LoggedUser } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-payment-page',
@@ -16,8 +14,8 @@ import { AddressModel } from '../../models/address-model';
 })
 export class PaymentPage implements OnInit {
   @Input() totalPrice!: number;
-  client!: UserModel;
-  address: AddressModel = {
+  client!: LoggedUser;
+  address: FormDataMakeOrder = {
     city: '',
     country: '',
     firstname: '',
@@ -27,8 +25,9 @@ export class PaymentPage implements OnInit {
   };
 
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
-  private readonly snackBarService = inject(SnackbarService)
+  private readonly authService = inject(AuthentificationService);
+  private readonly basketService = inject(BasketService);
+  private readonly snackBarService = inject(SnackbarService);
 
   currentStep = 1;
 
@@ -54,7 +53,22 @@ export class PaymentPage implements OnInit {
       this.currentStep++;
     }
     if (this.currentStep === 4) {
-      this.snackBarService.show('Paiement validé avec succès ✅', "success");
+      this.basketService.getBasket().subscribe({
+        next: (basket) => {
+          console.log(basket);
+          }
+        }
+      );
+
+      this.basketService.makeOrder(this.address).subscribe({
+        next: () => {
+          this.snackBarService.show('Paiement validé avec succès ✅', "success");
+        },
+        error: () => {
+          this.snackBarService.show('Une erreur est survenue lors de la validation du paiement. Veuillez réessayer.', 'error');
+          this.currentStep = 3;
+        },
+      });
     }
   }
 
