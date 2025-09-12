@@ -58,8 +58,8 @@
 
 .basket-count {
     position: absolute;
-    top: 34px;
-    right: -16px;
+    top: 4rem;
+    right: 10.5rem;
     color: var(--color-bg);
     background-color: var(--color-primary);
     border-radius: 50%;

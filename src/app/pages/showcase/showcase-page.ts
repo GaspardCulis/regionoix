@@ -7,6 +7,7 @@ import { Product } from '../../models/product-model';
 import { BasketService } from '../../services/basket-service';
 import { ProductService } from '../../services/product-service';
 import { SnackbarService } from '../../services/snackbar-service';
+import { BasketStateService } from '../../services/basket-state-service';
 
 @Component({
   selector: 'app-showcase',
@@ -17,9 +18,10 @@ import { SnackbarService } from '../../services/snackbar-service';
 })
 
 export class ShowcasePage implements OnInit {
-  private basketService = inject(BasketService);
-  private productService = inject(ProductService);
-  private snackbarService = inject(SnackbarService);
+  private readonly basketService = inject(BasketService);
+  private readonly productService = inject(ProductService);
+  private readonly snackbarService = inject(SnackbarService);
+  private readonly basketState = inject(BasketStateService);
 
   products: Product[] = [];
   categories = ['Boissons', 'Fromages', 'Charcuterie', 'Épicerie'];
@@ -41,11 +43,10 @@ export class ShowcasePage implements OnInit {
   addItem(productId: number) {
     this.basketService.addItem(productId, 1).subscribe({
       next: () => {
-        console.log('Product add to basket');
         this.snackbarService.show('Produit ajouté au panier ✅', 'success');
+        this.basketState.refreshCount();
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.snackbarService.show('Stock insuffisant !', 'error');
       }
     });
