@@ -42,6 +42,20 @@ label span.label-text {
     color: var(--color-text);
 }
 
+.input {
+    background-color: whitesmoke;
+    color: var(--color-text);
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
 
 /* Boutons */
 button.btn {
@@ -68,11 +82,73 @@ form>div {
     margin-top: 1rem;
 }
 
+/* Grid pour paiement */
+.grid {
+    display: grid;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.mb-3 {
+    margin-bottom: 0.75rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+/* Liens */
+a.text-blue-600 {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+a.text-blue-600:hover,
+a.text-blue-600:focus {
+    text-decoration: underline;
+}
+
+/* Placeholder style */
+.input::placeholder {
+    color: grey;
+    opacity: 1;
+}
+
 
 /* Responsive mobile */
 @media (max-width: 768px) {
     .purchaseForm {
         width: 90%;
         padding: 1.5rem;
+    }
+
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
     }
 }
