@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserStatusModel } from '../models/user-status-model';
+import { UserModel } from '../models/user-model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +21,8 @@ export class AuthService {
     return this.httpClient.post(url, {});
   }
 
-  public status(): Observable<UserStatusModel> {
+  public status(): Observable<UserModel> {
     const url = this.endpoint + 'status';
-    return this.httpClient.get<UserStatusModel>(url);
+    return this.httpClient.get<UserModel>(url);
   }
 }

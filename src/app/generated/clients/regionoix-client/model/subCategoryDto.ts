@@ -7,12 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SubCategoryDto } from './subCategoryDto';
 
 
-export interface CategoryDto { 
+export interface SubCategoryDto { 
     category_parent?: number | null;
-    childs?: Array<SubCategoryDto> | null;
     description?: string | null;
     id: number;
     name: string;
