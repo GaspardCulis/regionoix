@@ -4,13 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { Product } from '../../models/product-model';
-import { BasketService } from '../../services/basket-service';
-import { ProductService } from '../../services/product-service';
 import { SnackbarService } from '../../services/snackbar-service';
 import { BasketStateService } from '../../services/basket-state-service';
-import { Category, CategoryService } from '../../services/category-service';
-import { Tag, TagService } from '../../services/tag-service';
-import { Region, RegionService } from '../../services/region-service';
+import { BasketService, CategoriesService, CategoryDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-showcase',
@@ -22,17 +18,17 @@ import { Region, RegionService } from '../../services/region-service';
 
 export class ShowcasePage implements OnInit {
   private readonly basketService = inject(BasketService);
-  private readonly productService = inject(ProductService);
+  private readonly productService = inject(ProductsService);
   private readonly snackbarService = inject(SnackbarService);
   private readonly basketState = inject(BasketStateService);
-  private categoryService = inject(CategoryService);
-  private tagService = inject(TagService);
-  private regionService = inject(RegionService);
+  private categoryService = inject(CategoriesService);
+  private tagService = inject(TagsService);
+  private regionService = inject(RegionsService);
 
   products: Product[] = [];
-  categories: Category[] = [];
-  regions: Region[] = [];
-  tags: Tag[] = [];
+  categories: CategoryDto[] = [];
+  regions: RegionDto[] = [];
+  tags: TagDto[] = [];
   selectedCategories: string[] = [];
   selectedRegions: string[] = [];
   selectedTags: string[] = [];
@@ -44,7 +40,7 @@ export class ShowcasePage implements OnInit {
 
   ngOnInit(): void {
     //products
-    this.productService.getProducts().subscribe({
+    this.productService.get().subscribe({
       next: (data) => this.products = data,
       error: (err) => {
         console.error('Something went wrong during products recuperation', err);
@@ -52,19 +48,19 @@ export class ShowcasePage implements OnInit {
     });
 
     //categories
-    this.categoryService.getCategories().subscribe({
+    this.categoryService.get().subscribe({
       next: (data) => this.categories = data,
       error: (err) => console.error('Something went wrong during categories recuperation', err)
     });
 
     // regions
-    this.regionService.getRegions().subscribe({
+    this.regionService.get().subscribe({
       next: (data) => this.regions = data,
       error: (err) => console.error('Something went wrong during regions recuperation', err)
     });
 
     // tags
-    this.tagService.getTags().subscribe({
+    this.tagService.get().subscribe({
       next: (data) => this.tags = data,
       error: (err) => console.error('Something went wrong during tags recuperation', err)
     });

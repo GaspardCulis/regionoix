@@ -2,10 +2,7 @@ import { Component, Input, Output, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthCookieService } from '../../../services/auth-cookie';
-import { Category, CategoryService } from '../../../services/category-service';
-import { Region, RegionService } from '../../../services/region-service';
-
+import { AuthentificationService, CategoriesService, CategoryDto, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
 @Component({
   selector: 'app-topbar',
   standalone: true,
@@ -18,7 +15,7 @@ import { Region, RegionService } from '../../../services/region-service';
 })
 export class TopbarComponent implements OnInit {
   private router = inject(Router);
-  private authCookieService = inject(AuthCookieService);
+  private authCookieService = inject(AuthentificationService);
 
   @Input() pathLogo!: string;
   @Input() title!: string;
@@ -30,17 +27,6 @@ export class TopbarComponent implements OnInit {
     this.authCookieService.user$.subscribe(user => {
       this.user = user;
     });
-  }
-  private categoryService = inject(CategoryService);
-  private regionService = inject(RegionService)
-
-  categories: Category[] = [];
-  regions: Region[] = [];
-  selectedCategory = '';
-  selectedSubCategory = '';
-  selectedRegion = '';
-
-  ngOnInit(): void {
     this.categoryService.getHierarchy().subscribe({
       next: (data) => {
         this.categories = data;
@@ -58,6 +44,16 @@ export class TopbarComponent implements OnInit {
       }
     });
   }
+  private categoryService = inject(CategoriesService);
+  private regionService = inject(RegionsService)
+
+  categories: CategoryDto[] = [];
+  regions: RegionDto[] = [];
+  selectedCategory = '';
+  selectedSubCategory = '';
+  selectedRegion = '';
+
+
 
   onProfileClick() {
     if (this.user) {
