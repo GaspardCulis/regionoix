@@ -1,25 +1,11 @@
-<aside>
-    <div class="drawer lg:drawer-open">
-        <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content flex flex-col items-center justify-center">
-            <!-- Page content here -->
-            <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
-                Ouvrir le menu
-            </label>
-        </div>
-        <div class="drawer-side">
-            <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-            <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-                <!-- Sidebar content here -->
-                <li><a [routerLink]="['/backoffice/products']">Produits</a></li>
-                <li><a href="#">Clients</a></li>
-                <li><a href="#">Commandes</a></li>
-                <li><a href="#">Promotions</a></li>
-                <li><a href="#">Catégories </a></li>
-                <li><a href="#">Régions</a></li>
-            </ul>
-        </div>
-
-        coucou
-    </div>
-</aside>
+<div class="w-64 bg-base-200 p-4 min-h-screen">
+    <ul class="menu">
+        <li><a [routerLink]="['/backoffice']">Tableau de bord</a></li>
+        <li><a [routerLink]="['/backoffice/products']">Produits</a></li>
+        <li><a href="#">Clients</a></li>
+        <li><a href="#">Commandes</a></li>
+        <li><a href="#">Promotions</a></li>
+        <li><a href="#">Catégories </a></li>
+        <li><a href="#">Régions</a></li>
+    </ul>
+</div>
