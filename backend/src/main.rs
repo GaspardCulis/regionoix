@@ -2,6 +2,7 @@ use actix_identity::IdentityMiddleware;
 use actix_session::{SessionMiddleware, storage::RedisSessionStore};
 use actix_web::{App, HttpServer, cookie::Key, web::Data};
 use meilisearch_sdk::client::Client;
+use rusty_s3::{Bucket, Credentials};
 use sea_orm::{Database, DatabaseConnection};
 use tracing::info;
 use tracing_actix_web::TracingLogger;
@@ -18,6 +19,7 @@ use regionoix::*;
 pub struct AppState {
     db: DatabaseConnection,
     search: Client,
+    s3: (Bucket, Credentials),
 }
 
 #[derive(OpenApi)]
@@ -48,6 +50,20 @@ async fn main() -> std::io::Result<()> {
     info!("Connecting to Meilisearch indexer");
     let search = Client::new(secrets.meili.api_url, Some(secrets.meili.search_api_key)).unwrap();
 
+    info!("Connecting to S3 bucket");
+    let bucket = Bucket::new(
+        secrets
+            .s3
+            .endpoint_url
+            .parse()
+            .expect("endpoint is a valid Url"),
+        rusty_s3::UrlStyle::Path,
+        secrets.s3.bucket_name,
+        secrets.s3.region,
+    )
+    .expect("S3 endpoint URL has a valid scheme and host");
+    let credentials = Credentials::new(secrets.s3.access_key, secrets.s3.secret_access_key);
+
     info!("Starting server app");
 
     HttpServer::new(move || {
@@ -61,6 +77,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(AppState {
                 db: db.clone(),
                 search: search.clone(),
+                s3: (bucket.clone(), credentials.clone()),
             }))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
