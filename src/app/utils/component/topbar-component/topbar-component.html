@@ -30,8 +30,8 @@
                 Régions {{ selectedRegion ? ': ' + selectedRegion : '' }}
             </button>
             <div class="dropdown-content">
-                <button *ngFor="let r of regions" (click)="selectedRegion = r">
-                    {{ r }}
+                <button *ngFor="let r of regions" (click)="selectedRegion = r.name">
+                    {{ r.name }}
                 </button>
             </div>
         </div>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthCookieService } from '../../../services/auth-cookie';
 import { Category, CategoryService } from '../../../services/category-service';
+import { Region, RegionService } from '../../../services/region-service';
 
 @Component({
   selector: 'app-topbar',
@@ -31,9 +32,10 @@ export class TopbarComponent implements OnInit {
     });
   }
   private categoryService = inject(CategoryService);
+  private regionService = inject(RegionService)
 
   categories: Category[] = [];
-  regions = ['Sud-Ouest', 'Centre', 'Provence', 'Alsace', 'Normandie'];
+  regions: Region[] = [];
   selectedCategory = '';
   selectedSubCategory = '';
   selectedRegion = '';
@@ -45,6 +47,14 @@ export class TopbarComponent implements OnInit {
       },
       error: (err) => {
         console.error('Something went wrong during categories recuperation', err);
+      }
+    });
+    this.regionService.getRegions().subscribe({
+      next: (data) => {
+        this.regions = data;
+      },
+      error: (err) => {
+        console.error('Something went wrong during regions recuperation', err);
       }
     });
   }
