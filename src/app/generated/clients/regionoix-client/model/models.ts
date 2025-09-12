@@ -12,4 +12,5 @@ export * from './model';
 export * from './productDto';
 export * from './regionDto';
 export * from './roles';
+export * from './subCategoryDto';
 export * from './tagDto';
