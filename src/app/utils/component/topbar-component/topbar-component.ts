@@ -38,6 +38,17 @@ export class TopbarComponent implements OnInit {
   selectedSubCategory = '';
   selectedRegion = '';
 
+  ngOnInit(): void {
+    this.categoryService.getHierarchy().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (err) => {
+        console.error('Something went wrong during categories recuperation', err);
+      }
+    });
+  }
+
   onProfileClick() {
     if (this.user) {
       this.router.navigate(['/profile']); //TODO: replace with profile page

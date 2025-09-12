@@ -37,12 +37,14 @@
         </div>
         <!-- Dropdown catégories -->
         <div class="dropdown" *ngFor="let cat of categories">
-
             <button class="dropbtn">
-                {{ cat.name }}
+                {{cat.name}} {{ selectedCategory ? ': ' + selectedSubCategory : '' }}
             </button>
-
-
+            <div class="dropdown-content">
+                <button *ngFor="let child of cat.childs" (click)="selectedSubCategory = child.name">
+                    {{ child.name }}
+                </button>
+            </div>
         </div>
     </nav>
 </div>
