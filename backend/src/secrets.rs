@@ -22,6 +22,7 @@ pub struct MeiliSecrets {
 
 pub struct S3Secrets {
     pub endpoint_url: String,
+    pub web_endpoint_url: String,
     pub region: String,
     pub bucket_name: String,
     pub access_key: String,
@@ -60,6 +61,7 @@ impl S3Secrets {
     fn load() -> anyhow::Result<Self> {
         Ok(Self {
             endpoint_url: get_env_var("S3_ENDPOINT_URL")?,
+            web_endpoint_url: get_env_var("S3_WEB_ENDPOINT_URL")?,
             region: get_env_var("S3_REGION")?,
             bucket_name: get_env_var("S3_BUCKET_NAME")?,
             access_key: get_env_var("S3_ACCESS_KEY")?,
