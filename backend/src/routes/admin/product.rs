@@ -11,6 +11,7 @@ use sea_orm::{
     ActiveModelTrait,
     ActiveValue::{NotSet, Set},
 };
+use utoipa::PartialSchema;
 
 use crate::{AppState, prelude::*, routes::auth::LoggedUser};
 
@@ -20,7 +21,7 @@ pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(upload);
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 struct ProductMetadata {
     name: String,
     description: Option<String>,
@@ -34,14 +35,38 @@ struct ProductMetadata {
     tags: Option<Vec<String>>,
 }
 
-#[derive(Debug, MultipartForm)]
+#[derive(Debug, MultipartForm, ToSchema)]
 struct UploadForm {
     #[multipart(limit = "10MB")]
+    #[schema(value_type = String, format = Binary, content_media_type = "application/octet-stream")]
     image: TempFile,
+    #[schema(value_type = String, schema_with = ProductMetadata::schema, content_media_type = "application/json")]
     meta: MpJson<ProductMetadata>,
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary="Upload new product",
+    tag="Admin",
+    request_body(content = UploadForm, content_type = "multipart/form-data"),
+    responses(
+        (
+            status=200,
+            description="Uploaded sucessfully",
+        ),
+        (
+            status=400,
+            description="Invalid data",
+        ),
+        (
+            status=401,
+            description="Unauthorized",
+        ),
+        (
+            status=500,
+            description="Upload error",
+        ),
+    ),
+)]
 #[post("/upload")]
 async fn upload(
     MultipartForm(mut form): MultipartForm<UploadForm>,
