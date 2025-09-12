@@ -11,12 +11,21 @@ pub struct Secrets {
     pub redis_url: String,
     pub secret_key: String,
     pub meili: MeiliSecrets,
+    pub s3: S3Secrets,
 }
 
 pub struct MeiliSecrets {
     pub api_url: String,
     pub admin_api_key: String,
     pub search_api_key: String,
+}
+
+pub struct S3Secrets {
+    pub endpoint_url: String,
+    pub region: String,
+    pub bucket_name: String,
+    pub access_key: String,
+    pub secret_access_key: String,
 }
 
 impl Secrets {
@@ -32,6 +41,7 @@ impl Secrets {
             redis_url: get_env_var("REDIS_URL")?,
             secret_key: get_env_var("SECRET_KEY")?,
             meili: MeiliSecrets::load()?,
+            s3: S3Secrets::load()?,
         })
     }
 }
@@ -42,6 +52,18 @@ impl MeiliSecrets {
             api_url: get_env_var("MEILISEARCH_URL")?,
             admin_api_key: get_env_var("MEILISEARCH_ADMIN_KEY")?,
             search_api_key: get_env_var("MEILISEARCH_SEARCH_KEY")?,
+        })
+    }
+}
+
+impl S3Secrets {
+    fn load() -> anyhow::Result<Self> {
+        Ok(Self {
+            endpoint_url: get_env_var("S3_ENDPOINT_URL")?,
+            region: get_env_var("S3_REGION")?,
+            bucket_name: get_env_var("S3_BUCKET_NAME")?,
+            access_key: get_env_var("S3_ACCESS_KEY")?,
+            secret_access_key: get_env_var("S3_SECRET_ACCESS_KEY")?,
         })
     }
 }
