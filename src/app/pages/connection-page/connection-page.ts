@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserAuthModel } from '../../models/user-model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { SnackbarService } from '../../services/snackbar-service';
@@ -21,7 +20,7 @@ export class ConnectionPage {
   
   onSubmit() {
     if (this.checkCredentials()) {
-      const user: UserAuthModel = { email: this.email, password: this.password };
+      const user = { email: this.email, password: this.password };
       this.authService.login(user.email, user.password).subscribe({
         next: () => {
           this.snackBar.show(`Connexion réussie. Bienvenue, ${user.email}!`, 'success');

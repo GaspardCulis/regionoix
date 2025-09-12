@@ -6,6 +6,12 @@
     gap: 1.5rem;
 }
 
+.topbar a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
 .topbar-actions {
     display: flex;
     align-items: center;
