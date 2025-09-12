@@ -32,7 +32,13 @@ pub async fn get(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result
         .all(db)
         .await?;
 
-    Ok(HttpResponse::Ok().json(orders))
+    let mut results: Vec<OrderDto> = Vec::new();
+
+    for o in orders {
+        results.push(o.finalize(db).await?);
+    }
+
+    Ok(HttpResponse::Ok().json(results))
 }
 
 #[utoipa::path(
@@ -63,7 +69,13 @@ pub async fn get_in_progress(
         .all(db)
         .await?;
 
-    Ok(HttpResponse::Ok().json(orders))
+    let mut results: Vec<OrderDto> = Vec::new();
+
+    for o in orders {
+        results.push(o.finalize(db).await?);
+    }
+
+    Ok(HttpResponse::Ok().json(results))
 }
 
 #[utoipa::path(
@@ -94,5 +106,11 @@ pub async fn get_past(
         .all(db)
         .await?;
 
-    Ok(HttpResponse::Ok().json(orders))
+    let mut results: Vec<OrderDto> = Vec::new();
+
+    for o in orders {
+        results.push(o.finalize(db).await?);
+    }
+
+    Ok(HttpResponse::Ok().json(results))
 }

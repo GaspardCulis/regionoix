@@ -1,4 +1,4 @@
-use sea_orm::DerivePartialModel;
+use sea_orm::{DerivePartialModel, EntityTrait, JoinType, QuerySelect, RelationTrait};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -18,4 +18,10 @@ pub struct OrderLineDto {
     order_id: Option<i32>,
 }
 
-impl DtoTrait for OrderLineDto {}
+impl DtoTrait for OrderLineDto {
+    fn add_nested_joins<E: EntityTrait>(selector: sea_orm::Select<E>) -> sea_orm::Select<E> {
+        let selector = selector.join(JoinType::LeftJoin, order_line::Relation::Product.def());
+        // We also need to three-way join the product nested DTOs
+        ProductDto::add_nested_joins(selector)
+    }
+}
