@@ -29,7 +29,7 @@ impl S3Service {
                 .web_endpoint_url
                 .parse()
                 .expect("endpoint is a valid Url"),
-            rusty_s3::UrlStyle::Path,
+            rusty_s3::UrlStyle::VirtualHost,
             secrets.bucket_name.clone(),
             secrets.region.clone(),
         )
