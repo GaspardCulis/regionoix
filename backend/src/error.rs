@@ -6,6 +6,8 @@ use actix_web::{ResponseError, http::StatusCode};
 pub enum Error {
     #[error("an unspecified internal error occurred: {0}")]
     InternalError(#[from] anyhow::Error),
+    #[error("an unspecified internal communication error occurred: {0}")]
+    InternalCommunicationError(#[from] reqwest::Error),
     #[error("an error occurred while interacting with the database: {0}")]
     DatabaseError(#[from] sea_orm::DbErr),
     #[error("could not find requested {table_name}")]
