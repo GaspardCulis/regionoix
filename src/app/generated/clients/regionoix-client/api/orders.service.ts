@@ -17,7 +17,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ProductDto } from '../model/productDto';
+import { OrderDto } from '../model/orderDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -29,20 +29,21 @@ import { BaseService } from '../api.base.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ProductsService extends BaseService {
+export class OrdersService extends BaseService {
 
     constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string|string[], @Optional() configuration?: Configuration) {
         super(basePath, configuration);
     }
 
     /**
-     * Returns product list
+     * Returns orders
+     * Orders for current user
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public get(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ProductDto>;
-    public get(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ProductDto>>;
-    public get(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ProductDto>>;
+    public get(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<OrderDto>>;
+    public get(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<OrderDto>>>;
+    public get(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<OrderDto>>>;
     public get(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -70,9 +71,9 @@ export class ProductsService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/products`;
+        let localVarPath = `/api/orders`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<ProductDto>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<Array<OrderDto>>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -86,18 +87,15 @@ export class ProductsService extends BaseService {
     }
 
     /**
-     * Returns single product
-     * @param id Product id
+     * Returns order list in progress
+     * Orders in progress for current user
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ProductDto>;
-    public getById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ProductDto>>;
-    public getById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ProductDto>>;
-    public getById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling getById.');
-        }
+    public getInProgress(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<OrderDto>>;
+    public getInProgress(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<OrderDto>>>;
+    public getInProgress(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<OrderDto>>>;
+    public getInProgress(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -124,9 +122,9 @@ export class ProductsService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/products/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}`;
+        let localVarPath = `/api/orders/in-progress`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<ProductDto>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<Array<OrderDto>>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -140,28 +138,15 @@ export class ProductsService extends BaseService {
     }
 
     /**
-     * Search for products
-     * @param query The raw search query
-     * @param filters Search filters in this example form: &#x60;id &gt; 1 AND genres &#x3D; Action&#x60;. The list of filterable attributes is &#x60;[\&quot;weight\&quot;, \&quot;price\&quot;, \&quot;categories\&quot;, \&quot;tags\&quot;]&#x60;. See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
-     * @param sort Sort by some specific attribute in the format &#x60;attribute:method&#x60; where &#x60;method: asc | desc&#x60;. Ex: &#x60;price:asc&#x60;. The list of sortable attributes is &#x60;[\&quot;name\&quot;, \&quot;price\&quot;]&#x60;. See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
+     * Returns completed order list
+     * Orders completed for current user
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public search(query: string, filters?: string, sort?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ProductDto>>;
-    public search(query: string, filters?: string, sort?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ProductDto>>>;
-    public search(query: string, filters?: string, sort?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ProductDto>>>;
-    public search(query: string, filters?: string, sort?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (query === null || query === undefined) {
-            throw new Error('Required parameter query was null or undefined when calling search.');
-        }
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>query, 'query');
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>filters, 'filters');
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>sort, 'sort');
+    public getPast(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<OrderDto>>;
+    public getPast(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<OrderDto>>>;
+    public getPast(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<OrderDto>>>;
+    public getPast(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -188,12 +173,11 @@ export class ProductsService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/search/products`;
+        let localVarPath = `/api/orders/past`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<Array<ProductDto>>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<Array<OrderDto>>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
