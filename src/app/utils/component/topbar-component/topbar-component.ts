@@ -49,7 +49,6 @@ export class TopbarComponent implements OnInit {
   }
 
   search(): void {
-    console.log("Searching for:", this.searchText);
     const query = this.searchText.trim();
     if (!query) {
       this.router.navigate(['/showcase']);
