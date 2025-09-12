@@ -1,7 +1,7 @@
 import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthentificationService, LoggedUser } from '../../../generated/clients/regionoix-client';
 
 @Component({
