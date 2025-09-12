@@ -21,6 +21,8 @@ pub enum Error {
     AuthenticationFailure,
     #[error("unauthenticated")]
     Unauthenticated,
+    #[error("unauthorized")]
+    Unauthorized,
     #[error("bad request: {0}")]
     BadRequestError(String),
 }
@@ -32,6 +34,7 @@ impl ResponseError for Error {
         match self {
             Error::EntityNotFound { table_name: _ } => StatusCode::NOT_FOUND,
             Error::BadRequestError(_) => StatusCode::BAD_REQUEST,
+            Error::Unauthorized => StatusCode::UNAUTHORIZED,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

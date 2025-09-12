@@ -1,6 +1,7 @@
 use std::{io::Read, iter, time::Duration};
 
 use actix_multipart::form::{MultipartForm, json::Json as MpJson, tempfile::TempFile};
+use regionoix::prelude::sea_orm_active_enums::Roles;
 use reqwest::{Client, header::ETAG};
 use rusty_s3::{
     S3Action as _,
@@ -11,7 +12,7 @@ use sea_orm::{
     ActiveValue::{NotSet, Set},
 };
 
-use crate::{AppState, prelude::*};
+use crate::{AppState, prelude::*, routes::auth::LoggedUser};
 
 const SIGN_DURATION: Duration = Duration::from_secs(300);
 
@@ -29,6 +30,7 @@ struct ProductMetadata {
     region_id: Option<i32>,
     brand_id: Option<i32>,
     category_id: Option<i32>,
+    #[allow(dead_code)] // TODO: Insert tags
     tags: Option<Vec<String>>,
 }
 
@@ -44,11 +46,16 @@ struct UploadForm {
 async fn upload(
     MultipartForm(mut form): MultipartForm<UploadForm>,
     data: Data<AppState>,
+    logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let bucket = &data.s3.api_bucket;
     let web_bucket = &data.s3.web_bucket;
     let credentials = &data.s3.credentials;
+
+    if logged_user.role != Roles::Admin {
+        return Err(crate::Error::Unauthorized);
+    }
 
     let client = Client::new();
 
@@ -124,7 +131,7 @@ async fn upload(
         .object_url(&image_name)
         .map_err(|e| anyhow::Error::new(e))?;
 
-    info!("Begginning INSERT new product to database");
+    info!("Beginning INSERT new product to database");
     let meta = form.meta;
     let new_product = product::ActiveModel {
         id: NotSet,
