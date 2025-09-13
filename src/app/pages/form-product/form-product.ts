@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AdminMenu } from '../../utils/admin-menu/admin-menu';
 import { Router } from '@angular/router';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -19,6 +19,7 @@ import {
   styleUrl: './form-product.css',
 })
 export class FormProduct implements OnInit {
+  faCircleXmark = faCircleXmark;
   faArrowLeft = faArrowLeft;
   hasTriedSubmit = false;
 

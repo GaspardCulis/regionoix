@@ -162,6 +162,17 @@
             </div>
           </div>
         </div>
+
+        @if(productForm.invalid){
+        <div role="alert" class="alert alert-error mb-4">
+          <fa-icon [icon]="faCircleXmark" />
+          <span
+            >Le formulaire est invalide. Veuillez remplir les champs obligatoires marqués par un
+            astérisque.</span
+          >
+        </div>
+        }
+
         <button type="submit" class="btn btn-success">Ajouter le produit</button>
       </form>
     </div>
