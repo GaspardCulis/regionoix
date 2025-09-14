@@ -6,6 +6,7 @@ api/admin.service.ts
 api/api.ts
 api/authentification.service.ts
 api/basket.service.ts
+api/brands.service.ts
 api/categories.service.ts
 api/orders.service.ts
 api/products.service.ts
