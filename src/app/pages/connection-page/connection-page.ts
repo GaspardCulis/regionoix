@@ -28,7 +28,6 @@ export class ConnectionPage {
 
           this.authService.status().subscribe({
             next: (data) => {
-              console.log(data)
               if (data.role == Roles.Admin) {
                 this.router.navigate(['/backoffice']);
               } else {
