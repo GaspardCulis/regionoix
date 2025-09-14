@@ -66,7 +66,7 @@ in {
       MEILISEARCH_URL = "http://127.0.0.1:${toString config.services.meilisearch.listenPort}";
 
       S3_ENDPOINT_URL = "http://${config.services.garage.settings.s3_api.api_bind_addr}";
-      S3_WEB_ENDPOINT_URL = "http://${config.services.garage.settings.s3_web.bind_addr}";
+      S3_WEB_ENDPOINT_URL = "https://s3web.regionoix.gasdev.fr";
       S3_REGION = "${config.services.garage.settings.s3_api.s3_region}";
       S3_BUCKET_NAME = "images-bucket";
     };
