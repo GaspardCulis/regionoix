@@ -6,8 +6,18 @@
   <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher..." />
   <div class="topbar-actions">
     <button class="user-basket cursor-pointer" (click)="goToBasket()">
-      <fa-icon [icon]="faBasketShopping" class="fa-2xl icon text-primary" aria-label="panier" />
-      <span class="basket-count">{{ basketCount }}</span>
+      <div class="indicator">
+        <span
+          class="indicator-item indicator-bottom indicator-end badge badge-secondary rounded-full font-semibold py-[2px] px-[6px]"
+        >
+          {{ basketCount }}
+        </span>
+        <fa-icon
+          [icon]="faBasketShopping"
+          class="fa-2xl text-primary inline-block"
+          aria-label="panier"
+        ></fa-icon>
+      </div>
     </button>
     <button class="user-profile btn btn-primary" (click)="onProfileClick()">
       @if (user) { Mon compte } @else { Se connecter }
