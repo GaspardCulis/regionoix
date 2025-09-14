@@ -1,16 +1,20 @@
 <div class="card">
-    <figure>
-        <button class="card-link" [routerLink]="['/products', id]">
-            <img [src]="image" alt="{{ name }}" appDefaultImage />
-        </button>
-    </figure>
-    <div class="card-content">
-        <button class="card-link" [routerLink]="['/products', id]">
-            <h2>{{ name }}</h2>
-        </button>
-        <p class="price">{{ price | number:'1.2-2' }} €</p>
-        <div class="card-action">
-            <button class="btn" (click)="onAddToBasket()">Ajouter au panier</button>
-        </div>
+  <figure class="relative">
+    <button class="card-link" [routerLink]="['/products', id]">
+      <img [src]="image" alt="Shoes" class="cursor-pointer" />
+      <span class="badge badge-warning font-bold absolute top-2 left-2">- 20 %</span>
+    </button>
+  </figure>
+  <div class="card-content">
+    <button class="card-link cursor-pointer" [routerLink]="['/products', id]">
+      <h2>{{ name }}</h2>
+    </button>
+    <p class="price">
+      {{ price | number : '1.2-2' }} €
+      <span class="line-through text-gray-500 font-medium">100,00 €</span>
+    </p>
+    <div class="card-action">
+      <button class="btn btn-primary">Ajouter au panier</button>
     </div>
+  </div>
 </div>
