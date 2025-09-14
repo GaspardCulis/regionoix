@@ -1,3 +1,5 @@
+export * from './admin.service';
+import { AdminService } from './admin.service';
 export * from './authentification.service';
 import { AuthentificationService } from './authentification.service';
 export * from './basket.service';
@@ -12,4 +14,4 @@ export * from './regions.service';
 import { RegionsService } from './regions.service';
 export * from './tags.service';
 import { TagsService } from './tags.service';
-export const APIS = [AuthentificationService, BasketService, CategoriesService, OrdersService, ProductsService, RegionsService, TagsService];
+export const APIS = [AdminService, AuthentificationService, BasketService, CategoriesService, OrdersService, ProductsService, RegionsService, TagsService];

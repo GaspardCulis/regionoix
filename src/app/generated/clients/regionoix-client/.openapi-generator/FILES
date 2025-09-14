@@ -2,6 +2,7 @@
 README.md
 api.base.service.ts
 api.module.ts
+api/admin.service.ts
 api/api.ts
 api/authentification.service.ts
 api/basket.service.ts
@@ -34,6 +35,7 @@ model/regionDto.ts
 model/roles.ts
 model/subCategoryDto.ts
 model/tagDto.ts
+model/uploadFormMeta.ts
 param.ts
 provide-api.ts
 variables.ts
