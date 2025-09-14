@@ -3,7 +3,7 @@
     <img class="logo" src="{{ pathLogo }}" alt="Logo de la region" />
     <h1 class="title">{{ title }}</h1>
   </a>
-  <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher..." />
+  <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher..." (keyup)="search()" />
   <div class="topbar-actions">
     <button class="user-basket cursor-pointer" (click)="goToBasket()">
       <div class="indicator">
