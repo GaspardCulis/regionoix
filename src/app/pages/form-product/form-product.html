@@ -51,13 +51,33 @@
             >
             <input
               type="number"
-              formControlname="price"
+              formControlName="price"
               id="price"
               min="0.01"
               class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             />
             @if (hasTriedSubmit && productForm.controls.price.invalid) {
             <p class="text-sm text-red-500">Le prix est requis, il doit être positif.</p>
+            }
+          </div>
+
+          <div class="w-full">
+            <label for="region" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Région <span class="text-red-500">*</span></label
+            >
+            <select
+              id="region"
+              class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              formControlName="region"
+            >
+              <option value="">Sélectionner une région</option>
+              @for (reg of regions; track reg.id) {
+              <option value="{{ reg.id }}">{{ reg.name }}</option>
+              }
+            </select>
+
+            @if (hasTriedSubmit && productForm.controls.region.invalid) {
+            <p class="text-sm text-red-500">La région est requise.</p>
             }
           </div>
           <div>
