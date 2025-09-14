@@ -52,8 +52,8 @@
     </aside>
 
     <main class="product-grid">
+
         <app-product-card-component *ngFor="let product of filteredProducts" [id]="product.id" [name]="product.name"
-            [image]="product.image ?? '/assets/default.png" [price]="product.price" (addToBasket)="addItem($event)">
-        </app-product-card-component>
+            [image]="product.image ?? '/assets/default.png" [price]="product.price" (addToBasket)="addItem($event)"/>
     </main>
 </div>
