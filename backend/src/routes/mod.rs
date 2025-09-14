@@ -3,6 +3,7 @@ use crate::prelude::*;
 pub mod admin;
 pub mod auth;
 pub mod basket;
+pub mod brands;
 pub mod categories;
 pub mod orders;
 pub mod products;
@@ -19,5 +20,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(scope("/orders").configure(orders::config))
         .service(scope("/categories").configure(categories::config))
         .service(scope("/tags").configure(tags::config))
-        .service(scope("/regions").configure(regions::config));
+        .service(scope("/regions").configure(regions::config))
+        .service(scope("/brands").configure(brands::config));
 }
