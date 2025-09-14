@@ -32,7 +32,7 @@
           </div>
           <div class="w-full">
             <label for="brand" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >Marque</label
+              >Marque <span class="text-red-500">*</span></label
             >
             <select
               id="brand"
@@ -44,6 +44,10 @@
               <option value="{{ brand.id }}">{{ brand.name }}</option>
               }
             </select>
+
+            @if (hasTriedSubmit && productForm.controls.brand.invalid) {
+            <p class="text-sm text-red-500">Le marque est requise.</p>
+            }
           </div>
           <div class="w-full">
             <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"

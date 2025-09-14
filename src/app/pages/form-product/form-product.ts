@@ -7,6 +7,7 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 import {
   AdminService,
   BrandDto,
+  BrandsService,
   CategoriesService,
   CategoryDto,
   RegionDto,
@@ -31,13 +32,14 @@ export class FormProduct implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly regionService = inject(RegionsService);
   private readonly tagsService = inject(TagsService);
+  private readonly brandsService = inject(BrandsService);
 
   private router = inject(Router);
 
   productForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     stock: new FormControl(null, [Validators.required, Validators.min(0)]),
-    brand: new FormControl(''),
+    brand: new FormControl('', Validators.required),
     category: new FormControl('', Validators.required),
     region: new FormControl('', Validators.required),
     image: new FormControl<null | File>(null, Validators.required),
@@ -67,7 +69,9 @@ export class FormProduct implements OnInit {
       this.regions = regions;
     });
 
-    //TODO get brands
+    this.brandsService.get().subscribe((brands) => {
+      this.brands = brands;
+    });
   }
 
   onBack(): void {
@@ -101,7 +105,7 @@ export class FormProduct implements OnInit {
         stock: Number(this.productForm.get('stock')?.value),
         description: this.productForm.get('description')?.value || null,
         weight: this.productForm.get('weight')?.value || null,
-        brand_id: Number(this.productForm.get('brand')?.value) || 1, // for now default brand
+        brand_id: Number(this.productForm.get('brand')?.value) || null, 
         category_id: Number(this.productForm.get('category')?.value) || null,
         region_id: Number(this.productForm.get('region')?.value) || null,
         tags: (this.productForm.get('tags')?.value as string[]) || [],
