@@ -6,6 +6,7 @@ api/api.ts
 api/authentification.service.ts
 api/basket.service.ts
 api/categories.service.ts
+api/orders.service.ts
 api/products.service.ts
 api/regions.service.ts
 api/tags.service.ts
@@ -13,6 +14,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/addressDto.ts
 model/brandDto.ts
 model/cartDto.ts
 model/cartLineDto.ts
@@ -23,8 +25,10 @@ model/formDataMakeOrder.ts
 model/formUpdateQuantityBasket.ts
 model/loggedUser.ts
 model/loginRequest.ts
-model/model.ts
 model/models.ts
+model/orderDto.ts
+model/orderLineDto.ts
+model/orderStatus.ts
 model/productDto.ts
 model/regionDto.ts
 model/roles.ts
