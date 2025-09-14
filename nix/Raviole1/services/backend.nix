@@ -9,15 +9,20 @@
 in {
   sops.secrets."backend/database_url".owner = "regionoix";
   sops.secrets."backend/secret_key".owner = "regionoix";
-  sops.secrets."backend/meilisearch_admin_key".owner = "regionoix";
-  sops.secrets."backend/meilisearch_search_key".owner = "regionoix";
+  sops.secrets."backend/meilisearch/admin_key".owner = "regionoix";
+  sops.secrets."backend/meilisearch/search_key".owner = "regionoix";
+  sops.secrets."backend/s3/access_key".owner = "regionoix";
+  sops.secrets."backend/s3/secret_access_key".owner = "regionoix";
   sops.templates."regionoix-backend.env" = {
     content = ''
       DATABASE_URL=${config.sops.placeholder."backend/database_url"}
       SECRET_KEY=${config.sops.placeholder."backend/secret_key"}
 
-      MEILISEARCH_ADMIN_KEY=${config.sops.placeholder."backend/meilisearch_admin_key"}
-      MEILISEARCH_SEARCH_KEY=${config.sops.placeholder."backend/meilisearch_search_key"}
+      MEILISEARCH_ADMIN_KEY=${config.sops.placeholder."backend/meilisearch/admin_key"}
+      MEILISEARCH_SEARCH_KEY=${config.sops.placeholder."backend/meilisearch/search_key"}
+
+      S3_ACCESS_KEY=${config.sops.placeholder."backend/s3/access_key"}
+      S3_SECRET_ACCESS_KEY=${config.sops.placeholder."backend/s3/secret_access_key"}
     '';
     owner = "regionoix";
   };
@@ -57,7 +62,13 @@ in {
       API_HOST = "127.0.0.1";
       API_PORT = toString port;
       REDIS_URL = "redis://127.0.0.1:6379";
+
       MEILISEARCH_URL = "http://127.0.0.1:${toString config.services.meilisearch.listenPort}";
+
+      S3_ENDPOINT_URL = "http://${config.services.garage.settings.s3_api.api_bind_addr}";
+      S3_WEB_ENDPOINT_URL = "http://${config.services.garage.settings.s3_web.bind_addr}";
+      S3_REGION = "${config.services.garage.settings.s3_api.s3_region}";
+      S3_BUCKET_NAME = "images-bucket";
     };
   };
 }

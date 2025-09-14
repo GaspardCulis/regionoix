@@ -74,7 +74,7 @@ async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Resul
     let mut product_results = Product::find()
         .filter(product::Column::Id.is_in(ids))
         .into_dto::<ProductDto>()
-        .all(db)
+        .all(&db.conn)
         .await?;
 
     if product_results.len() != search_results.hits.len() {
