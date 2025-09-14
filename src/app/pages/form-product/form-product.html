@@ -163,7 +163,7 @@
           </div>
         </div>
 
-        @if(productForm.invalid){
+        @if(hasTriedSubmit && productForm.invalid){
         <div role="alert" class="alert alert-error mb-4">
           <fa-icon [icon]="faCircleXmark" />
           <span
