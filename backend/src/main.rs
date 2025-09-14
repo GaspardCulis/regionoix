@@ -1,9 +1,7 @@
 use actix_identity::IdentityMiddleware;
 use actix_session::{SessionMiddleware, storage::RedisSessionStore};
 use actix_web::{App, HttpServer, cookie::Key, web::Data};
-use meilisearch_sdk::client::Client;
-use sea_orm::{Database, DatabaseConnection};
-use tracing::info;
+use tracing::{info, warn};
 use tracing_actix_web::TracingLogger;
 use utoipa::OpenApi;
 use utoipa_actix_web::AppExt;
@@ -13,11 +11,16 @@ mod error;
 mod routes;
 
 pub use error::*;
-use regionoix::*;
+use regionoix::{
+    services::{database::DatabaseService, meilisearch::SearchService, s3::S3Service},
+    utils::get_env_var,
+    *,
+};
 
 pub struct AppState {
-    db: DatabaseConnection,
-    search: Client,
+    db: DatabaseService,
+    search: SearchService,
+    s3: S3Service,
 }
 
 #[derive(OpenApi)]
@@ -31,22 +34,29 @@ struct ApiDoc;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
+    if dotenv::dotenv().is_err() {
+        warn!("Failed to read .env, falling back to existing env vars");
+    }
 
-    info!("Loading environment variables from .env");
-    let secrets = secrets::Secrets::load().expect("load secrets");
+    let secret_key: String = get_env_var("SECRET_KEY").unwrap();
+    let listen_addr: String = get_env_var("API_HOST").unwrap();
+    let listen_port: u16 = get_env_var("API_PORT").unwrap();
 
     info!("Connecting to database");
-    let db = Database::connect(secrets.database_url)
+    let db = DatabaseService::build()
         .await
-        .expect("Failed to connect to database");
+        .expect("failed to build DB service");
 
     info!("Connecting to Redis session store");
-    let redis_store = RedisSessionStore::new(secrets.redis_url)
+    let redis_store = RedisSessionStore::new("redis://127.0.0.1:6379")
         .await
         .expect("Failed to connect to Redis session store");
 
     info!("Connecting to Meilisearch indexer");
-    let search = Client::new(secrets.meili.api_url, Some(secrets.meili.search_api_key)).unwrap();
+    let search = SearchService::build_search().expect("failed to build Meilisearch service");
+
+    info!("Connecting to S3 bucket");
+    let s3 = S3Service::build().expect("failed to build S3 service");
 
     info!("Starting server app");
 
@@ -56,11 +66,12 @@ async fn main() -> std::io::Result<()> {
             .wrap(IdentityMiddleware::default())
             .wrap(SessionMiddleware::new(
                 redis_store.clone(),
-                Key::from(secrets.secret_key.as_bytes()),
+                Key::from(secret_key.as_bytes()),
             ))
             .app_data(Data::new(AppState {
                 db: db.clone(),
                 search: search.clone(),
+                s3: s3.clone(),
             }))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
@@ -70,7 +81,7 @@ async fn main() -> std::io::Result<()> {
             })
             .into_app()
     })
-    .bind((secrets.api_host, secrets.api_port))?
+    .bind((listen_addr, listen_port))?
     .run()
     .await
 }

@@ -76,7 +76,7 @@ async fn login(
     let db = &data.db;
     let user = user::Entity::find()
         .filter(user::Column::Email.eq(&login_request.email))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: user::Entity.table_name(),

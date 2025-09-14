@@ -27,7 +27,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[get("")]
 pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let products: Vec<ProductDto> = Product::find().into_dto().all(db).await?;
+    let products: Vec<ProductDto> = Product::find().into_dto().all(&db.conn).await?;
 
     Ok(HttpResponse::Ok().json(products))
 }
@@ -53,12 +53,12 @@ pub async fn get_by_id(data: Data<AppState>, req: HttpRequest) -> crate::Result<
 
     let product = Product::find_by_id(id)
         .into_dto::<ProductDto>()
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: product::Entity.table_name(),
         })?
-        .finalize(db)
+        .finalize(&db.conn)
         .await?;
 
     Ok(HttpResponse::Ok().json(product))

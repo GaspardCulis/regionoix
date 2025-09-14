@@ -40,12 +40,12 @@ async fn get_basket(data: Data<AppState>, logged_user: LoggedUser) -> crate::Res
     let basket = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
         .into_dto::<CartDto>()
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
         })?
-        .finalize(db)
+        .finalize(&db.conn)
         .await?;
 
     Ok(HttpResponse::Ok().json(basket))
@@ -79,7 +79,7 @@ async fn add_item(
     let quantity = form_data.quantity.unwrap_or(1);
 
     let product = Product::find_by_id(form_data.product_id)
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
@@ -94,7 +94,7 @@ async fn add_item(
 
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
@@ -106,7 +106,7 @@ async fn add_item(
     let cart_line = CartLine::find()
         .filter(cart_line::Column::ProductId.eq(form_data.product_id))
         .filter(cart_line::Column::CartId.eq(cart.id))
-        .one(db)
+        .one(&db.conn)
         .await?;
 
     if cart_line.is_some() {
@@ -122,7 +122,7 @@ async fn add_item(
         ..Default::default()
     };
 
-    let res = cart_line.insert(db).await?;
+    let res = cart_line.insert(&db.conn).await?;
 
     Ok(HttpResponse::Created().json(res))
 }
@@ -158,13 +158,11 @@ async fn update_item_quantity(
 
     let form_data = form_data.into_inner();
 
-    let product =
-        Product::find_by_id(product_id)
-            .one(db)
-            .await?
-            .ok_or(crate::Error::EntityNotFound {
-                table_name: cart::Entity.table_name(),
-            })?;
+    let product = Product::find_by_id(product_id).one(&db.conn).await?.ok_or(
+        crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        },
+    )?;
 
     // Check if there is enough stock for quantity desired
     if product.stock < form_data.quantity {
@@ -174,7 +172,7 @@ async fn update_item_quantity(
     }
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
@@ -183,7 +181,7 @@ async fn update_item_quantity(
     let line_cart = CartLine::find()
         .filter(cart_line::Column::ProductId.eq(product_id))
         .filter(cart_line::Column::CartId.eq(cart.id))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
@@ -194,7 +192,7 @@ async fn update_item_quantity(
     // Update cart line quantity
     cart_line.quantity = Set(form_data.quantity.to_owned());
     // Update db
-    let res = cart_line.update(db).await?;
+    let res = cart_line.update(&db.conn).await?;
     Ok(HttpResponse::Ok().json(res))
 }
 
@@ -221,7 +219,7 @@ async fn remove_item(
 
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
@@ -230,13 +228,13 @@ async fn remove_item(
     let cart_line = CartLine::find()
         .filter(cart_line::Column::ProductId.eq(product_id))
         .filter(cart_line::Column::CartId.eq(cart.id))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
         })?;
 
-    cart_line.delete(db).await?;
+    cart_line.delete(&db.conn).await?;
     Ok(HttpResponse::Ok().body("Product successfully removed from cart"))
 }
 
@@ -256,7 +254,7 @@ async fn empty(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<H
 
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
@@ -264,7 +262,7 @@ async fn empty(data: Data<AppState>, logged_user: LoggedUser) -> crate::Result<H
 
     cart_line::Entity::delete_many()
         .filter(cart_line::Column::CartId.eq(cart.id))
-        .exec(db)
+        .exec(&db.conn)
         .await?;
     Ok(HttpResponse::Ok().body("Cart emptied successfully"))
 }
@@ -430,7 +428,7 @@ async fn get_count(data: Data<AppState>, logged_user: LoggedUser) -> crate::Resu
 
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
-        .one(db)
+        .one(&db.conn)
         .await?
         .ok_or(crate::Error::EntityNotFound {
             table_name: cart::Entity.table_name(),
@@ -440,7 +438,7 @@ async fn get_count(data: Data<AppState>, logged_user: LoggedUser) -> crate::Resu
     let count = CartLine::find()
         .filter(cart_line::Column::CartId.eq(cart.id))
         .filter(cart_line::Column::Quantity.gte(1))
-        .count(db)
+        .count(&db.conn)
         .await? as i32;
 
     Ok(HttpResponse::Ok().json(CountBasket { count }))
