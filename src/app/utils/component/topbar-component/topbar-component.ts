@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthCookieService } from '../../../services/auth-cookie';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './topbar-component.html',
-  styleUrl: './topbar-component.css'
+  styleUrl: './topbar-component.css',
 })
 export class TopbarComponent implements OnInit {
   private router = inject(Router);
   private authCookieService = inject(AuthCookieService);
+  faBasketShopping = faBasketShopping;
 
   @Input() pathLogo!: string;
   @Input() title!: string;
@@ -25,7 +25,7 @@ export class TopbarComponent implements OnInit {
   @Output() searchText = '';
 
   ngOnInit(): void {
-    this.authCookieService.user$.subscribe(user => {
+    this.authCookieService.user$.subscribe((user) => {
       this.user = user;
     });
   }
@@ -33,14 +33,13 @@ export class TopbarComponent implements OnInit {
   onProfileClick() {
     if (this.user) {
       this.router.navigate(['/profile']); //TODO: replace with profile page
-    }
-    else {
+    } else {
       this.router.navigate(['/connection']);
     }
   }
 
   goToBasket() {
-    this.router.navigate(['/basket'])
+    this.router.navigate(['/basket']);
   }
 
   goHome() {

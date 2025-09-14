@@ -46,11 +46,6 @@
     background-color: var(--color-bg);
 }
 
-.user-basket img {
-    width: 40px;
-    height: 40px;
-}
-
 .user-profile img {
     width: 40px;
     height: 40px;
@@ -61,7 +56,7 @@
     top: 4rem;
     right: 10.5rem;
     color: var(--color-bg);
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     border-radius: 50%;
     font-size: 0.8rem;
     padding: 2px 6px;

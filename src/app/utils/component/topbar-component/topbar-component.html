@@ -1,23 +1,16 @@
 <div class="topbar">
-    <a href="/">
-        <img class="logo" src={{pathLogo}} alt="Logo de la region">
-        <h1 class="title">{{ title }}</h1>
-    </a>
-    <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher...">
-    <div class="topbar-actions">
-        <button class="user-basket" (click)="goToBasket()">
-            <img src="assets/panier1.png" alt="logo panier">
-            @if (basketCount !== 0) {
-            <span class="basket-count">{{basketCount}}</span>
-            }
-        </button>
-        <button class="user-profile btn btn-primary" (click)="onProfileClick()">
-            @if (user) {
-            Mon compte
-            }
-            @else {
-            Se connecter
-            }
-        </button>
-    </div>
+  <a href="/">
+    <img class="logo" src="{{ pathLogo }}" alt="Logo de la region" />
+    <h1 class="title">{{ title }}</h1>
+  </a>
+  <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher..." />
+  <div class="topbar-actions">
+    <button class="user-basket cursor-pointer" (click)="goToBasket()">
+      <fa-icon [icon]="faBasketShopping" class="fa-2xl icon text-primary" aria-label="panier" />
+      <span class="basket-count">{{ basketCount }}</span>
+    </button>
+    <button class="user-profile btn btn-primary" (click)="onProfileClick()">
+      @if (user) { Mon compte } @else { Se connecter }
+    </button>
+  </div>
 </div>
