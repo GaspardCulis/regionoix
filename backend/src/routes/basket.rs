@@ -206,6 +206,7 @@ async fn update_item_quantity(
         (
             status = 200,
             description="Product successfully removed from basket",
+            body=String,
         ),
     ),
 )]
@@ -287,6 +288,7 @@ struct FormDataMakeOrder {
         (
             status = 200,
             description="Order successfully created",
+            body=String,
         ),
     ),
 )]
