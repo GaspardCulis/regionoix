@@ -16,6 +16,7 @@ import {
   TagsService,
   UploadFormMeta,
 } from '../../generated/clients/regionoix-client';
+import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-form-product',
@@ -24,8 +25,10 @@ import {
   styleUrl: './form-product.css',
 })
 export class FormProduct implements OnInit {
+  // font awesome icons plus
   faCircleXmark = faCircleXmark;
   faArrowLeft = faArrowLeft;
+
   hasTriedSubmit = false;
 
   private readonly categoriesService = inject(CategoriesService);
@@ -33,6 +36,7 @@ export class FormProduct implements OnInit {
   private readonly regionService = inject(RegionsService);
   private readonly tagsService = inject(TagsService);
   private readonly brandsService = inject(BrandsService);
+  private readonly snackbarService = inject(SnackbarService);
 
   private router = inject(Router);
 
@@ -105,7 +109,7 @@ export class FormProduct implements OnInit {
         stock: Number(this.productForm.get('stock')?.value),
         description: this.productForm.get('description')?.value || null,
         weight: this.productForm.get('weight')?.value || null,
-        brand_id: Number(this.productForm.get('brand')?.value) || null, 
+        brand_id: Number(this.productForm.get('brand')?.value) || null,
         category_id: Number(this.productForm.get('category')?.value) || null,
         region_id: Number(this.productForm.get('region')?.value) || null,
         tags: (this.productForm.get('tags')?.value as string[]) || [],
@@ -114,10 +118,12 @@ export class FormProduct implements OnInit {
       // Call the API
       this.adminService.upload(imageFile, metadata).subscribe({
         next: (response) => {
+          this.snackbarService.show('Produit ajouté ✅', 'success');
           console.log('Upload successful', response);
           this.router.navigate(['/backoffice/products']);
         },
         error: (err) => {
+          this.snackbarService.show('Echec de la création du produit ', 'error');
           console.error('Upload failed', err);
         },
       });

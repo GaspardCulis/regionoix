@@ -16,26 +16,26 @@ import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 export class TopbarComponent implements OnInit {
   private router = inject(Router);
   private userService = inject(AuthentificationService);
+  // font awesome icon
   faBasketShopping = faBasketShopping;
 
   @Input() pathLogo!: string;
   @Input() title!: string;
   @Input() basketCount = 0;
-  @Input() user!: LoggedUser | null;;
+  @Input() user!: LoggedUser | null;
   searchText = '';
 
   ngOnInit(): void {
     this.userService.status().subscribe({
-      next: (user) => this.user = user,
-      error: () => this.user = null
+      next: (user) => (this.user = user),
+      error: () => (this.user = null),
     });
   }
 
   onProfileClick() {
     if (this.user) {
       this.router.navigate(['/profile']);
-    }
-    else {
+    } else {
       this.router.navigate(['/connection']);
     }
   }
@@ -53,11 +53,10 @@ export class TopbarComponent implements OnInit {
     if (!query) {
       this.router.navigate(['/showcase']);
     } else {
-      this.router.navigate(['/showcase'],
-        {
-          queryParams: { search: query },
-          queryParamsHandling: 'merge'
-        });
+      this.router.navigate(['/showcase'], {
+        queryParams: { search: query },
+        queryParamsHandling: 'merge',
+      });
     }
   }
 }
