@@ -1,3 +1,4 @@
+export * from './addressDto';
 export * from './brandDto';
 export * from './cartDto';
 export * from './cartLineDto';
@@ -8,7 +9,9 @@ export * from './formDataMakeOrder';
 export * from './formUpdateQuantityBasket';
 export * from './loggedUser';
 export * from './loginRequest';
-export * from './model';
+export * from './orderDto';
+export * from './orderLineDto';
+export * from './orderStatus';
 export * from './productDto';
 export * from './regionDto';
 export * from './roles';
