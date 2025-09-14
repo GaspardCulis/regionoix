@@ -10,7 +10,6 @@
 
   hub = {
     port = 8090;
-    data_dir = "/var/lib/beszel";
   };
 in {
   services.caddy.virtualHosts."monitor.${domain}".extraConfig = ''
@@ -39,8 +38,10 @@ in {
     wantedBy = ["multi-user.target"];
     serviceConfig = {
       Restart = "always";
+      DynamicUser = true;
+      StateDirectory = "beszel";
       ExecStart = ''
-        ${pkgs.beszel}/bin/beszel-hub serve --dir ${hub.data_dir} --http 127.0.0.1:${toString hub.port}
+        ${pkgs.beszel}/bin/beszel-hub serve --dir /var/lib/beszel --http 127.0.0.1:${toString hub.port}
       '';
     };
   };
