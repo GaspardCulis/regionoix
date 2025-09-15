@@ -31,8 +31,7 @@ struct ProductMetadata {
     region_id: Option<i32>,
     brand_id: Option<i32>,
     category_id: Option<i32>,
-    #[allow(dead_code)] // TODO: Insert tags
-    tags: Option<Vec<String>>,
+    tags: Vec<i32>,
 }
 
 #[derive(Debug, MultipartForm, ToSchema)]
@@ -174,7 +173,18 @@ async fn upload(
         ..Default::default()
     };
 
-    new_product.save(&db.conn).await?;
+    let inserted_product = new_product.save(&db.conn).await?;
+
+    info!("Updating product tags");
+    for tag in meta.tags.iter() {
+        let new_product_tag = product_tag::ActiveModel {
+            id: NotSet,
+            product_id: Set(Some(inserted_product.id.clone().unwrap())),
+            tag_id: Set(Some(*tag)),
+        };
+
+        let _ = new_product_tag.save(&db.conn).await?;
+    }
 
     info!("Successfully created new product");
     Ok(HttpResponse::Ok().finish())
