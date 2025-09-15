@@ -43,7 +43,7 @@ export class BasketPage implements OnInit {
       if (l.product.discount) {
         final_price = l.product.price - (l.product.price * l.product.discount.percentage_off) / 100;
       }
-      total += l.product.price * l.quantity;
+      total += final_price * l.quantity;
     })
     return total;
   }
