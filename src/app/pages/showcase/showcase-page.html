@@ -5,20 +5,20 @@
         <label class="price-filter">
             Prix :
             <div class="inputs">
-                <input type="number" [(ngModel)]="minPrice" placeholder="Min" />
+                <input type="number" [(ngModel)]="minPrice" placeholder="Min" (change)="loadProducts()" />
                 <span> - </span>
-                <input type="number" [(ngModel)]="maxPrice" placeholder="Max" />
+                <input type="number" [(ngModel)]="maxPrice" placeholder="Max" (change)="loadProducts()" />
             </div>
         </label>
 
         <fieldset class="availability">
             <legend>Disponibilité</legend>
             <label>
-                <input type="checkbox" [(ngModel)]="filterAvailable" />
+                <input type="checkbox" [(ngModel)]="productAvailable" />
                 En stock
             </label>
             <label>
-                <input type="checkbox" [(ngModel)]="filterUnavailable" />
+                <input type="checkbox" [(ngModel)]="productUnavailable" />
                 Rupture
             </label>
         </fieldset>
@@ -53,7 +53,9 @@
 
     <main class="product-grid">
 
-        <app-product-card-component *ngFor="let product of filteredProducts" [id]="product.id" [name]="product.name"
-            [image]="product.image ?? '/assets/default.png" [price]="product.price" (addToBasket)="addItem($event)"/>
+        <app-product-card-component *ngFor="let product of products" [id]="product.id" [name]="product.name"
+            [image]="product.image ?? '/assets/default.png'" [price]="product.price" (addToBasket)="addItem($event)">
+        </app-product-card-component>
+
     </main>
 </div>
