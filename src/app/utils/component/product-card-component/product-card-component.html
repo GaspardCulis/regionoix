@@ -13,8 +13,8 @@
     </button>
     <p class="price">
       @if(final_price && discount){
-      {{ price | number : '1.2-2' }} €
-      <span class="line-through text-gray-500 font-normal">{{final_price | number : '1.2-2' }} €</span>
+      {{ final_price | number : '1.2-2' }} €
+      <span class="line-through text-gray-500 font-normal">{{price | number : '1.2-2' }} €</span>
       }@else{
       {{ price | number : '1.2-2' }} €
       }
