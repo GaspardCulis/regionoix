@@ -70,7 +70,7 @@ struct UploadForm {
 #[post("/upload")]
 async fn upload(
     MultipartForm(mut form): MultipartForm<UploadForm>,
-    data: Data<AppState>,
+    data: web::Data<AppState>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;

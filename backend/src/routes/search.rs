@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use actix_web::web::Query;
 use regionoix::{
     dtos::{product::ProductDto, product_index::ProductIndex},
     prelude::*,
@@ -43,7 +42,10 @@ struct SearchQuery {
     ),
 )]
 #[get("/products")]
-async fn search(query: Query<SearchQuery>, data: Data<AppState>) -> crate::Result<HttpResponse> {
+async fn search(
+    query: web::Query<SearchQuery>,
+    data: web::Data<AppState>,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let search = &data.search;
 
