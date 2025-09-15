@@ -27,7 +27,7 @@ export class BackofficeProducts implements OnInit {
       next: (data) => (this.products = data),
       error: (err) => {
         this.snackBar.show(
-          'Echec lors de la récupérations des produits "' + name + '" a bien été supprimé.',
+          'Echec lors de la récupération des produits',
           'error'
         );
         // update products list
