@@ -70,10 +70,10 @@ export class ShowcasePage implements OnInit, OnDestroy {
       });
       return;
     } else {
-      this.productService.get().subscribe({
+      this.productService.search("", filters).subscribe({
         next: (data) => this.products = data,
         error: () => {
-          this.snackbar.show('Somethings went wrong during products recuperation', "error");
+          this.snackbar.show("Erreur lors de la récupération des produits", "error");
         }
       });
     }
