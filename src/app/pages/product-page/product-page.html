@@ -9,7 +9,7 @@
         <h1 class="product-name">{{ product.name }}</h1>
         @if (product.discount){
         <div>
-            <span class="badge badge-warning font-bold px-2 rounded">- {{product.discount.percentage_off}} %</span>
+            <span class="badge badge-warning font-bold">- {{product.discount.percentage_off}} %</span>
         </div>}
 
         <p class="product-price">@if(product.price && product.discount){

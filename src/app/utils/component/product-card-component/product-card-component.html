@@ -3,7 +3,7 @@
     <button class="card-link" [routerLink]="['/products', id]">
       <img [src]="image" alt="Shoes" class="cursor-pointer" />
       @if (discount){
-      <span class="badge badge-warning font-bold absolute top-2 left-2 px-2 rounded">- {{discount}} %</span>
+      <span class="badge badge-warning font-bold absolute top-2 left-2">- {{discount}} %</span>
       }
     </button>
   </figure>
