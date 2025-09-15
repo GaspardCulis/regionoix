@@ -71,4 +71,26 @@ in {
       S3_BUCKET_NAME = "images-bucket";
     };
   };
+
+  # Auto indexing
+  systemd.timers.regionoix-search-indexer = {
+    wantedBy = ["timers.target"];
+    timerConfig = {
+      OnBootSec = "5m";
+      OnUnitActiveSec = "5m";
+      Unit = "regionoix-search-indexer.service";
+    };
+  };
+
+  systemd.services.regionoix-search-indexer = {
+    serviceConfig = {
+      Type = "oneshot";
+      User = "regionoix";
+      ExecStart = "${regionoix-backend}/bin/regionoix-indexer";
+      EnvironmentFile = config.sops.templates."regionoix-backend.env".path;
+    };
+    environment = {
+      MEILISEARCH_URL = "http://127.0.0.1:${toString config.services.meilisearch.listenPort}";
+    };
+  };
 }
