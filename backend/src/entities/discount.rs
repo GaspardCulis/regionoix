@@ -10,20 +10,12 @@ pub struct Model {
     #[serde(skip_deserializing)]
     pub id: i32,
     pub percentage_off: i32,
-    pub start_date: Date,
     pub end_date: Date,
-    pub product_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::product::Entity",
-        from = "Column::ProductId",
-        to = "super::product::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
+    #[sea_orm(has_many = "super::product::Entity")]
     Product,
 }
 
