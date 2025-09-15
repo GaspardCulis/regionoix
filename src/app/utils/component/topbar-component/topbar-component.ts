@@ -2,6 +2,8 @@ import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 import { AuthentificationService, CategoriesService, CategoryDto, LoggedUser, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
 
 @Component({
@@ -9,7 +11,7 @@ import { AuthentificationService, CategoriesService, CategoryDto, LoggedUser, Re
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule, FontAwesomeModule
   ],
   templateUrl: './topbar-component.html',
   styleUrl: './topbar-component.css'
@@ -22,6 +24,7 @@ export class TopbarComponent implements OnInit {
   @Input() title!: string;
   @Input() basketCount = 0;
   @Input() user!: LoggedUser | null;
+  faBasketShopping = faBasketShopping;
   searchText = '';
 
   private categoryService = inject(CategoriesService);
