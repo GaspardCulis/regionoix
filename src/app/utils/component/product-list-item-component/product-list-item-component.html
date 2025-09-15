@@ -3,12 +3,17 @@
         <img [src]="product.image" alt="{{ product.name }}" />
     </figure>
     <div class="content">
-        <div class="name">{{ product.name }}</div>
+        <div class="name">{{ product.name }}
+            @if(product.discount){
+            <span class="badge badge-warning font-bold">- {{product.discount.percentage_off}} %</span>
+            }
+        </div>
 
         <div class="info">
-            <p class="price"> @if(final_price && product.discount){
-                {{ product.price | number : '1.2-2' }} €
-                <span class="line-through text-gray-500 font-normal">{{final_price | number : '1.2-2' }} €</span>
+            <p class="price">
+                @if(final_price && product.discount){
+                {{ final_price | number : '1.2-2' }} €
+                <span class="line-through text-gray-500 font-normal">{{product.price | number : '1.2-2' }} €</span>
                 }@else{
                 {{ product.price | number : '1.2-2' }} €
                 }
@@ -19,7 +24,8 @@
                     <span id="quantity"> {{ quantity }} </span>
                     <button class="qty-btn" id="increase" (click)="increaseQuantity()">+</button>
                 </div>
-                <p class="subtotal">{{ final_price ? final_price*quantity : product.price* quantity | number:'1.2-2' }}€
+                <p class="subtotal">
+                    {{ (final_price ? final_price*quantity : product.price * quantity) | number:'1.2-2' }}€
                 </p>
             </div>
         </div>

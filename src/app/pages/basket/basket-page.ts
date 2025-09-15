@@ -2,8 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
-import { BasketLine } from '../../models/basket-model';
-import { BasketService } from '../../services/basket-service';
+import { BasketService, CartLineDto } from '../../generated/clients/regionoix-client';
 import { BasketStateService } from '../../services/basket-state-service';
 
 @Component({
@@ -14,20 +13,22 @@ import { BasketStateService } from '../../services/basket-state-service';
   styleUrls: ['./basket-page.css']
 })
 export class BasketPage implements OnInit {
+  private service = inject(BasketService);
   private basketService = inject(BasketService);
   private readonly basketState = inject(BasketStateService);
+
   private router = inject(Router);
 
-  lines: BasketLine[] = [];
+  lines: CartLineDto[] = [];
 
   ngOnInit(): void {
     this.loadBasket();
   }
 
   loadBasket() {
-    this.basketService.getBasket().subscribe({
+    this.service.getBasket().subscribe({
       next: (data) => {
-        this.lines = data.lines;
+        this.lines = data.lines ?? [];
         this.basketState.refreshCount();
       },
       error: (err) => console.error('Error during basket recuperation', err)
@@ -35,7 +36,16 @@ export class BasketPage implements OnInit {
   }
 
   getTotalPrice(): number {
-    return this.lines.reduce((total, l) => total + l.product.price * l.quantity, 0);
+    let total = 0;
+    // Compute total price with discount
+    this.lines.forEach((l) => {
+      let final_price = l.product.price;
+      if (l.product.discount) {
+        final_price = l.product.price - (l.product.price * l.product.discount.percentage_off) / 100;
+      }
+      total += l.product.price * l.quantity;
+    })
+    return total;
   }
 
   goToPayment() {
@@ -48,7 +58,7 @@ export class BasketPage implements OnInit {
   }
 
   changeQuantity(productId: number, quantity: number) {
-    this.basketService.updateItem(productId, quantity).subscribe(() => this.loadBasket());
+    this.basketService.updateItemQuantity(productId, { quantity }).subscribe(() => this.loadBasket());
   }
 
   emptyBasket() {
