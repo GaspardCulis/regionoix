@@ -46,11 +46,11 @@ async fn health(data: Data<AppState>) -> crate::Result<HttpResponse> {
     }
 
     // Redis
-    // FIX: Ugly implem
+    // FIX: Ugly implem, reuse existing RedisSessionStore somehow
     let redis_url: String = get_env_var("REDIS_URL").unwrap();
     let _redis_store = RedisSessionStore::new(redis_url)
         .await
-        .map_err(|_| anyhow::anyhow!("Failed to connect to Redis session store"))?;
+        .map_err(|e| anyhow::anyhow!("Failed to connect to Redis session store: {}", e))?;
 
     Ok(HttpResponse::Ok().body("healthy"))
 }
