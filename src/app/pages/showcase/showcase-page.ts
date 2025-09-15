@@ -50,6 +50,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
     this.loadRegions();
     this.loadTags();
     this.basketState.refreshCount();
+    this.loadProducts();
   }
 
   ngOnDestroy(): void {
@@ -58,23 +59,24 @@ export class ShowcasePage implements OnInit, OnDestroy {
 
   // Load methods
   loadProducts(): void {
+    const queryParams = this.route.snapshot.queryParamMap;
+    const categoryFilter = queryParams.get('c');
+    if (categoryFilter) {
+      this.selectedCategorys = [categoryFilter];
+    }
+
     const filters = this.buildFilters();
 
-    if (this.route.snapshot.queryParamMap.has('search')) {
-      const search = this.route.snapshot.queryParamMap.get('search') || '';
+    if (queryParams.has('search')) {
+      const search = queryParams.get('search') || '';
       this.productService.search(search, filters).subscribe({
         next: (products) => this.products = products,
-        error: () => {
-          this.snackbar.show("Erreur lors de la récupération des produits", "error");
-        }
+        error: () => this.snackbar.show("Erreur lors de la récupération des produits", "error")
       });
-      return;
     } else {
       this.productService.search("", filters).subscribe({
         next: (data) => this.products = data,
-        error: () => {
-          this.snackbar.show("Erreur lors de la récupération des produits", "error");
-        }
+        error: () => this.snackbar.show("Erreur lors de la récupération des produits", "error")
       });
     }
   }

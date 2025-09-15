@@ -30,6 +30,7 @@
         Régions {{ selectedRegion ? ': ' + selectedRegion : '' }}
       </button>
       <div class="dropdown-content">
+        <button (click)="selectedRegion = ''">Toutes</button>
         <button *ngFor="let r of regions" (click)="selectedRegion = r.name">
           {{ r.name }}
         </button>
@@ -41,7 +42,7 @@
         {{cat.name}} {{ selectedCategory ? ': ' + selectedSubCategory : '' }}
       </button>
       <div class="dropdown-content">
-        <button *ngFor="let child of cat.childs" (click)="selectedSubCategory = child.name">
+        <button *ngFor="let child of cat.childs" (click)="selectSubCategory(child)">
           {{ child.name }}
         </button>
       </div>

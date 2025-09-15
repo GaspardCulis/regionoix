@@ -24,12 +24,6 @@ export class TopbarComponent implements OnInit {
   @Input() user!: LoggedUser | null;
   searchText = '';
 
-  ngOnInit(): void {
-    this.userService.status().subscribe({
-      next: (user) => this.user = user,
-      error: () => this.user = null
-    });
-  }
   private categoryService = inject(CategoriesService);
   private regionService = inject(RegionsService)
 
@@ -39,6 +33,29 @@ export class TopbarComponent implements OnInit {
   selectedSubCategory = '';
   selectedRegion = '';
 
+
+  ngOnInit(): void {
+    this.userService.status().subscribe({
+      next: (user) => this.user = user,
+      error: () => this.user = null
+    });
+    this.regionService.get().subscribe({
+      next: (regions) => this.regions = regions,
+      error: (err) => {
+        console.error("Something went wrong on regions load :", err);
+        this.regions = [];
+      }
+    });
+    this.categoryService.getParents().subscribe({
+      next: (categories) => {
+        this.categories = categories.filter(c => c.category_parent === null);
+      },
+      error: (err) => {
+        console.error("Something went wrong on categories load :", err);
+        this.categories = [];
+      }
+    })
+  }
 
 
   onProfileClick() {
@@ -69,5 +86,12 @@ export class TopbarComponent implements OnInit {
           queryParamsHandling: 'merge'
         });
     }
+  }
+
+  selectSubCategory(child: CategoryDto) {
+    this.router.navigate(['/showcase'], {
+      queryParams: { c: child.name },
+      queryParamsHandling: 'merge'
+    });
   }
 }
