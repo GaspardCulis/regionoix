@@ -17,11 +17,18 @@ pub struct ProductIndex {
 
 impl ProductIndex {
     pub fn filterable_attributes() -> &'static [&'static str] {
-        &["weight", "price", "categories", "tags"]
+        &[
+            "weight",
+            "price",
+            "categories",
+            "tags",
+            "brand_name",
+            "region_name",
+        ]
     }
 
     pub fn sortable_attributes() -> &'static [&'static str] {
-        &["name", "price"]
+        &["name", "price", "weight"]
     }
 }
 
