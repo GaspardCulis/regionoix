@@ -1,7 +1,5 @@
-use crate::prelude::*;
-use actix_web::{HttpResponse, get, web::Data};
-use regionoix::dtos::brand::BrandDto;
-use sea_orm::EntityTrait;
+use regionoix::{dtos::brand::BrandDto, prelude::*};
+use sea_orm::EntityTrait as _;
 
 use crate::AppState;
 
@@ -23,7 +21,7 @@ pub fn config(cfg: &mut ServiceConfig) {
     ),
 )]
 #[get("")]
-pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let brands: Vec<BrandDto> = Brand::find().into_dto().all(&db.conn).await?;
 
