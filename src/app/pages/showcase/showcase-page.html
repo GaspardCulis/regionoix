@@ -1,55 +1,62 @@
 <div class="page-container">
-    <!-- Navbar en haut -->
-    <nav class="navbar">
-        <div class="nav-left">
-            <span class="brand">Produits Régionaux</span>
-        </div>
-        <div class="nav-right">
-            <div class="dropdown">
-                <button class="dropbtn">Catégories</button>
-                <div class="dropdown-content">
-                    <button *ngFor="let c of categories" (click)="selectedCategory = c">{{ c }}</button>
-                </div>
-            </div>
-            <div class="dropdown">
-                <button class="dropbtn">Régions</button>
-                <div class="dropdown-content">
-                    <button *ngFor="let r of regions" (click)="selectedRegion = r">{{ r }}</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
     <!-- Sidebar + Produits -->
     <aside class="filters">
         <h3>Filtres</h3>
-
-        <label>
-            Prix max :
-            <input type="number" [(ngModel)]="maxPrice" placeholder="Ex: 50" />
+        <label class="price-filter">
+            Prix :
+            <div class="inputs">
+                <input type="number" [(ngModel)]="minPrice" placeholder="Min" (change)="loadProducts()" />
+                <span> - </span>
+                <input type="number" [(ngModel)]="maxPrice" placeholder="Max" (change)="loadProducts()" />
+            </div>
         </label>
 
-        <label>
-            Catégorie :
-            <select [(ngModel)]="selectedCategory">
-                <option value="">Toutes</option>
-                <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
-            </select>
-        </label>
+        <fieldset class="availability">
+            <legend>Disponibilité</legend>
+            <label>
+                <input type="checkbox" [(ngModel)]="productAvailable" />
+                En stock
+            </label>
+            <label>
+                <input type="checkbox" [(ngModel)]="productUnavailable" />
+                Rupture
+            </label>
+        </fieldset>
 
-        <label>
-            Région :
-            <select [(ngModel)]="selectedRegion">
-                <option value="">Toutes</option>
-                <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
-            </select>
-        </label>
+        <!-- Catégories -->
+        <fieldset class="availability">
+            <legend>Catégories</legend>
+            <label *ngFor="let c of categories">
+                <input type="checkbox" [value]="c.name" (change)="toggleCategory(c.name, $event.target.checked)" />
+                {{ c.name }}
+            </label>
+        </fieldset>
+
+        <!-- Régions -->
+        <fieldset class="availability">
+            <legend>Régions</legend>
+            <label *ngFor="let r of regions">
+                <input type="checkbox" [value]="r.name" (change)="toggleRegion(r.name, $event.target.checked)" />
+                {{ r.name }}
+            </label>
+        </fieldset>
+
+        <!-- Propriétés -->
+        <fieldset class="availability">
+            <legend>Propriétés</legend>
+            <label *ngFor="let t of tags">
+                <input type="checkbox" [value]="t.name" (change)="toggleTag(t.name, $event.target.checked)" />
+                {{ t.name }}
+            </label>
+        </fieldset>
     </aside>
 
     <main class="product-grid">
+
         <app-product-card-component *ngFor="let product of products" [id]="product.id" [name]="product.name"
-            [image]="product.image ?? ''" [discount]="product.discount?.percentage_off ?? null" [price]="product.price"
-            (addToBasket)="addItem($event)">
+            [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
+            [price]="product.price" (addToBasket)="addItem($event)">
         </app-product-card-component>
+
     </main>
 </div>
