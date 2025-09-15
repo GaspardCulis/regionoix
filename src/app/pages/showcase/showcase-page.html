@@ -5,9 +5,9 @@
         <label class="price-filter">
             Prix :
             <div class="inputs">
-                <input type="number" [(ngModel)]="minPrice" placeholder="Min" (change)="loadProducts()" />
+                <input type="number" [(ngModel)]="minPrice" placeholder="Min" min="0" (change)="loadProducts()" />
                 <span> - </span>
-                <input type="number" [(ngModel)]="maxPrice" placeholder="Max" (change)="loadProducts()" />
+                <input type="number" [(ngModel)]="maxPrice" placeholder="Max" min="0" (change)="loadProducts()" />
             </div>
         </label>
 
