@@ -1,26 +1,50 @@
 <div class="topbar">
   <a href="/">
-    <img class="logo" src="{{ pathLogo }}" alt="Logo de la region" />
+    <img class="logo" src={{pathLogo}} alt="Logo de la region">
     <h1 class="title">{{ title }}</h1>
   </a>
   <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher..." (keyup)="search()" />
   <div class="topbar-actions">
-    <button class="user-basket cursor-pointer" (click)="goToBasket()">
-      <div class="indicator">
-        <span
-          class="indicator-item indicator-bottom indicator-end badge badge-secondary rounded-full font-semibold py-[2px] px-[6px]"
-        >
-          {{ basketCount }}
-        </span>
-        <fa-icon
-          [icon]="faBasketShopping"
-          class="fa-2xl text-primary inline-block"
-          aria-label="panier"
-        ></fa-icon>
-      </div>
+    <button class="user-basket" (click)="goToBasket()">
+      <img src="assets/panier1.png" alt="logo panier">
+      @if (basketCount !== 0) {
+      <span class="basket-count">{{basketCount}}</span>
+      }
     </button>
     <button class="user-profile btn btn-primary" (click)="onProfileClick()">
-      @if (user) { Mon compte } @else { Se connecter }
+      @if (user) {
+      Mon compte
+      }
+      @else {
+      Se connecter
+      }
     </button>
   </div>
+</div>
+<div class="bottom">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <!-- Dropdown régions -->
+    <div class="dropdown">
+      <button class="dropbtn">
+        Régions {{ selectedRegion ? ': ' + selectedRegion : '' }}
+      </button>
+      <div class="dropdown-content">
+        <button *ngFor="let r of regions" (click)="selectedRegion = r.name">
+          {{ r.name }}
+        </button>
+      </div>
+    </div>
+    <!-- Dropdown catégories -->
+    <div class="dropdown" *ngFor="let cat of categories">
+      <button class="dropbtn">
+        {{cat.name}} {{ selectedCategory ? ': ' + selectedSubCategory : '' }}
+      </button>
+      <div class="dropdown-content">
+        <button *ngFor="let child of cat.childs" (click)="selectedSubCategory = child.name">
+          {{ child.name }}
+        </button>
+      </div>
+    </div>
+  </nav>
 </div>
