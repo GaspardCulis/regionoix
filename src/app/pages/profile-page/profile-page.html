@@ -6,10 +6,12 @@
 </div>
 
 <div class="account-container">
-  <aside class="sidebar">
-    <button class="tab" [class.active]="informationPage" (click)="showInformationPage()">Mes informations</button>
-    <button class="tab" [class.active]="!informationPage" (click)="showOrdersPage()">Mes commandes</button>
-  </aside>
+<aside class="sidebar">
+  <button class="tab" [class.active]="informationPage" (click)="showInformationPage()">Mes informations</button>
+  <button class="tab" [class.active]="!informationPage" (click)="showOrdersPage()">Mes commandes</button>
+  <button class="tab logout-btn" (click)="logout()">Déconnexion</button>
+</aside>
+
 
   @if (informationPage) {
   <section class="content-card">

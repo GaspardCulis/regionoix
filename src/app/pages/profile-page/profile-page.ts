@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthentificationService, LoggedUser, OrderDto, OrdersService } from '../../generated/clients/regionoix-client';
 import { SnackbarService } from '../../services/snackbar-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-page',
@@ -15,6 +16,7 @@ export class ProfilePage implements OnInit {
   private readonly authService = inject(AuthentificationService);
   private readonly ordersService = inject(OrdersService);
   private readonly snackBar = inject(SnackbarService);
+  private readonly router = inject(Router);
 
   informationPage = true;
   user!: LoggedUser;
@@ -67,4 +69,12 @@ export class ProfilePage implements OnInit {
     return arrivalDateOnly < todayDateOnly;
   }
 
+  logout() {
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/connection']);
+      },
+      error: () => this.snackBar.show('Erreur lors de la déconnexion', 'error'),
+    });
+  }
 }
