@@ -22,7 +22,7 @@ pub fn config(cfg: &mut ServiceConfig) {
     ),
 )]
 #[get("")]
-async fn health(data: Data<AppState>) -> crate::Result<HttpResponse> {
+async fn health(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
     // Database connection check
     let db = &data.db;
     db.ping().await?;
