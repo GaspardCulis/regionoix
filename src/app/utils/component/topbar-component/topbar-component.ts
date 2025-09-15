@@ -88,9 +88,26 @@ export class TopbarComponent implements OnInit {
     }
   }
 
+  selectCategory(cat: CategoryDto) {
+    this.selectedCategory = cat.name;
+    this.router.navigate(['/showcase'], {
+      queryParams: { c: cat.name },
+      queryParamsHandling: 'merge'
+    });
+  }
+
   selectSubCategory(child: CategoryDto) {
     this.router.navigate(['/showcase'], {
       queryParams: { c: child.name },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  selectRegion(region: RegionDto) {
+    this.selectedRegion = region.name;
+
+    this.router.navigate(['/showcase'], {
+      queryParams: { region: region.name },
       queryParamsHandling: 'merge'
     });
   }

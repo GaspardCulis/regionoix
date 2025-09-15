@@ -60,11 +60,17 @@ export class ShowcasePage implements OnInit, OnDestroy {
   // Load methods
   loadProducts(): void {
     const queryParams = this.route.snapshot.queryParamMap;
+    // Category
     const categoryFilter = queryParams.get('c');
     if (categoryFilter) {
       this.selectedCategorys = [categoryFilter];
     }
 
+    // Region
+    const regionFilter = queryParams.get('region');
+    if (regionFilter) {
+      this.selectedRegions = [regionFilter];
+    }
     const filters = this.buildFilters();
 
     if (queryParams.has('search')) {
