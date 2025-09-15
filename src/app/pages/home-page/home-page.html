@@ -1,0 +1,48 @@
+<div class="home-container">
+
+    <!-- Banner Hero -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Bienvenue sur Regionoix</h1>
+            <p>Découvrez nos produits locaux et promotions exclusives !</p>
+        </div>
+    </section>
+
+    <!-- Carrousel promotions -->
+    <section class="carousel-section">
+        <h2>Produits en promotion</h2>
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
+            <div class="carousel-track">
+                <app-product-card-component *ngFor="let product of promotionalProducts" [id]="product.id"
+                    [name]="product.name" [image]="product.image ?? '/assets/default.png'"
+                    [discount]="product.discount?.percentage_off ?? null" [price]="product.price">
+                </app-product-card-component>
+            </div>
+            <button class="carousel-btn next" (click)="nextSlide()">›</button>
+        </div>
+    </section>
+
+    <!-- Nouveautés -->
+    <section class="new-products">
+        <h2>Nouveautés</h2>
+        <div class="grid">
+            <app-product-card-component *ngFor="let product of newProducts" [id]="product.id" [name]="product.name"
+                [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
+                [price]="product.price">
+            </app-product-card-component>
+        </div>
+    </section>
+
+    <!-- Top catégories -->
+    <section class="top-categories">
+        <h2>Top catégories</h2>
+        <div class="grid-categories">
+            <div class="category-card" *ngFor="let cat of topCategories">
+                <img src="/assets/category-placeholder.png" alt="{{cat.name}}" />
+                <h3>{{ cat.name }}</h3>
+            </div>
+        </div>
+    </section>
+
+</div>
