@@ -63,7 +63,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
   }
 
   addItem(productId: number) {
-    this.basketService.addItem({ product_id: productId, quantity: 1 }).subscribe({
+    this.basketService.add({ product_id: productId, quantity: 1 }).subscribe({
       next: () => {
         this.snackbar.show('Produit ajouté au panier ✅', 'success');
         this.basketState.refreshCount();

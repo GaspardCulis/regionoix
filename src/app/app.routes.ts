@@ -6,6 +6,7 @@ import { ConnectionPage } from './pages/connection-page/connection-page';
 import { ProductPage } from './pages/product-page/product-page';
 import { NoAuthGuard } from './services/no-auth-guard';
 import { AuthGuard } from './services/auth-guard';
+import { ProfilePage } from './pages/profile-page/profile-page';
 import { AdminGuard } from './services/auth-admin';
 import { BackofficeDashboard } from './pages/backoffice-dashboard/backoffice-dashboard';
 import { BackofficeProducts } from './pages/backoffice-products/backoffice-products';
@@ -20,5 +21,6 @@ export const routes: Routes = [
     { path: 'backoffice/create-product', component: FormProduct, canActivate: [AdminGuard] },
     { path: 'payment', component: PaymentPage, canActivate: [AuthGuard] },
     { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
+    { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
     { path: 'products/:id', component: ProductPage }
 ];

@@ -13,7 +13,7 @@ export class BasketStateService {
     private readonly basketService = inject(BasketService);
 
     refreshCount(): void {
-        this.basketService.getCount().subscribe({
+        this.basketService.get_1().subscribe({
             next: (count: CountBasket) => this.basketCountSubject.next(count.count),
             error: () => this.basketCountSubject.next(0)
         });

@@ -53,14 +53,14 @@ export class PaymentPage implements OnInit {
       this.currentStep++;
     }
     if (this.currentStep === 4) {
-      this.basketService.getBasket().subscribe({
+      this.basketService.get().subscribe({
         next: (basket) => {
           console.log(basket);
         }
       }
       );
 
-      this.basketService.makeOrder(this.address).subscribe({
+      this.basketService.make(this.address).subscribe({
         next: () => {
           this.snackBarService.show('Paiement validé avec succès ✅', "success");
         },

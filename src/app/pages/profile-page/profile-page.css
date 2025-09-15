@@ -1,0 +1,272 @@
+.account-container {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem;
+  color: black;
+}
+
+.page-header {
+  margin: 1rem 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-left: 3rem;
+}
+
+.breadcrumb {
+  font-size: 0.9rem;
+  color: black;
+}
+
+.breadcrumb a {
+  color: black;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: black;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 220px;
+  padding: 1rem;
+  border-radius: 12px 0 0 12px;
+}
+
+.tab {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+.tab:hover {
+  background: #e9e9e9;
+}
+
+.tab.active {
+  background: #d9d9d9;
+  font-weight: 600;
+  color: #000;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.content-card {
+  flex: 1;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+input {
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.save-btn {
+  background: darkgrey;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: rgb(63, 63, 63);
+}
+
+.password-btn {
+  background: darkred;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.password-btn:hover {
+  background: rgb(100, 0, 0);
+}
+
+/* Commandes */
+.order-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.order-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.order-card p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid transparent; 
+}
+
+.order-header.delivered {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.order-header.in-delivery {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+  color: #856404;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.order-item img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.order-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-status {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.order-status .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Couleurs de statut */
+.order-status.pending .dot {
+  background-color: orange;
+}
+.order-status.delivered .dot {
+  background-color: green;
+}
+.order-status.cancelled .dot {
+  background-color: red;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.cancel-btn {
+  background: #ffe5e5;
+  color: #b30000;
+  border: 1px solid #f5c2c2;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: #ffcccc;
+}
+.orders-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-top: 1rem;
+}
+
+.orders-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orders-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.orders-container::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.orders-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
