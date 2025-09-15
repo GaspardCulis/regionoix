@@ -142,8 +142,8 @@ export class ProductsService extends BaseService {
     /**
      * Search for products
      * @param query The raw search query
-     * @param filters Search filters in this example form: &#x60;id &gt; 1 AND genres &#x3D; Action&#x60;. The list of filterable attributes is &#x60;[\&quot;weight\&quot;, \&quot;price\&quot;, \&quot;categories\&quot;, \&quot;tags\&quot;]&#x60;. See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
-     * @param sort Sort by some specific attribute in the format &#x60;attribute:method&#x60; where &#x60;method: asc | desc&#x60;. Ex: &#x60;price:asc&#x60;. The list of sortable attributes is &#x60;[\&quot;name\&quot;, \&quot;price\&quot;]&#x60;. See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
+     * @param filters Search filters in this example form: &#x60;id &gt; 1 AND genres &#x3D; Action&#x60;. The list of filterable attributes is &#x60;[\&quot;weight\&quot;, \&quot;price\&quot;, \&quot;categories\&quot;, \&quot;tags\&quot;, \&quot;brand_name\&quot;, \&quot;region_name\&quot;]&#x60;. See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
+     * @param sort Sort by some specific attribute in the format &#x60;attribute:method&#x60; where &#x60;method: asc | desc&#x60;. Ex: &#x60;price:asc&#x60;. The list of sortable attributes is &#x60;[\&quot;name\&quot;, \&quot;price\&quot;, \&quot;weight\&quot;]&#x60;. See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */

@@ -17,7 +17,7 @@ export interface UploadFormMeta {
     price: number;
     region_id?: number | null;
     stock: number;
-    tags?: Array<string> | null;
+    tags: Array<number>;
     weight?: number | null;
 }
 
