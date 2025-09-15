@@ -6,6 +6,7 @@ import { ConnectionPage } from './pages/connection-page/connection-page';
 import { ProductPage } from './pages/product-page/product-page';
 import { NoAuthGuard } from './services/no-auth-guard';
 import { AuthGuard } from './services/auth-guard';
+import { ProfilePage } from './pages/profile-page/profile-page';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'showcase', pathMatch: 'full' },
@@ -13,5 +14,6 @@ export const routes: Routes = [
     { path: 'basket', component: BasketPage, canActivate: [AuthGuard] },
     { path: 'payment', component: PaymentPage, canActivate: [AuthGuard] },
     { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
+    { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
     { path: 'products/:id', component: ProductPage }
 ];

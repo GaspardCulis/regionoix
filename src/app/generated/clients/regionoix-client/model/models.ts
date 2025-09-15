@@ -17,3 +17,4 @@ export * from './regionDto';
 export * from './roles';
 export * from './subCategoryDto';
 export * from './tagDto';
+export * from './uploadFormMeta';
