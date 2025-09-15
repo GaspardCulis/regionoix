@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()> {
     let secret_key: String = get_env_var("SECRET_KEY").unwrap();
     let listen_addr: String = get_env_var("API_HOST").unwrap();
     let listen_port: u16 = get_env_var("API_PORT").unwrap();
+    let redis_url: String = get_env_var("REDIS_URL").unwrap();
 
     info!("Connecting to database");
     let db = DatabaseService::build()
@@ -48,7 +49,7 @@ async fn main() -> std::io::Result<()> {
         .expect("failed to build DB service");
 
     info!("Connecting to Redis session store");
-    let redis_store = RedisSessionStore::new("redis://127.0.0.1:6379")
+    let redis_store = RedisSessionStore::new(redis_url)
         .await
         .expect("Failed to connect to Redis session store");
 
