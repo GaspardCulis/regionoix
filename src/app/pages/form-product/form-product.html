@@ -119,7 +119,7 @@
             <div>
               @for (tag of tags; track tag.id) {
               <input class="btn" type="checkbox" name="tags" aria-label="{{ tag.name }}" value="{{ tag.id }}"
-                (change)="onCheckChangeTag($event)" />
+                (change)="onCheckChangeTag($event)" [checked]="isTagSelected(tag.id)" />
 
               }
               <input class="btn btn-square" type="button" value="×" (click)="onResetTags()" />

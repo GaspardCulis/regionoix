@@ -112,8 +112,10 @@ export class FormProduct implements OnInit {
         brand_id: Number(this.productForm.get('brand')?.value) || null,
         category_id: Number(this.productForm.get('category')?.value) || null,
         region_id: Number(this.productForm.get('region')?.value) || null,
-        tags: (this.productForm.get('tags')?.value as string[]) || [],
+        tags: (this.productForm.get('tags')?.value as number[]) || [],
       };
+
+      console.log(metadata)
 
       // Call the API
       this.adminService.upload(imageFile, metadata).subscribe({
@@ -138,14 +140,22 @@ export class FormProduct implements OnInit {
   onCheckChangeTag(event: Event) {
     const input = event.target as HTMLInputElement;
     const formArray = this.productForm.get('tags') as FormArray;
+    const value = Number(input.value);
 
     if (input.checked) {
-      formArray.push(new FormControl(input.value));
+      if (!formArray.value.includes(value)) {
+        formArray.push(new FormControl(value));
+      }
     } else {
-      const index = formArray.controls.findIndex((ctrl) => ctrl.value === input.value);
+      const index = formArray.controls.findIndex((ctrl) => ctrl.value === value);
       if (index !== -1) {
         formArray.removeAt(index);
       }
     }
   }
+  isTagSelected(tagId: number): boolean {
+    const formArray = this.productForm.get('tags') as FormArray;
+    return formArray.value.includes(tagId.toString());
+  }
+
 }
