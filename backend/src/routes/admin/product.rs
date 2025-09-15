@@ -70,16 +70,16 @@ struct UploadForm {
 async fn upload(
     MultipartForm(mut form): MultipartForm<UploadForm>,
     data: web::Data<AppState>,
-    // logged_user: LoggedUser,
+    logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let bucket = &data.s3.api_bucket;
     let web_bucket = &data.s3.web_bucket;
     let credentials = &data.s3.credentials;
 
-    // if logged_user.role != Roles::Admin {
-    //     return Err(crate::Error::Unauthorized);
-    // }
+    if logged_user.role != Roles::Admin {
+        return Err(crate::Error::Unauthorized);
+    }
 
     let client = Client::new();
 
