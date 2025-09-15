@@ -8,6 +8,7 @@ pub mod brand;
 pub mod cart;
 pub mod cart_line;
 pub mod category;
+pub mod discount;
 pub mod order;
 pub mod order_line;
 pub mod product;

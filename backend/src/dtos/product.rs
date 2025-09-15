@@ -5,6 +5,7 @@ use sea_orm::{
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use crate::dtos::discount::DiscountDto;
 use crate::dtos::{DtoTrait, PartialDto};
 use crate::dtos::{brand::BrandDto, category::CategoryDto, region::RegionDto, tag::TagDto};
 use crate::prelude::*;
@@ -28,6 +29,8 @@ pub struct ProductDto {
     #[sea_orm(skip)]
     /// Won't be fectched unless `finalize` is called.
     pub tags: Option<Vec<TagDto>>,
+    #[sea_orm(nested)]
+    pub discount: Option<DiscountDto>,
 }
 
 impl DtoTrait for ProductDto {
@@ -36,6 +39,7 @@ impl DtoTrait for ProductDto {
             .join(JoinType::LeftJoin, product::Relation::Brand.def())
             .join(JoinType::LeftJoin, product::Relation::Region.def())
             .join(JoinType::LeftJoin, product::Relation::Category.def())
+            .join(JoinType::LeftJoin, product::Relation::Discount.def())
     }
 }
 

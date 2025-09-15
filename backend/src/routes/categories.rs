@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use actix_web::{HttpResponse, get, web::Data};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 
 use crate::{AppState, dtos::category::CategoryDto, prelude::Category};
@@ -22,7 +21,7 @@ pub fn config(cfg: &mut ServiceConfig) {
     ),
 )]
 #[get("")]
-pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let categories: Vec<CategoryDto> = Category::find().into_dto().all(&db.conn).await?;
 
@@ -43,7 +42,7 @@ pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
     ),
 )]
 #[get("/hierarchy")]
-pub async fn get_parents(data: Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get_parents(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let mut result: Vec<CategoryDto> = Vec::new();
     let categories_parents: Vec<CategoryDto> = Category::find()

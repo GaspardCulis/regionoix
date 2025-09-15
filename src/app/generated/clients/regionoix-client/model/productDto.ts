@@ -8,6 +8,7 @@
  * Do not edit the class manually.
  */
 import { CategoryDto } from './categoryDto';
+import { DiscountDto } from './discountDto';
 import { TagDto } from './tagDto';
 import { RegionDto } from './regionDto';
 import { BrandDto } from './brandDto';
@@ -17,6 +18,7 @@ export interface ProductDto {
     brand?: BrandDto | null;
     category?: CategoryDto | null;
     description?: string | null;
+    discount?: DiscountDto | null;
     id: number;
     image?: string | null;
     name: string;

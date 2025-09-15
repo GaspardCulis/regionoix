@@ -43,7 +43,8 @@ CREATE TABLE IF NOT EXISTS PRODUCT (
     stock integer not null CHECK(stock >= 0) default 0,
     region_id integer references region(id) ON DELETE SET NULL,
     brand_id integer references brand(id) ON DELETE SET NULL,
-    category_id integer references category(id) ON DELETE SET NULL
+    category_id integer references category(id) ON DELETE SET NULL,
+    discount_id integer references discount(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS PRODUCT_TAG(
@@ -100,9 +101,6 @@ CREATE TABLE IF NOT EXISTS CART_LINE (
 CREATE TABLE IF NOT EXISTS DISCOUNT(
     id serial primary key,
     percentage_off integer NOT NULL check(percentage_off > 0),
-    start_date date not null,
     end_date date not null,
-    check (end_date > start_date),
-    product_id integer references product(id) ON DELETE CASCADE
 );
 
