@@ -13,7 +13,6 @@ import { BasketStateService } from '../../services/basket-state-service';
   styleUrls: ['./basket-page.css']
 })
 export class BasketPage implements OnInit {
-  private service = inject(BasketService);
   private basketService = inject(BasketService);
   private readonly basketState = inject(BasketStateService);
 
@@ -26,7 +25,7 @@ export class BasketPage implements OnInit {
   }
 
   loadBasket() {
-    this.service.getBasket().subscribe({
+    this.basketService.getBasket().subscribe({
       next: (data) => {
         this.lines = data.lines ?? [];
         this.basketState.refreshCount();
@@ -53,8 +52,9 @@ export class BasketPage implements OnInit {
   }
 
   removeItem(productId: number) {
-    this.basketService.removeItem(productId).subscribe();
-    this.loadBasket()
+    this.basketService.removeItem(productId).subscribe(() => {
+      this.loadBasket()
+    });
   }
 
   changeQuantity(productId: number, quantity: number) {
@@ -62,7 +62,9 @@ export class BasketPage implements OnInit {
   }
 
   emptyBasket() {
-    this.basketService.empty().subscribe();
-    this.loadBasket();
+    this.basketService.empty().subscribe(() => {
+      this.loadBasket();
+    }
+    );
   }
 }
