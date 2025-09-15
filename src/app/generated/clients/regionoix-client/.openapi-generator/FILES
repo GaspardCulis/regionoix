@@ -8,6 +8,7 @@ api/authentification.service.ts
 api/basket.service.ts
 api/brands.service.ts
 api/categories.service.ts
+api/default.service.ts
 api/orders.service.ts
 api/products.service.ts
 api/regions.service.ts
@@ -22,6 +23,7 @@ model/cartDto.ts
 model/cartLineDto.ts
 model/categoryDto.ts
 model/countBasket.ts
+model/discountDto.ts
 model/formAddToBasket.ts
 model/formDataMakeOrder.ts
 model/formUpdateQuantityBasket.ts
