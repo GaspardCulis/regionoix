@@ -42,7 +42,7 @@ export class ProductPage implements OnInit {
   }
 
   addItem(productId: number) {
-    this.basketService.addItem({ product_id: productId, quantity: this.quantity }).subscribe({
+    this.basketService.add({ product_id: productId, quantity: this.quantity }).subscribe({
       next: () => {
         this.snackbarService.show('Produit ajouté au panier ✅', 'success');
       },
