@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { SnackbarService } from '../../services/snackbar-service';
+import { Roles } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-connection-page',
@@ -17,7 +18,7 @@ export class ConnectionPage {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly snackBar = inject(SnackbarService);
-  
+
   onSubmit() {
     if (this.checkCredentials()) {
       const user = { email: this.email, password: this.password };
@@ -25,7 +26,16 @@ export class ConnectionPage {
         next: () => {
           this.snackBar.show(`Connexion réussie. Bienvenue, ${user.email}!`, 'success');
 
-          this.router.navigate(['/showcase']);
+          this.authService.status().subscribe({
+            next: (data) => {
+              if (data.role == Roles.Admin) {
+                this.router.navigate(['/backoffice']);
+              } else {
+                this.router.navigate(['/showcase']);
+              }
+            }
+          })
+
         },
         error: () => {
           this.snackBar.show('Échec de la connexion. Veuillez vérifier vos identifiants et réessayer.', 'error');
