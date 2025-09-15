@@ -190,9 +190,9 @@ export class ShowcasePage implements OnInit, OnDestroy {
       );
     }
 
-    // Availability
-    if (this.productAvailable && !this.productUnavailable) filters.push(`stock > 0`);
-    if (this.productUnavailable && !this.productAvailable) filters.push(`stock = 0`);
+    // Availability  TODO
+    /*if (this.productAvailable && !this.productUnavailable) filters.push(`stock > 0`);
+    if (this.productUnavailable && !this.productAvailable) filters.push(`stock = 0`);*/
 
     const filterString = filters.join(' AND ');
     console.log('API filters:', filterString);
