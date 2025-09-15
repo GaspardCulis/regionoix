@@ -187,7 +187,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
     // Regions
     if (this.selectedRegions.length > 0) {
       filters.push(
-        `(${this.selectedRegions.map(r => `region = "${r}"`).join(' OR ')})`
+        `(${this.selectedRegions.map(r => `region_name = "${r}"`).join(' OR ')})`
       );
     }
 
