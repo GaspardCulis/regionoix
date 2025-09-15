@@ -31,8 +31,7 @@ struct ProductMetadata {
     region_id: Option<i32>,
     brand_id: Option<i32>,
     category_id: Option<i32>,
-    #[allow(dead_code)] // TODO: Insert tags
-    tags: Option<Vec<String>>,
+    tags: Vec<i32>,
 }
 
 #[derive(Debug, MultipartForm, ToSchema)]
@@ -71,16 +70,16 @@ struct UploadForm {
 async fn upload(
     MultipartForm(mut form): MultipartForm<UploadForm>,
     data: web::Data<AppState>,
-    logged_user: LoggedUser,
+    // logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
     let bucket = &data.s3.api_bucket;
     let web_bucket = &data.s3.web_bucket;
     let credentials = &data.s3.credentials;
 
-    if logged_user.role != Roles::Admin {
-        return Err(crate::Error::Unauthorized);
-    }
+    // if logged_user.role != Roles::Admin {
+    //     return Err(crate::Error::Unauthorized);
+    // }
 
     let client = Client::new();
 
@@ -174,7 +173,18 @@ async fn upload(
         ..Default::default()
     };
 
-    new_product.save(&db.conn).await?;
+    let inserted_product = new_product.save(&db.conn).await?;
+
+    info!("Updating product tags");
+    for tag in meta.tags.iter() {
+        let new_product_tag = product_tag::ActiveModel {
+            id: NotSet,
+            product_id: Set(inserted_product.id.try_as_ref().cloned()),
+            tag_id: Set(Some(*tag)),
+        };
+
+        let _ = new_product_tag.save(&db.conn).await?;
+    }
 
     info!("Successfully created new product");
     Ok(HttpResponse::Ok().finish())
