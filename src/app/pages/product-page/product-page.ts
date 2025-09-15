@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Product } from '../../models/product-model';
 import { BasketService } from '../../services/basket-service';
 import { ProductService } from '../../services/product-service';
 import { SnackbarService } from '../../services/snackbar-service';
+import { ProductDto } from '../../generated/clients/regionoix-client/index';
 
 @Component({
   selector: 'app-product-page',
@@ -14,8 +14,9 @@ import { SnackbarService } from '../../services/snackbar-service';
   styleUrls: ['./product-page.css']
 })
 export class ProductPage implements OnInit {
-  product!: Product;
+  product!: ProductDto;
   quantity = 1;
+  final_price: number | null = null;
 
   private basketService = inject(BasketService);
   private productService = inject(ProductService);
@@ -31,6 +32,11 @@ export class ProductPage implements OnInit {
             ...data,
             image: data.image ?? 'assets/default.png'
           };
+
+          if (this.product.discount) {
+            this.final_price = this.product.price - (this.product.price * this.product.discount.percentage_off) / 100;
+          }
+
         },
         error: (err) => console.error('Erreur lors de la récupération du produit', err)
       });
