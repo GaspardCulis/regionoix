@@ -4,6 +4,7 @@ export * from './cartDto';
 export * from './cartLineDto';
 export * from './categoryDto';
 export * from './countBasket';
+export * from './discountDto';
 export * from './formAddToBasket';
 export * from './formDataMakeOrder';
 export * from './formUpdateQuantityBasket';

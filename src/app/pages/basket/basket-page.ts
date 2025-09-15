@@ -2,8 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ProductListItemComponent } from '../../utils/component/product-list-item-component/product-list-item-component';
-import { BasketLine } from '../../models/basket-model';
-import { BasketService } from '../../services/basket-service';
+import { BasketService, CartLineDto } from '../../generated/clients/regionoix-client';
 import { BasketStateService } from '../../services/basket-state-service';
 
 @Component({
@@ -16,9 +15,10 @@ import { BasketStateService } from '../../services/basket-state-service';
 export class BasketPage implements OnInit {
   private basketService = inject(BasketService);
   private readonly basketState = inject(BasketStateService);
+
   private router = inject(Router);
 
-  lines: BasketLine[] = [];
+  lines: CartLineDto[] = [];
 
   ngOnInit(): void {
     this.loadBasket();
@@ -27,7 +27,7 @@ export class BasketPage implements OnInit {
   loadBasket() {
     this.basketService.getBasket().subscribe({
       next: (data) => {
-        this.lines = data.lines;
+        this.lines = data.lines ?? [];
         this.basketState.refreshCount();
       },
       error: (err) => console.error('Error during basket recuperation', err)
@@ -35,7 +35,16 @@ export class BasketPage implements OnInit {
   }
 
   getTotalPrice(): number {
-    return this.lines.reduce((total, l) => total + l.product.price * l.quantity, 0);
+    let total = 0;
+    // Compute total price with discount
+    this.lines.forEach((l) => {
+      let final_price = l.product.price;
+      if (l.product.discount) {
+        final_price = l.product.price - (l.product.price * l.product.discount.percentage_off) / 100;
+      }
+      total += final_price * l.quantity;
+    })
+    return total;
   }
 
   goToPayment() {
@@ -43,16 +52,19 @@ export class BasketPage implements OnInit {
   }
 
   removeItem(productId: number) {
-    this.basketService.removeItem(productId).subscribe();
-    this.loadBasket()
+    this.basketService.removeItem(productId).subscribe(() => {
+      this.loadBasket()
+    });
   }
 
   changeQuantity(productId: number, quantity: number) {
-    this.basketService.updateItem(productId, quantity).subscribe(() => this.loadBasket());
+    this.basketService.updateItemQuantity(productId, { quantity }).subscribe(() => this.loadBasket());
   }
 
   emptyBasket() {
-    this.basketService.empty().subscribe();
-    this.loadBasket();
+    this.basketService.empty().subscribe(() => {
+      this.loadBasket();
+    }
+    );
   }
 }
