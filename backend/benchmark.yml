@@ -6,7 +6,7 @@
 base: 'https://www.regionoix.gasdev.fr'
 iterations: 10000
 concurrency: 16
-rampup: 10
+rampup: 5
 
 plan:
 
