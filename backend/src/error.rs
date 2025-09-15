@@ -33,8 +33,10 @@ impl ResponseError for Error {
     fn status_code(&self) -> actix_web::http::StatusCode {
         match self {
             Error::EntityNotFound { table_name: _ } => StatusCode::NOT_FOUND,
-            Error::BadRequestError(_) => StatusCode::BAD_REQUEST,
-            Error::Unauthorized => StatusCode::UNAUTHORIZED,
+            Error::ParseIntFailure(_) | Error::BadRequestError(_) => StatusCode::BAD_REQUEST,
+            Error::AuthenticationFailure | Error::Unauthenticated | Error::Unauthorized => {
+                StatusCode::UNAUTHORIZED
+            }
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
