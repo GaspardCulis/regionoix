@@ -25,7 +25,7 @@ export class BasketPage implements OnInit {
   }
 
   loadBasket() {
-    this.basketService.getBasket().subscribe({
+    this.basketService.get().subscribe({
       next: (data) => {
         this.lines = data.lines ?? [];
         this.basketState.refreshCount();
@@ -52,13 +52,13 @@ export class BasketPage implements OnInit {
   }
 
   removeItem(productId: number) {
-    this.basketService.removeItem(productId).subscribe(() => {
+    this.basketService.remove(productId).subscribe(() => {
       this.loadBasket()
     });
   }
 
   changeQuantity(productId: number, quantity: number) {
-    this.basketService.updateItemQuantity(productId, { quantity }).subscribe(() => this.loadBasket());
+    this.basketService.updateQuantity(productId, { quantity }).subscribe(() => this.loadBasket());
   }
 
   emptyBasket() {
