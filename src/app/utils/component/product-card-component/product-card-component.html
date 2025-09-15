@@ -2,7 +2,9 @@
   <figure class="relative">
     <button class="card-link" [routerLink]="['/products', id]">
       <img [src]="image" alt="Shoes" class="cursor-pointer" />
-      <span class="badge badge-warning font-bold absolute top-2 left-2">- 20 %</span>
+      @if (discount){
+      <span class="badge badge-warning font-bold absolute top-2 left-2 px-2 rounded">- {{discount}} %</span>
+      }
     </button>
   </figure>
   <div class="card-content">
@@ -10,8 +12,13 @@
       <h2>{{ name }}</h2>
     </button>
     <p class="price">
+      @if(price && discount){
       {{ price | number : '1.2-2' }} €
-      <span class="line-through text-gray-500 font-medium">100,00 €</span>
+      <span class="line-through text-gray-500 font-normal">{{final_price | number : '1.2-2' }} €</span>
+      }@else{
+      {{ price | number : '1.2-2' }} €
+      }
+
     </p>
     <div class="card-action">
       <button class="btn btn-primary">Ajouter au panier</button>

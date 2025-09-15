@@ -30,6 +30,10 @@
     --color-primary-light: #c49f7d;
     --color-primary-pale: #e6d5c5;
 
+    --color-warning: #fcb700;
+
+    --color-warning-content: #40322d;
+
     /* Couleurs secondaires */
     --color-secondary: #bfa38a;
     /* beige moyen, pour éléments secondaires */
