@@ -179,7 +179,7 @@ async fn upload(
     for tag in meta.tags.iter() {
         let new_product_tag = product_tag::ActiveModel {
             id: NotSet,
-            product_id: Set(inserted_product.id.try_as_ref().cloned()),
+            product_id: Set(Some(inserted_product.id.clone().unwrap())),
             tag_id: Set(Some(*tag)),
         };
 
