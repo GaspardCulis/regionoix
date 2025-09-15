@@ -6,7 +6,7 @@ import { OnInit } from '@angular/core';
 import { SnackbarService } from '../../services/snackbar-service';
 import { BasketStateService } from '../../services/basket-state-service';
 import { ActivatedRoute } from '@angular/router';
-import { BasketService, CategoriesService, CategoryDto, ProductDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
+import { BasketService, BrandDto, BrandsService, CategoriesService, CategoryDto, ProductDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -27,6 +27,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
   private readonly categoriesService = inject(CategoriesService);
   private readonly regionsService = inject(RegionsService);
   private readonly tagsService = inject(TagsService);
+  private readonly brandsService = inject(BrandsService);
 
   private queryParamSub!: Subscription;
 
@@ -35,12 +36,14 @@ export class ShowcasePage implements OnInit, OnDestroy {
   categories!: CategoryDto[];
   regions!: RegionDto[];
   tags!: TagDto[];
+  brands!: BrandDto[];
 
   productAvailable = false;
   productUnavailable = false;
   selectedCategorys: string[] = [];
   selectedRegions: string[] = [];
   selectedTags: string[] = [];
+  selectedBrands: string[] = [];
   maxPrice: number | null = null;
   minPrice: number | null = null;
 
@@ -49,6 +52,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
     this.loadCategories();
     this.loadRegions();
     this.loadTags();
+    this.loadBrands();
     this.basketState.refreshCount();
     this.loadProducts();
   }
@@ -126,6 +130,19 @@ export class ShowcasePage implements OnInit, OnDestroy {
     });
   }
 
+  loadBrands(): void {
+    this.brandsService.get().subscribe({
+      next: (data) => {
+        console.log("brands: " + data);
+        this.brands = data
+      },
+      error: () => {
+        this.snackbar.show('Erreur lors de la récupération des marques', 'error')
+        this.brands = [];
+      }
+    });
+  }
+
   // Toggle methods
   toggleCategory(categoryName: string, checked: boolean): void {
     if (checked) {
@@ -154,6 +171,16 @@ export class ShowcasePage implements OnInit, OnDestroy {
       this.selectedTags = this.selectedTags.filter(t => t !== tagName);
     }
     console.log('Selected tags:', this.selectedTags);
+    this.loadProducts();
+  }
+
+  toggleBrand(brandName: string, checked: boolean): void {
+    if (checked) {
+      this.selectedBrands.push(brandName);
+    } else {
+      this.selectedBrands = this.selectedBrands.filter(t => t !== brandName);
+    }
+    console.log('Selected brands:', this.selectedBrands);
     this.loadProducts();
   }
 
@@ -196,6 +223,13 @@ export class ShowcasePage implements OnInit, OnDestroy {
       filters.push(
         `(${this.selectedTags.map(t => `tags = "${t}"`).join(' OR ')})`
       );
+    }
+    // Brands
+    if (this.selectedBrands.length > 0) {
+      filters.push(
+        `(${this.selectedBrands.map(b => `brand_name = "${b}"`).join(' OR ')})`
+      );
+
     }
 
     // Availability  TODO
