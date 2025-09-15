@@ -1,0 +1,60 @@
+# Example of a test plan with 100 iterations and ~25 requests each.
+# A plan with 2500 requests in total at 5 iterations at the same time,
+# and a rampup of 2 seconds.
+
+---
+base: 'https://www.regionoix.gasdev.fr'
+iterations: 10000
+concurrency: 16
+rampup: 10
+
+plan:
+
+  - name: Fetch products
+    request:
+      url: /api/products
+
+  - name: Fetch single product
+    request:
+      url: /api/products/2
+
+  - name: Fetch brands
+    request:
+      url: /api/brands
+
+  - name: Fetch categories
+    request:
+      url: /api/categories
+
+  - name: Fetch categories (hierarchy)
+    request:
+      url: /api/categories/hierarchy
+
+  - name: Fetch regions
+    request:
+      url: /api/regions
+
+  - name: Fetch tags
+    request:
+      url: /api/tags
+
+  - name: Search cheese products
+    request:
+      url: /api/search/products?query=fromaj
+
+  - name: Get in-progress orders (invalid auth)
+    request:
+      url: /api/orders/in-progress
+
+  - name: Delete item from basket (invalid all)
+    request:
+      url: /api/basket/items/69
+      method: DELETE
+
+  - name: Login (invalid password)
+    request:
+      url: /api/auth/login
+      method: POST
+      headers:
+        Content-Type: 'application/json'
+      body: '{"email": "gaspard@gasdev.fr", "password": "omgyoufoundmypasswordohno"}'
