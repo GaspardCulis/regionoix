@@ -4,16 +4,20 @@ use crate::utils::get_env_var;
 
 #[derive(Clone)]
 pub struct StripeService {
-    client: Client,
+    pub client: Client,
+    pub api_key: String,
 }
 
 impl StripeService {
     pub fn build() -> anyhow::Result<Self> {
         let secrets = StripeSecrets::load()?;
 
-        let client = Client::new(secrets.api_key);
+        let client = Client::new(secrets.api_key.clone());
 
-        Ok(Self { client })
+        Ok(Self {
+            client,
+            api_key: secrets.api_key,
+        })
     }
 }
 
