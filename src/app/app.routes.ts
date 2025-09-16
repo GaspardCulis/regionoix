@@ -24,5 +24,5 @@ export const routes: Routes = [
     { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
     { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
     { path: 'products/:id', component: ProductPage },
-    { path: 'create-account', component: CreateAccount }
+    { path: 'create-account', component: CreateAccount, canActivate: [NoAuthGuard] }
 ];
