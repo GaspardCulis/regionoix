@@ -153,13 +153,15 @@ export class ProductsService extends BaseService {
      * @param query The raw search query
      * @param filters Search filters in this example form: &#x60;id &gt; 1 AND genres &#x3D; Action&#x60;. The list of filterable attributes is &#x60;[\&quot;weight\&quot;, \&quot;price\&quot;, \&quot;categories\&quot;, \&quot;tags\&quot;, \&quot;brand_name\&quot;, \&quot;region_name\&quot;]&#x60;. See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
      * @param sort Sort by some specific attribute in the format &#x60;attribute:method&#x60; where &#x60;method: asc | desc&#x60;. Ex: &#x60;price:asc&#x60;. The list of sortable attributes is &#x60;[\&quot;name\&quot;, \&quot;price\&quot;, \&quot;weight\&quot;]&#x60;. See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
+     * @param pageSize Number of results per page in a search. Defaults to 128 results.
+     * @param pageIndex Specific page to fetch; page index starts from 1. Defaults to 1.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public search(query: string, filters?: string, sort?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ProductDto>>;
-    public search(query: string, filters?: string, sort?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ProductDto>>>;
-    public search(query: string, filters?: string, sort?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ProductDto>>>;
-    public search(query: string, filters?: string, sort?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ProductDto>>;
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ProductDto>>>;
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ProductDto>>>;
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (query === null || query === undefined) {
             throw new Error('Required parameter query was null or undefined when calling search.');
         }
@@ -171,6 +173,10 @@ export class ProductsService extends BaseService {
           <any>filters, 'filters');
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
           <any>sort, 'sort');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageSize, 'page_size');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageIndex, 'page_index');
 
         let localVarHeaders = this.defaultHeaders;
 

@@ -15,6 +15,7 @@ export * from './orderLineDto';
 export * from './orderStatus';
 export * from './productDto';
 export * from './regionDto';
+export * from './registerForm';
 export * from './roles';
 export * from './subCategoryDto';
 export * from './tagDto';

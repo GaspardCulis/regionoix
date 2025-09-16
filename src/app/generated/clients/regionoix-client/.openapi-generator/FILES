@@ -8,6 +8,7 @@ api/authentification.service.ts
 api/basket.service.ts
 api/brands.service.ts
 api/categories.service.ts
+api/client.service.ts
 api/default.service.ts
 api/orders.service.ts
 api/products.service.ts
@@ -35,6 +36,7 @@ model/orderLineDto.ts
 model/orderStatus.ts
 model/productDto.ts
 model/regionDto.ts
+model/registerForm.ts
 model/roles.ts
 model/subCategoryDto.ts
 model/tagDto.ts
