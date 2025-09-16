@@ -55,4 +55,8 @@ export class ConnectionPage {
     const passwordVerification = true;
     return emailVerification && passwordVerification;
   }
+
+  goToCreate() {
+    this.router.navigate(['/create-account']);
+  }
 }
