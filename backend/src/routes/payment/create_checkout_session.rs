@@ -29,7 +29,18 @@ struct FormDataCreateCheckoutSession {
     postal_info: PostalInfo,
 }
 
-#[utoipa::path()]
+#[utoipa::path(
+    summary="Creates a Stripe CheckoutSession",
+    tag="Payment",
+    request_body(content_type="application/json", content=FormDataCreateCheckoutSession),
+    responses(
+        (
+            status=307,
+            description="Redirect to Stripe payment page",
+        ),
+        // TODO: Document failure cases
+    ),
+)]
 #[post("/create-checkout-session")]
 pub async fn create_checkout_session(
     data: web::Data<AppState>,
