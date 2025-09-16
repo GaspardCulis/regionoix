@@ -1,9 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth-service';
 import { SnackbarService } from '../../services/snackbar-service';
-import { Roles } from '../../generated/clients/regionoix-client';
+import { AuthentificationService, Roles } from '../../generated/clients/regionoix-client';
 import { AuthStateService } from '../../services/auth-state-service';
 
 @Component({
@@ -17,14 +16,14 @@ export class ConnectionPage {
   password = '';
 
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
+  private readonly authService = inject(AuthentificationService);
   private readonly authStateService = inject(AuthStateService);
   private readonly snackBar = inject(SnackbarService);
 
   onSubmit() {
     if (this.checkCredentials()) {
       const user = { email: this.email, password: this.password };
-      this.authService.login(user.email, user.password).subscribe({
+      this.authService.login({ email: user.email, password: user.password }).subscribe({
         next: () => {
           this.authStateService.notifyAuthChanged();
 
