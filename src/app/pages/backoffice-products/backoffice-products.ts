@@ -39,4 +39,8 @@ export class BackofficeProducts implements OnInit {
     this.router.navigate(['/backoffice/create-product']);
   }
 
+  onSee(id: number): void {
+    this.router.navigate(['/backoffice/products/', id]);
+  }
+
 }
