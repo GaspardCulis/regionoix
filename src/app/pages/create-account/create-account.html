@@ -1,0 +1,37 @@
+<div class="connection-container">
+    <div class="card">
+        <form class="form" #f="ngForm" (ngSubmit)="onRegister(f)">
+            <h1 class="form-title">Créer un compte</h1>
+
+            <div class="form-control">
+                <label for="fullname">Nom complet</label>
+                <input type="text" id="fullname" placeholder="Entrez votre nom complet" [(ngModel)]="fullname"
+                    name="fullname" required>
+            </div>
+
+            <div class="form-control">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Entrez votre Email" [(ngModel)]="email" name="email"
+                    required>
+            </div>
+
+            <div class="form-control">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" placeholder="Entrez votre mot de passe" [(ngModel)]="password"
+                    name="password" required>
+            </div>
+
+            <div class="form-control">
+                <label for="confirmPassword">Confirmer le mot de passe</label>
+                <input type="password" id="confirmPassword" placeholder="Confirmez votre mot de passe"
+                    [(ngModel)]="confirmPassword" name="confirmPassword" required>
+            </div>
+
+            <div class="form-action">
+                <button type="submit">Créer un compte</button>
+            </div>
+
+        </form>
+        <button class="login-link" (click)="goToLogin()">Vous avez déjà un compte ?</button>
+    </div>
+</div>
