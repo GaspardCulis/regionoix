@@ -50,6 +50,12 @@ export class ShowcasePage implements OnInit, OnDestroy {
   maxPrice: number | null = null;
   minPrice: number | null = null;
 
+  //pagination variables
+  currentPage = 1;
+  pageSize = 12;
+  totalPages = 0;
+
+
   ngOnInit(): void {
     this.queryParamSub = this.route.queryParamMap.subscribe(() => this.loadProducts());
     this.loadCategories();
@@ -250,4 +256,19 @@ export class ShowcasePage implements OnInit, OnDestroy {
     console.log('API filters:', filterString);
     return filterString;
   }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadProducts();
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadProducts();
+    }
+  }
+
 }
