@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AdminMenu } from '../../utils/admin-menu/admin-menu';
 import { Router } from '@angular/router';
 import { faArrowLeft, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -20,7 +19,7 @@ import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-form-product',
-  imports: [AdminMenu, FontAwesomeModule, ReactiveFormsModule],
+  imports: [FontAwesomeModule, ReactiveFormsModule],
   templateUrl: './form-product.html',
   styleUrl: './form-product.css',
 })

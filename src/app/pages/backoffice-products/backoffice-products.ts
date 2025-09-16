@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Product } from '../../models/product-model';
 import { ProductService } from '../../services/product-service';
-import { AdminMenu } from '../../utils/admin-menu/admin-menu';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
@@ -9,7 +8,7 @@ import { SnackbarService } from '../../services/snackbar-service';
 
 @Component({
   selector: 'app-backoffice-products',
-  imports: [AdminMenu, FontAwesomeModule],
+  imports: [FontAwesomeModule],
   templateUrl: './backoffice-products.html',
   styleUrl: './backoffice-products.css',
 })
