@@ -4,17 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CategoriesService, CategoryDto, LoggedUser, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
 import { AuthStateService } from '../../../services/auth-state-service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './topbar-component.html',
   styleUrl: './topbar-component.css',
 })
 export class TopbarComponent implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthStateService);
+  // icon for basket shopping
+  faBasketShopping = faBasketShopping;
 
   @Input() pathLogo!: string;
   @Input() title!: string;
