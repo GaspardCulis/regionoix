@@ -10,18 +10,32 @@
 
     <!-- Carrousel promotions -->
     <section class="carousel-section">
-        <h2>Produits en promotion</h2>
+        <h2>Best-sellers</h2>
         <div class="carousel-wrapper">
             <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
+
             <div class="carousel-track">
-                <app-product-card-component *ngFor="let product of promotionalProducts" [id]="product.id"
-                    [name]="product.name" [image]="product.image ?? '/assets/default.png'"
-                    [discount]="product.discount?.percentage_off ?? null" [price]="product.price">
-                </app-product-card-component>
+                <div *ngFor="let product of promotionalProducts" class="carousel-item">
+                    <div class="hero">
+                        <div class="hero-content flex-col lg:flex-row items-center justify-center gap-6">
+                            <img [src]="product.image ?? '/assets/default.png'" [alt]="product.name"
+                                class="max-w-sm rounded-lg shadow-2xl cursor-pointer"
+                                (click)="goToProduct(product.id)" />
+                            <div class="text-center lg:text-left">
+                                <h1 class="text-5xl font-bold">{{ product.name }}</h1>
+                                <p class="py-6">{{ product.description }}</p>
+                                <button class="btn btn-primary" (click)="goToProduct(product.id)">Voir le
+                                    produit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <button class="carousel-btn next" (click)="nextSlide()">›</button>
         </div>
     </section>
+
 
     <!-- Nouveautés -->
     <section class="new-products">

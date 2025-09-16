@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductsService, ProductDto, CategoriesService, CategoryDto } from '../../generated/clients/regionoix-client';
 import { ProductCardComponent } from '../../utils/component/product-card-component/product-card-component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -11,9 +12,9 @@ import { ProductCardComponent } from '../../utils/component/product-card-compone
   styleUrl: './home-page.css'
 })
 export class HomePage implements OnInit {
-  private productService = inject(ProductsService);
-  private categoriesService = inject(CategoriesService);
-
+  private readonly productService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
+  private readonly router = inject(Router);
   promotionalProducts: ProductDto[] = [];
   newProducts: ProductDto[] = [];
   topCategories: CategoryDto[] = [];
@@ -63,6 +64,10 @@ export class HomePage implements OnInit {
       const offset = this.currentIndex * 260; // largeur produit + gap
       track.style.transform = `translateX(-${offset}px)`;
     }
+  }
+
+  goToProduct(id: number) {
+    this.router.navigate(['/products/:', id]);
   }
 
 }
