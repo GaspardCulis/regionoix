@@ -1,0 +1,85 @@
+.connection-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    background-color: var(--color-bg);
+    min-height: 100vh;
+}
+
+.card {
+    background-color: var(--color-surface);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-title {
+    font-size: 1.7rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+}
+
+.form-control {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-control label {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.form-control input {
+    padding: 0.75rem;
+    border: 1px solid var(--color-text-muted);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border 0.2s, box-shadow 0.2s;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+.form-control input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+}
+
+.form-control input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.form-action button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-action button:hover {
+    background-color: var(--color-accent-dark);
+}
+
+.login-link {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
