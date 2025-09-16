@@ -10,7 +10,7 @@ import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, FontAwesomeModule],
   templateUrl: './topbar-component.html',
   styleUrl: './topbar-component.css',
 })
@@ -29,6 +29,22 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit() {
     this.authService.user$.subscribe((u) => (this.user = u));
+    this.regionService.get().subscribe({
+      next: (regions) => this.regions = regions,
+      error: (err) => {
+        console.error("Something went wrong on regions load :", err);
+        this.regions = [];
+      }
+    });
+    this.categoryService.getParents().subscribe({
+      next: (categories) => {
+        this.categories = categories.filter(c => c.category_parent === null);
+      },
+      error: (err) => {
+        console.error("Something went wrong on categories load :", err);
+        this.categories = [];
+      }
+    })
   }
   private categoryService = inject(CategoriesService);
   private regionService = inject(RegionsService);
@@ -38,6 +54,7 @@ export class TopbarComponent implements OnInit {
   selectedCategory = '';
   selectedSubCategory = '';
   selectedRegion = '';
+
 
   onProfileClick() {
     if (this.user) {
@@ -65,5 +82,29 @@ export class TopbarComponent implements OnInit {
         queryParamsHandling: 'merge',
       });
     }
+  }
+
+  selectCategory(cat: CategoryDto) {
+    this.selectedCategory = cat.name;
+    this.router.navigate(['/showcase'], {
+      queryParams: { c: cat.name },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  selectSubCategory(child: CategoryDto) {
+    this.router.navigate(['/showcase'], {
+      queryParams: { c: child.name },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  selectRegion(region: RegionDto) {
+    this.selectedRegion = region.name;
+
+    this.router.navigate(['/showcase'], {
+      queryParams: { region: region.name },
+      queryParamsHandling: 'merge'
+    });
   }
 }

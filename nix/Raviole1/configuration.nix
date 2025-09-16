@@ -16,11 +16,14 @@
     allowedTCPPorts = [22];
   };
 
-  environment.systemPackages = map lib.lowPrio [
-    pkgs.curl
-    pkgs.gitMinimal
-    pkgs.helix
-  ];
+  environment.systemPackages = with pkgs;
+    map lib.lowPrio [
+      curl
+      gitMinimal
+      helix
+      htop
+      bottom
+    ];
 
   # SSH
   services = {

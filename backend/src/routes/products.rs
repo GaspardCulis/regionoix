@@ -4,6 +4,7 @@ use crate::{
     AppState,
     entities::{prelude::Product, product},
 };
+use regionoix::utils::PaginateQuery;
 use sea_orm::{EntityName, EntityTrait as _};
 
 pub fn config(cfg: &mut ServiceConfig) {
@@ -13,6 +14,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[utoipa::path(
     summary="Returns product list",
     tag="Products",
+    params(PaginateQuery),
     responses(
         (
             status=200,
@@ -24,9 +26,13 @@ pub fn config(cfg: &mut ServiceConfig) {
     ),
 )]
 #[get("")]
-pub async fn get(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get(
+    query: web::Query<PaginateQuery>,
+    data: web::Data<AppState>,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let products: Vec<ProductDto> = Product::find().into_dto().all(&db.conn).await?;
+
+    let products: Vec<ProductDto> = query.paginate(Product::find().into_dto(), &db.conn).await?;
 
     Ok(HttpResponse::Ok().json(products))
 }
