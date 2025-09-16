@@ -51,4 +51,4 @@ futures = "0.3"
 rusty-s3 = "0.8"
 reqwest = "0.12"
 
-async-stripe = { git = "https://github.com/arlyon/async-stripe", branch = "next" }
+async-stripe = "0.41"
