@@ -14,7 +14,7 @@ use sea_orm::{
     EntityTrait, QueryFilter,
 };
 
-use crate::{prelude::*, routes::auth::LoggedUser, AppState};
+use crate::{AppState, prelude::*, routes::auth::LoggedUser};
 
 #[derive(Debug, Deserialize, ToSchema)]
 struct RegisterForm {
@@ -33,7 +33,6 @@ struct RegisterForm {
             status=200,
             description="Registered sucessfully",
             body=LoggedUser
-        
         ),
         (
             status=400,
