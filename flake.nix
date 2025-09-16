@@ -89,6 +89,7 @@
           nodejs
           # Back
           cargo-llvm-cov
+          drill
           # CI
           deploy-rs.packages."${system}".deploy-rs
           sops
