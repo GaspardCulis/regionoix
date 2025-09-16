@@ -6,6 +6,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { Configuration, provideApi } from './generated/clients/regionoix-client';
 import { provideNgxStripe } from 'ngx-stripe';
 
+const PUBLIC_KEY = "pk_test_51S7X9JQunQaqPX1k0NBCgKA81b646HbCKAAx8HtcADqfSpTJgt9WiRPkYV60xdTsovZ5i97TOi70MLwYuSnoR0u100JXaDLw1s";
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -17,6 +19,6 @@ export const appConfig: ApplicationConfig = {
         basePath: '',
         withCredentials: true,
       })),
-    provideNgxStripe(),
+    provideNgxStripe(PUBLIC_KEY),
   ]
 };
