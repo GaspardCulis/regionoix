@@ -68,6 +68,17 @@
   text-decoration: underline;
 }
 
+.create-account-link {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.create-account-link:hover {
+  text-decoration: underline;
+}
+
 /* Login button */
 .form-action button {
   width: 100%;
