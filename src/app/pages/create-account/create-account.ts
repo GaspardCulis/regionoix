@@ -10,7 +10,8 @@ import { SnackbarService } from '../../services/snackbar-service';
   styleUrl: './create-account.css'
 })
 export class CreateAccount {
-  fullname = '';
+  lastname = '';
+  fisrtname = '';
   email = '';
   password = '';
   confirmPassword = '';
@@ -25,6 +26,10 @@ export class CreateAccount {
 
     if (this.password !== this.confirmPassword) {
       this.snackBar.show('Les mots de passe ne correspondent pas.', 'error');
+      return;
+    }
+    if (this.password.length < 8) {
+      this.snackBar.show('Le mot de passe doit contenir au minimum 8 cractères', 'error');
       return;
     }
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
