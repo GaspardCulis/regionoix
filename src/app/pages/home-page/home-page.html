@@ -14,7 +14,7 @@
         <div class="carousel-wrapper">
             <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
 
-            <div class="carousel-track">
+            <div class="carousel-track" [style.transform]="getTransform()">
                 <div *ngFor="let product of promotionalProducts" class="carousel-item">
                     <div class="hero">
                         <div class="hero-content flex-col lg:flex-row items-center justify-center gap-6">

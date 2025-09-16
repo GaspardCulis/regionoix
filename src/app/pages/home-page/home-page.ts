@@ -49,15 +49,24 @@ export class HomePage implements OnInit {
   }
 
   nextSlide() {
-    if (this.currentIndex < this.promotionalProducts.length - 1) this.currentIndex++;
-    this.updateTrack();
+    if (this.currentIndex < this.promotionalProducts.length - 1) {
+      this.currentIndex++;
+    } else {
+      this.currentIndex = 0; // boucle au début
+    }
   }
 
   prevSlide() {
-    if (this.currentIndex > 0) this.currentIndex--;
-    this.updateTrack();
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    } else {
+      this.currentIndex = this.promotionalProducts.length - 1; // boucle à la fin
+    }
   }
 
+  getTransform(): string {
+    return `translateX(-${this.currentIndex * 100}%)`;
+  }
   updateTrack() {
     const track = document.querySelector<HTMLElement>('.carousel-track');
     if (track) {
@@ -67,7 +76,7 @@ export class HomePage implements OnInit {
   }
 
   goToProduct(id: number) {
-    this.router.navigate(['/products/:', id]);
+    this.router.navigate(['/products/', id]);
   }
 
 }
