@@ -208,3 +208,67 @@
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+/* Conteneur pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    /* espace entre les éléments */
+    margin-top: 2rem;
+}
+
+/* Label + select */
+.pagination label {
+    font-size: 0.9rem;
+    color: var(--color-accent-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-text-muted);
+    background-color: var(--color-primary-light);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.pagination select:hover {
+    border-color: var(--color-primary-hover);
+}
+
+/* Boutons pagination */
+.pagination button {
+    background-color: var(--color-accent);
+    /* bleu */
+    color: var(--color-primary);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: var(--color-surface);
+    transform: translateY(-2px);
+}
+
+.pagination button:disabled {
+    background-color: var(--color-text-muted);
+    cursor: not-allowed;
+}
+
+/* Texte du numéro de page */
+.pagination span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-text);
+    min-width: 60px;
+    text-align: center;
+}
