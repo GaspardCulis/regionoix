@@ -9,9 +9,9 @@ use utoipa::IntoParams;
 #[derive(Deserialize, IntoParams)]
 pub struct PaginateQuery {
     /// Number of results in a page. Defaults to all results.
-    pub page_size: Option<u32>,
+    pub page_size: Option<usize>,
     /// Specific page to fetch; page index starts from zero. Defaults to zero.
-    pub page_index: Option<u32>,
+    pub page_index: Option<usize>,
 }
 
 impl PaginateQuery {

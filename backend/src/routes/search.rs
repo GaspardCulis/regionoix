@@ -26,6 +26,10 @@ struct SearchQuery {
     /// The list of sortable attributes is `["name", "price", "weight"]`.
     /// See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
     sort: Option<String>,
+    /// Number of results per page in a search. Defaults to 128 results.
+    page_size: Option<usize>,
+    /// Specific page to fetch; page index starts from 1. Defaults to 1.
+    page_index: Option<usize>,
 }
 
 #[utoipa::path(
@@ -62,6 +66,8 @@ async fn search(
                 .unwrap_or(vec![])
                 .as_slice(),
         )
+        .with_hits_per_page(query.page_size.unwrap_or(128))
+        .with_page(query.page_index.unwrap_or(1))
         .execute::<ProductIndex>()
         .await
         .map_err(|e| anyhow::Error::from(e))?;
