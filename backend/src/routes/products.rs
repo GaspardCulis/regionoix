@@ -9,7 +9,10 @@ use sea_orm::ColumnTrait;
 use sea_orm::{EntityName, EntityTrait as _, QueryFilter};
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get).service(get_discounts).service(get_by_id).service(delete_by_id);
+    cfg.service(get)
+        .service(get_discounts)
+        .service(get_by_id)
+        .service(delete_by_id);
 }
 
 #[utoipa::path(
