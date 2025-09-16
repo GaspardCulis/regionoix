@@ -16,7 +16,7 @@ import { BackofficeProduct } from './pages/backoffice-product/backoffice-product
 import { HomePage } from './pages/home-page/home-page';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'showcase', pathMatch: 'full' },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'showcase', component: ShowcasePage },
     { path: 'basket', component: BasketPage, canActivate: [AuthGuard] },
     { path: 'backoffice', component: BackofficeDashboard, canActivate: [AdminGuard] },
