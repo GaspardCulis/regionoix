@@ -2,6 +2,8 @@ import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 import { AuthentificationService, CategoriesService, CategoryDto, LoggedUser, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
 
 @Component({
@@ -9,7 +11,7 @@ import { AuthentificationService, CategoriesService, CategoryDto, LoggedUser, Re
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule, FontAwesomeModule
   ],
   templateUrl: './topbar-component.html',
   styleUrl: './topbar-component.css'
@@ -22,14 +24,9 @@ export class TopbarComponent implements OnInit {
   @Input() title!: string;
   @Input() basketCount = 0;
   @Input() user!: LoggedUser | null;
+  faBasketShopping = faBasketShopping;
   searchText = '';
 
-  ngOnInit(): void {
-    this.userService.status().subscribe({
-      next: (user) => this.user = user,
-      error: () => this.user = null
-    });
-  }
   private categoryService = inject(CategoriesService);
   private regionService = inject(RegionsService)
 
@@ -39,6 +36,29 @@ export class TopbarComponent implements OnInit {
   selectedSubCategory = '';
   selectedRegion = '';
 
+
+  ngOnInit(): void {
+    this.userService.status().subscribe({
+      next: (user) => this.user = user,
+      error: () => this.user = null
+    });
+    this.regionService.get().subscribe({
+      next: (regions) => this.regions = regions,
+      error: (err) => {
+        console.error("Something went wrong on regions load :", err);
+        this.regions = [];
+      }
+    });
+    this.categoryService.getParents().subscribe({
+      next: (categories) => {
+        this.categories = categories.filter(c => c.category_parent === null);
+      },
+      error: (err) => {
+        console.error("Something went wrong on categories load :", err);
+        this.categories = [];
+      }
+    })
+  }
 
 
   onProfileClick() {
@@ -69,5 +89,29 @@ export class TopbarComponent implements OnInit {
           queryParamsHandling: 'merge'
         });
     }
+  }
+
+  selectCategory(cat: CategoryDto) {
+    this.selectedCategory = cat.name;
+    this.router.navigate(['/showcase'], {
+      queryParams: { c: cat.name },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  selectSubCategory(child: CategoryDto) {
+    this.router.navigate(['/showcase'], {
+      queryParams: { c: child.name },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  selectRegion(region: RegionDto) {
+    this.selectedRegion = region.name;
+
+    this.router.navigate(['/showcase'], {
+      queryParams: { region: region.name },
+      queryParamsHandling: 'merge'
+    });
   }
 }
