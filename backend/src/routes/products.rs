@@ -73,6 +73,7 @@ pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Re
 #[utoipa::path(
     summary="Returns product with discount list",
     tag="Products",
+    params(PaginateQuery),
     responses(
         (
             status=200,
@@ -84,14 +85,13 @@ pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Re
     ),
 )]
 #[get("discounts")]
-pub async fn get_discounts(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get_discounts(
+    query: web::Query<PaginateQuery>,
+    data: web::Data<AppState>,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
 
-    let products: Vec<ProductDto> = Product::find()
-        .filter(product::Column::DiscountId.is_not_null())
-        .into_dto()
-        .all(&db.conn)
-        .await?;
+    let products: Vec<ProductDto> = query.paginate(Product::find().filter(product::Column::DiscountId.is_not_null()).into_dto(), &db.conn).await?;
 
     Ok(HttpResponse::Ok().json(products))
 }
