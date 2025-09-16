@@ -12,7 +12,9 @@ mod routes;
 
 pub use error::*;
 use regionoix::{
-    services::{database::DatabaseService, meilisearch::SearchService, s3::S3Service},
+    services::{
+        database::DatabaseService, meilisearch::SearchService, s3::S3Service, stripe::StripeService,
+    },
     utils::get_env_var,
     *,
 };
@@ -21,6 +23,7 @@ pub struct AppState {
     db: DatabaseService,
     search: SearchService,
     s3: S3Service,
+    stripe: StripeService,
 }
 
 #[derive(OpenApi)]
@@ -56,8 +59,11 @@ async fn main() -> std::io::Result<()> {
     info!("Connecting to Meilisearch indexer");
     let search = SearchService::build_search().expect("failed to build Meilisearch service");
 
-    info!("Connecting to S3 bucket");
+    info!("Building to S3 service");
     let s3 = S3Service::build().expect("failed to build S3 service");
+
+    info!("Building to Stripe service");
+    let stripe = StripeService::build().expect("failed to build Stripe service");
 
     info!("Starting server app");
 
@@ -73,6 +79,7 @@ async fn main() -> std::io::Result<()> {
                 db: db.clone(),
                 search: search.clone(),
                 s3: s3.clone(),
+                stripe: stripe.clone(),
             }))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
