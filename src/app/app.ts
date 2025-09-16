@@ -4,7 +4,7 @@ import { TopbarComponent } from './utils/component/topbar-component/topbar-compo
 import { SnackbarComponent } from "./utils/component/snackbar-component/snackbar-component";
 import { SnackbarService } from './services/snackbar-service';
 import { BasketStateService } from './services/basket-state-service';
-import { AdminMenu } from "./utils/admin-menu/admin-menu";
+import { AdminMenu } from "./utils/component/admin-menu-component/admin-menu";
 import { AuthStateService } from './services/auth-state-service';
 import { LoggedUser } from './generated/clients/regionoix-client';
 
