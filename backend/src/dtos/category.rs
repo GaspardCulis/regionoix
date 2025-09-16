@@ -1,4 +1,4 @@
-use sea_orm::{ColumnTrait, DbErr, DerivePartialModel, EntityTrait, QueryFilter};
+use sea_orm::{ColumnTrait, ConnectionTrait, DbErr, DerivePartialModel, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -19,7 +19,7 @@ pub struct CategoryDto {
 }
 
 impl PartialDto for CategoryDto {
-    async fn finalize(mut self, db: &sea_orm::DatabaseConnection) -> Result<Self, DbErr> {
+    async fn finalize<C: ConnectionTrait>(mut self, db: &C) -> Result<Self, DbErr> {
         let categories_child = category::Entity::find()
             .filter(category::Column::CategoryParent.eq(self.id))
             .into_dto()
