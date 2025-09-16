@@ -27,7 +27,7 @@ export class HomePage implements OnInit {
   }
 
   loadPromotionalProducts() {
-    this.productService.search('', 'discount').subscribe({
+    this.productService.search('', 'tags = "Best-seller"').subscribe({
       next: (products) => this.promotionalProducts = products,
       error: () => console.error('Erreur chargement promotions')
     });
