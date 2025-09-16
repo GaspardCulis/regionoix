@@ -1,4 +1,5 @@
 use crate::{dtos::region::RegionDto, prelude::*};
+use regionoix::utils::PaginateQuery;
 use sea_orm::EntityTrait;
 
 use crate::AppState;
@@ -10,6 +11,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[utoipa::path(
     summary="Returns region list",
     tag="Regions",
+    params(PaginateQuery),
     responses(
         (
             status=200,
@@ -21,9 +23,12 @@ pub fn config(cfg: &mut ServiceConfig) {
     ),
 )]
 #[get("")]
-pub async fn get(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get(
+    query: web::Query<PaginateQuery>,
+    data: web::Data<AppState>,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let regions: Vec<RegionDto> = Region::find().into_dto().all(&db.conn).await?;
+    let regions: Vec<RegionDto> = query.paginate(Region::find().into_dto(), &db.conn).await?;
 
     Ok(HttpResponse::Ok().json(regions))
 }
