@@ -57,4 +57,4 @@ plan:
       method: POST
       headers:
         Content-Type: 'application/json'
-      body: '{"email": "gaspard@gasdev.fr", "password": "omgyoufoundmypasswordohno"}'
+      body: '{"email": "test@example.com", "password": "omgyoufoundmypasswordohno"}'
