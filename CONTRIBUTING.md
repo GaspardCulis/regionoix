@@ -79,7 +79,7 @@ drill --benchmark ./backend/benchmark.yml --stats
 ## Developement workflow
 
 We try to apply the GitFlow workflow, specific features/issue fixes should be
-developped in their own branches. When the functionnality is developed, create a
+developed in their own branches. When the functionality is developed, create a
 Pull Request and ask for reviewers.
 
 ## Conventions
