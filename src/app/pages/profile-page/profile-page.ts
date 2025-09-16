@@ -5,6 +5,7 @@ import { AuthentificationService, LoggedUser, OrderDto, OrdersService } from '..
 import { SnackbarService } from '../../services/snackbar-service';
 import { Router } from '@angular/router';
 import { AuthStateService } from '../../services/auth-state-service';
+import { BasketStateService } from '../../services/basket-state-service';
 
 @Component({
   selector: 'app-profile-page',
@@ -19,6 +20,7 @@ export class ProfilePage implements OnInit {
   private readonly ordersService = inject(OrdersService);
   private readonly snackBar = inject(SnackbarService);
   private readonly router = inject(Router);
+  private readonly basketState = inject(BasketStateService);
 
   informationPage = true;
   user!: LoggedUser;
@@ -75,6 +77,8 @@ export class ProfilePage implements OnInit {
     this.authService.logout().subscribe({
       next: () => {
         this.authStateService.notifyAuthChanged();
+        this.basketState.refreshCount();
+
         this.router.navigate(['/connection']);
       },
       error: () => this.snackBar.show('Erreur lors de la déconnexion', 'error'),

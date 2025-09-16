@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SnackbarService } from '../../services/snackbar-service';
 import { AuthentificationService, Roles } from '../../generated/clients/regionoix-client';
 import { AuthStateService } from '../../services/auth-state-service';
+import { BasketStateService } from '../../services/basket-state-service';
 
 @Component({
   selector: 'app-connection-page',
@@ -19,6 +20,7 @@ export class ConnectionPage {
   private readonly authService = inject(AuthentificationService);
   private readonly authStateService = inject(AuthStateService);
   private readonly snackBar = inject(SnackbarService);
+  private readonly basketState = inject(BasketStateService);
 
   onSubmit() {
     if (this.checkCredentials()) {
@@ -26,6 +28,7 @@ export class ConnectionPage {
       this.authService.login({ email: user.email, password: user.password }).subscribe({
         next: () => {
           this.authStateService.notifyAuthChanged();
+          this.basketState.refreshCount();
 
           this.snackBar.show(`Connexion réussie. Bienvenue, ${user.email}!`, 'success');
 
