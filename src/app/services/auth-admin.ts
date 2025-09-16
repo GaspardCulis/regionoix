@@ -1,15 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
-import { AuthService } from './auth-service';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Roles } from '../generated/clients/regionoix-client';
+import { AuthentificationService, Roles } from '../generated/clients/regionoix-client';
 
 @Injectable({ providedIn: 'root' })
 export class AdminGuard implements CanActivate {
     private readonly router = inject(Router);
 
-    private readonly authService = inject(AuthService);
+    private readonly authService = inject(AuthentificationService);
 
 
     canActivate(): Observable<boolean | UrlTree> {

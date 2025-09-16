@@ -2,46 +2,33 @@ import { Component, Input, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CategoriesService, CategoryDto, LoggedUser, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
+import { AuthStateService } from '../../../services/auth-state-service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
-import { AuthentificationService, CategoriesService, CategoryDto, LoggedUser, RegionDto, RegionsService } from '../../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule, FontAwesomeModule
-  ],
+  imports: [CommonModule, FormsModule, FontAwesomeModule, FontAwesomeModule],
   templateUrl: './topbar-component.html',
-  styleUrl: './topbar-component.css'
+  styleUrl: './topbar-component.css',
 })
 export class TopbarComponent implements OnInit {
   private router = inject(Router);
-  private userService = inject(AuthentificationService);
+  private authService = inject(AuthStateService);
+  // icon for basket shopping
+  faBasketShopping = faBasketShopping;
 
   @Input() pathLogo!: string;
   @Input() title!: string;
   @Input() basketCount = 0;
-  @Input() user!: LoggedUser | null;
-  faBasketShopping = faBasketShopping;
   searchText = '';
 
-  private categoryService = inject(CategoriesService);
-  private regionService = inject(RegionsService)
+  user: LoggedUser | null = null;
 
-  categories: CategoryDto[] = [];
-  regions: RegionDto[] = [];
-  selectedCategory = '';
-  selectedSubCategory = '';
-  selectedRegion = '';
-
-
-  ngOnInit(): void {
-    this.userService.status().subscribe({
-      next: (user) => this.user = user,
-      error: () => this.user = null
-    });
+  ngOnInit() {
+    this.authService.user$.subscribe((u) => (this.user = u));
     this.regionService.get().subscribe({
       next: (regions) => this.regions = regions,
       error: (err) => {
@@ -59,19 +46,26 @@ export class TopbarComponent implements OnInit {
       }
     })
   }
+  private categoryService = inject(CategoriesService);
+  private regionService = inject(RegionsService);
+
+  categories: CategoryDto[] = [];
+  regions: RegionDto[] = [];
+  selectedCategory = '';
+  selectedSubCategory = '';
+  selectedRegion = '';
 
 
   onProfileClick() {
     if (this.user) {
       this.router.navigate(['/profile']);
-    }
-    else {
+    } else {
       this.router.navigate(['/connection']);
     }
   }
 
   goToBasket() {
-    this.router.navigate(['/basket'])
+    this.router.navigate(['/basket']);
   }
 
   goHome() {
@@ -83,11 +77,10 @@ export class TopbarComponent implements OnInit {
     if (!query) {
       this.router.navigate(['/showcase']);
     } else {
-      this.router.navigate(['/showcase'],
-        {
-          queryParams: { search: query },
-          queryParamsHandling: 'merge'
-        });
+      this.router.navigate(['/showcase'], {
+        queryParams: { search: query },
+        queryParamsHandling: 'merge',
+      });
     }
   }
 

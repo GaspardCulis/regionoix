@@ -52,9 +52,8 @@
   background-color: var(--color-bg);
 }
 
-.user-basket img {
-  width: 40px;
-  height: 40px;
+.user-basket {
+  cursor: pointer;
 }
 
 .user-profile img {
