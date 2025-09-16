@@ -52,6 +52,7 @@ async fn get(data: web::Data<AppState>, logged_user: LoggedUser) -> crate::Resul
         (
             status = 200,
             description="Basket successfully emptied",
+            body=String,
         ),
     ),
 )]
