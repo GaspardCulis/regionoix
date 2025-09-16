@@ -1,6 +1,8 @@
 <div class="page-container">
     <!-- Sidebar + Produits -->
     <aside class="filters">
+
+
         <h3>Filtres</h3>
         <label class="price-filter">
             Prix :
@@ -58,6 +60,19 @@
                 {{ b.name }}
             </label>
         </fieldset>
+
+        <!--Pagination-->
+        <nav class="pagination">
+            <label>
+            </label>
+            <button (click)="prevPage()" [disabled]="currentPage === 1">⬅ </button>
+            <span>Page {{ currentPage }}</span>
+
+            <button (click)="nextPage()"> ➡</button>
+            <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+                <option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }}</option>
+            </select>
+        </nav>
     </aside>
 
     <main class="product-grid">
@@ -68,17 +83,5 @@
         </app-product-card-component>
 
     </main>
-    <!--Pagination-->
-    <nav class="pagination">
-        <label>
-            Produits par page:
-            <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
-                <option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }}</option>
-            </select>
-        </label>
-        <button (click)="prevPage()" [disabled]="currentPage === 1">⬅ Précédent</button>
-        <span>Page {{ currentPage }}</span>
-        <button (click)="nextPage()">Suivant ➡</button>
-    </nav>
 
 </div>

@@ -36,28 +36,6 @@
     font-family: system-ui, sans-serif;
 }
 
-/* Navbar */
-.navbar {
-    grid-column: 1 / -1;
-    background: var(--color-primary);
-    color: var(--color-bg);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar .brand {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--color-bg);
-}
-
-.navbar .nav-right {
-    display: flex;
-    gap: 1rem;
-}
-
 /* Sidebar */
 
 @media (max-width: 768px) {
@@ -213,10 +191,10 @@
 .pagination {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    /* espace entre les éléments */
-    margin-top: 2rem;
+    justify-content: flex-start;
+    gap: 0.2rem;
+    margin-top: 1.5rem;
+    flex-wrap: nowrap;
 }
 
 /* Label + select */
@@ -232,7 +210,6 @@
     padding: 0.3rem 0.6rem;
     border-radius: 6px;
     border: 1px solid var(--color-text-muted);
-    background-color: var(--color-primary-light);
     cursor: pointer;
     transition: border-color 0.2s;
 }
@@ -242,9 +219,12 @@
 }
 
 /* Boutons pagination */
+.pagination {
+    width: 100%;
+}
+
 .pagination button {
-    background-color: var(--color-accent);
-    /* bleu */
+    background-color: var(--color-surface);
     color: var(--color-primary);
     border: none;
     padding: 0.5rem 1rem;
@@ -254,21 +234,16 @@
     transition: background-color 0.2s, transform 0.1s;
 }
 
-.pagination button:hover:not(:disabled) {
+.pagination button:hover {
     background-color: var(--color-surface);
     transform: translateY(-2px);
-}
-
-.pagination button:disabled {
-    background-color: var(--color-text-muted);
-    cursor: not-allowed;
 }
 
 /* Texte du numéro de page */
 .pagination span {
     font-size: 1rem;
     font-weight: bold;
-    color: var(--color-text);
+    color: var(--color-text-muted);
     min-width: 60px;
     text-align: center;
 }
