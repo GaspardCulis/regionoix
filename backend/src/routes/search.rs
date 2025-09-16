@@ -18,12 +18,12 @@ struct SearchQuery {
     /// The raw search query
     query: String,
     /// Search filters in this example form: `id > 1 AND genres = Action`.
-    /// The list of filterable attributes is `["weight", "price", "categories", "tags"]`.
+    /// The list of filterable attributes is `["weight", "price", "categories", "tags", "brand_name", "region_name"]`.
     /// See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
     filters: Option<String>,
     /// Sort by some specific attribute in the format `attribute:method` where `method: asc | desc`.
     /// Ex: `price:asc`.
-    /// The list of sortable attributes is `["name", "price"]`.
+    /// The list of sortable attributes is `["name", "price", "weight"]`.
     /// See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
     sort: Option<String>,
 }
