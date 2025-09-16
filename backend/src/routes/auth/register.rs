@@ -75,6 +75,7 @@ async fn register(
     }
 
     // Check if password has correct length
+    // TODO: Check more properties (maj, nums, special)
     if form_data.password.chars().count() < 8 {
         return Err(crate::Error::BadRequestError(
             "Password is too short, should be at least 8 caracters long.".into(),
