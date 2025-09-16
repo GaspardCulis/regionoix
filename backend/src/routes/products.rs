@@ -5,7 +5,7 @@ use crate::{
     entities::{prelude::Product, product},
 };
 use regionoix::utils::PaginateQuery;
-use sea_orm::{EntityName, EntityTrait as _, PaginatorTrait as _};
+use sea_orm::{EntityName, EntityTrait as _};
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get).service(get_by_id);
@@ -32,15 +32,7 @@ pub async fn get(
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
 
-    let products: Vec<ProductDto> = if let Some(page_size) = query.page_size {
-        Product::find()
-            .into_dto()
-            .paginate(&db.conn, page_size as u64)
-            .fetch_page(query.page_index.unwrap_or(0) as u64)
-            .await?
-    } else {
-        Product::find().into_dto().all(&db.conn).await?
-    };
+    let products: Vec<ProductDto> = query.paginate(Product::find().into_dto(), &db.conn).await?;
 
     Ok(HttpResponse::Ok().json(products))
 }
