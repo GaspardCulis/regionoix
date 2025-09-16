@@ -3,18 +3,21 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SnackbarService } from '../../services/snackbar-service';
-import { AuthentificationService, BasketService, FormDataMakeOrder, LoggedUser } from '../../generated/clients/regionoix-client';
+import { AuthentificationService, BasketService, CartDto, FormDataMakeOrder, LoggedUser, ProductDto } from '../../generated/clients/regionoix-client';
+import { PaymentModel } from '../../models/payment-model';
 
 @Component({
   selector: 'app-payment-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './payment-page.html',
-  styleUrl: './payment-page.css'
+  styleUrls: ['./payment-page.css']
 })
 export class PaymentPage implements OnInit {
   @Input() totalPrice!: number;
   client!: LoggedUser;
+  basket!: CartDto;
+
   address: FormDataMakeOrder = {
     city: '',
     country: '',
@@ -24,12 +27,19 @@ export class PaymentPage implements OnInit {
     street: ''
   };
 
+  payment: PaymentModel = {
+    cardNumber: '',
+    cardExpiryMonth: 0,
+    cardExpiryYear: 0,
+    cardCvv: ''
+  };
+
   private readonly router = inject(Router);
   private readonly authService = inject(AuthentificationService);
   private readonly basketService = inject(BasketService);
   private readonly snackBarService = inject(SnackbarService);
 
-  currentStep = 1;
+  openSection: string = 'info'; // default open accordion section
 
   ngOnInit(): void {
     this.authService.status().subscribe({
@@ -40,97 +50,63 @@ export class PaymentPage implements OnInit {
           firstname: user.firstname,
           lastname: user.lastname,
           role: user.role
-        }
+        };
       },
-      error: () => {
-        this.router.navigate(['/connection']);
+      error: () => this.router.navigate(['/connection'])
+    });
+
+    this.basketService.get().subscribe({
+      next: (basket) => {
+        this.basket = basket;
       },
+      error: () => this.snackBarService.show('Erreur lors du chargement du panier.', 'error')
     });
   }
 
-  nextStep() {
-    if (this.currentStep < 4) {
-      this.currentStep++;
-    }
-    if (this.currentStep === 4) {
-      this.basketService.get().subscribe({
-        next: (basket) => {
-          console.log(basket);
-        }
-      }
-      );
-
-      this.basketService.make(this.address).subscribe({
-        next: () => {
-          this.snackBarService.show('Paiement validé avec succès ✅', "success");
-        },
-        error: () => {
-          this.snackBarService.show('Une erreur est survenue lors de la validation du paiement. Veuillez réessayer.', 'error');
-          this.currentStep = 3;
-        },
-      });
-    }
+  toggleSection(section: string) {
+    this.openSection = this.openSection === section ? '' : section;
   }
 
-  prevStep() {
-    if (this.currentStep > 1) {
-      this.currentStep--;
-    }
-  }
+  submitAll() {
+    //TODO
 
-  finish() {
-    this.router.navigate(['/showcase']);
-  }
-
-  wrongEmail() {
-    this.snackBarService.show('Veuillez vous déconnecter et vous reconnecter avec le bon compte.', 'info');
+    this.basketService.make(this.address).subscribe({
+      next: () => this.snackBarService.show('Paiement validé avec succès ✅', 'success'),
+      error: () => this.snackBarService.show('Erreur lors du paiement.', 'error')
+    });
   }
 
   onCardInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    let value: string = input.value.replace(/\D/g, '');
-    value = value.substring(0, 16);
-
+    let value = input.value.replace(/\D/g, '').substring(0, 16);
     const parts: string[] = [];
-    for (let i = 0; i < value.length; i += 4) {
-      parts.push(value.substring(i, i + 4));
-    }
-
+    for (let i = 0; i < value.length; i += 4) parts.push(value.substring(i, i + 4));
     input.value = parts.join(' ');
+    this.payment.cardNumber = value; // update model
   }
 
   onCVVInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    const value: string = input.value.replace(/\D/g, '');
-    input.value = value.substring(0, 3);
+    const value = input.value.replace(/\D/g, '').substring(0, 3);
+    input.value = value;
+    this.payment.cardCvv = value;
   }
 
   onExpiryInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    let value = input.value.replace(/\D/g, '');
-
-    if (value.length === 0) {
-      input.value = '';
-      return;
-    }
-
-    if (value.length === 1) {
-      const firstDigit = parseInt(value[0], 10);
-      input.value = (firstDigit === 0 || firstDigit === 1) ? value : '0' + value[0];
-      return;
-    }
-
-    let month = parseInt(value.substring(0, 2), 10);
-    if (month === 0) month = 1;
-    if (month > 12) month = 12;
-
-    value = month.toString().padStart(2, '0') + value.substring(2);
-
-    if (value.length > 2) {
-      value = value.slice(0, 2) + '/' + value.slice(2, 4);
-    }
-
+    let value = input.value.replace(/\D/g, '').substring(0, 4);
+    if (value.length >= 2) value = value.substring(0, 2) + '/' + value.substring(2);
     input.value = value;
+
+    if (value.includes('/')) {
+      const [month, year] = value.split('/').map(Number);
+      this.payment.cardExpiryMonth = month;
+      this.payment.cardExpiryYear = 2000 + (year || 0);
+    }
   }
 
+  getProductPrice(product: ProductDto): number {
+    if(product.discount) return (product.price * (100 - product.discount.percentage_off))/100;
+    else return product.price;
+  }
 }
