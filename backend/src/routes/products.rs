@@ -91,7 +91,14 @@ pub async fn get_discounts(
 ) -> crate::Result<HttpResponse> {
     let db = &data.db;
 
-    let products: Vec<ProductDto> = query.paginate(Product::find().filter(product::Column::DiscountId.is_not_null()).into_dto(), &db.conn).await?;
+    let products: Vec<ProductDto> = query
+        .paginate(
+            Product::find()
+                .filter(product::Column::DiscountId.is_not_null())
+                .into_dto(),
+            &db.conn,
+        )
+        .await?;
 
     Ok(HttpResponse::Ok().json(products))
 }
