@@ -8,7 +8,7 @@ use regionoix::utils::PaginateQuery;
 use sea_orm::{EntityName, EntityTrait as _};
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get).service(get_by_id);
+    cfg.service(get).service(get_by_id).service(delete_by_id);
 }
 
 #[utoipa::path(
@@ -67,4 +67,30 @@ pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Re
         .await?;
 
     Ok(HttpResponse::Ok().json(product))
+}
+
+#[utoipa::path(
+    summary="Delete product by id",
+    description="Product and its orders are deleted. Please refer to database schema to learn on cascade actions.",
+    tag="Products",
+    params(("id" = i32, Path, description = "Product id")),
+    responses(
+        (
+            status=200,
+            description="Product successfully deleted",
+            body=String
+        ),
+    ),
+)]
+#[delete("/{id}")]
+pub async fn delete_by_id(
+    data: web::Data<AppState>,
+    req: HttpRequest,
+) -> crate::Result<HttpResponse> {
+    let db = &data.db;
+    let id: i32 = req.match_info().query("id").parse()?;
+
+    Product::delete_by_id(id).exec(&db.conn).await?;
+
+    Ok(HttpResponse::Ok().body("Product successfully deleted"))
 }
