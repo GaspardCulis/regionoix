@@ -5,10 +5,11 @@ use crate::{
     entities::{prelude::Product, product},
 };
 use regionoix::utils::PaginateQuery;
-use sea_orm::{EntityName, EntityTrait as _};
+use sea_orm::ColumnTrait;
+use sea_orm::{EntityName, EntityTrait as _, QueryFilter};
 
 pub fn config(cfg: &mut ServiceConfig) {
-    cfg.service(get).service(get_by_id);
+    cfg.service(get).service(get_discounts).service(get_by_id);
 }
 
 #[utoipa::path(
@@ -67,4 +68,37 @@ pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Re
         .await?;
 
     Ok(HttpResponse::Ok().json(product))
+}
+
+#[utoipa::path(
+    summary="Returns product with discount list",
+    tag="Products",
+    params(PaginateQuery),
+    responses(
+        (
+            status=200,
+            description="Product list with discount successfully returned",
+            content_type="application/json",
+            body=Vec<ProductDto>,
+            example=json!([{"id": 1, "name": "Confiture du triève", "description": "Super confiture", "weight": 0.600, "price" : 5.80, "image" : "/product1.jpg", "stock":10, "region_id": 1, "brand_id" : 5, "category_id": null, "discount": {"id":1, "percentage_off":20, "end_date": "" } }]),
+        ),
+    ),
+)]
+#[get("discounts")]
+pub async fn get_discounts(
+    query: web::Query<PaginateQuery>,
+    data: web::Data<AppState>,
+) -> crate::Result<HttpResponse> {
+    let db = &data.db;
+
+    let products: Vec<ProductDto> = query
+        .paginate(
+            Product::find()
+                .filter(product::Column::DiscountId.is_not_null())
+                .into_dto(),
+            &db.conn,
+        )
+        .await?;
+
+    Ok(HttpResponse::Ok().json(products))
 }
