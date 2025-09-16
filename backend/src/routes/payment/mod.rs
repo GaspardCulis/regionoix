@@ -1,104 +1,68 @@
-use regionoix::{dtos::order::OrderDto, prelude::*};
-use sea_orm::prelude::*;
+use chrono::{Duration, Utc};
+use regionoix::{
+    dtos::order::OrderDto,
+    prelude::{sea_orm_active_enums::OrderStatus, *},
+};
+use sea_orm::{
+    ActiveValue::{NotSet, Set},
+    DatabaseTransaction, QueryOrder as _, QuerySelect as _, TransactionTrait as _,
+    prelude::*,
+};
 use stripe::*;
 
 use crate::{AppState, routes::auth::LoggedUser};
+
+// TODO: Contact DHL
+const DELIVERY_DAYS: i64 = 4;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(webhook);
 }
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
-struct FormDataPaymentChechout {
-    order_id: i32,
-    card_number: String,
-    card_exp_month: i32,
-    card_exp_year: i32,
-    card_cvc: String,
+struct PostalInfo {
+    firstname: String,
+    lastname: String,
+    city: String,
+    country: String,
+    postal_code: String,
+    street: String,
+}
+#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
+struct FormDataCreateCheckoutSession {
+    postal_info: PostalInfo,
 }
 
 #[utoipa::path()]
-#[post("/checkout")]
+#[post("/create-checkout-session")]
 async fn webhook(
     data: web::Data<AppState>,
-    form_data: web::Json<FormDataPaymentChechout>,
+    form_data: web::Json<FormDataCreateCheckoutSession>,
     // logged_user: LoggedUser,
-) -> crate::Result<HttpResponse> {
+) -> crate::Result<web::Redirect> {
     let db = &data.db;
     let client = &data.stripe.client;
 
-    let order = order::Entity::find_by_id(form_data.order_id)
-        .into_dto::<OrderDto>()
-        .one(&db.conn)
-        .await?
-        .ok_or(crate::Error::EntityNotFound {
-            table_name: order::Entity.table_name(),
-        })?
-        .finalize(&db.conn)
-        .await?;
-
-    struct L {
-        id: i32,
-    }
-    let logged_user = L {
-        id: order.user_id.unwrap(),
+    let logged_user = LoggedUser {
+        id: 1,
+        email: "".into(),
+        role: sea_orm_active_enums::Roles::Client,
+        firstname: Some("".into()),
+        lastname: Some("".into()),
     };
 
-    if order
-        .user_id
-        .ok_or(anyhow::anyhow!("Failed to get order user id"))?
-        != logged_user.id
-    {
-        return Err(crate::Error::Unauthorized);
-    }
-
-    let user = user::Entity::find_by_id(logged_user.id)
-        .one(&db.conn)
-        .await?
-        .ok_or(crate::Error::EntityNotFound {
-            table_name: user::Entity.table_name(),
-        })?;
-
-    /*
-        let customer_id: CustomerId =
-            CustomerId::from_str(format!("{}", user.id).as_str()).expect("valid number");
-        let customer = match Customer::retrieve(client, &customer_id, &[]).await {
-            Ok(customer) => Ok(customer),
-            Err(err) => match err {
-              // Check if the error means the customer does not exist
-                StripeError::Stripe(err) => match err.error_type {
-                    ErrorType::InvalidRequest => {
-                        // We sure the customer  does not exist, let's create him
-                        Customer::create(
-                            client,
-                            CreateCustomer {
-                                name: Some(&format!(
-                                    "{} {}",
-                                    user.fistname.as_ref().unwrap_or(&"Unknown".into()),
-                                    user.lastname.as_ref().unwrap_or(&"Unknown".into())
-                                )),
-                                email: Some(&user.email),
-                                ..Default::default()
-                            },
-                        )
-                        .await
-                    }
-                    _ => todo!(),
-                },
-                _ => todo!(),
-            },
-        };
-    */
+    let (order, txn) = build_order(db, &logged_user, &form_data.postal_info).await?;
+    let line_items = build_stripe_line_items(&order, &txn, client).await?;
 
     let customer = Customer::create(
         client,
         CreateCustomer {
             name: Some(&format!(
                 "{} {}",
-                user.fistname.unwrap_or("Unknown".into()),
-                user.lastname.unwrap_or("Unknown".into())
+                logged_user.firstname.unwrap_or("Unknown".into()),
+                logged_user.lastname.unwrap_or("Unknown".into())
             )),
-            email: Some(&user.email),
+            email: Some(&logged_user.email),
             ..Default::default()
         },
     )
@@ -109,87 +73,166 @@ async fn webhook(
         customer.id
     );
 
-    let total_price_cents = (order.total_price * 100.0).round() as i64;
-    let payment_intent = {
-        let mut create_intent = CreatePaymentIntent::new(total_price_cents, Currency::EUR);
-        create_intent.payment_method_types = Some(vec!["card".to_string()]);
-        // TODO: More info in metadata
+    let checkout_session = {
+        let mut params = CreateCheckoutSession::new();
+        params.cancel_url = Some("http://test.com/cancel");
+        params.success_url = Some("http://test.com/success");
+        params.customer = Some(customer.id);
+        params.mode = Some(CheckoutSessionMode::Payment);
+        params.line_items = Some(line_items);
 
-        PaymentIntent::create(&client, create_intent).await?
+        CheckoutSession::create(&client, params).await?
     };
 
-    info!(
-        "created a payment intent at https://dashboard.stripe.com/test/payments/{} with status '{}'",
-        payment_intent.id, payment_intent.status
-    );
+    txn.commit().await?;
 
-    let payment_method = {
-        let pm = PaymentMethod::create(
-            &client,
-            CreatePaymentMethod {
-                type_: Some(PaymentMethodTypeFilter::Card),
-                card: Some(CreatePaymentMethodCardUnion::CardDetailsParams(
-                    CardDetailsParams {
-                        number: form_data.card_number.clone(),
-                        exp_year: form_data.card_exp_year,
-                        exp_month: form_data.card_exp_month,
-                        cvc: Some(form_data.card_cvc.clone()),
-                        ..Default::default()
-                    },
-                )),
-                ..Default::default()
-            },
-        )
+    Ok(web::Redirect::to(checkout_session.url.unwrap()).see_other())
+}
+
+async fn build_order(
+    db: &DatabaseConnection,
+    user: &LoggedUser,
+    postal_info: &PostalInfo,
+) -> crate::Result<(order::Model, DatabaseTransaction)> {
+    let txn = db.begin().await?;
+    // Get cart
+    let cart = cart::Entity::find()
+        .filter(cart::Column::UserId.eq(user.id))
+        .one(&txn)
+        .await?
+        .ok_or(crate::Error::EntityNotFound {
+            table_name: cart::Entity.table_name(),
+        })?;
+
+    // Get cart lines ordered to avoid deadlock
+    let cart_lines: Vec<cart_line::Model> = cart
+        .find_related(cart_line::Entity)
+        .order_by_asc(cart_line::Column::ProductId)
+        .all(&txn)
         .await?;
 
-        PaymentMethod::attach(
-            &client,
-            &pm.id,
-            AttachPaymentMethod {
-                customer: customer.id.clone(),
-            },
-        )
-        .await?;
+    if cart_lines.is_empty() {
+        return Err(crate::Error::BadRequestError("Cart is empty".into()));
+    }
 
-        pm
+    let mut total_price = 0.0;
+    let mut order_lines = Vec::new();
+
+    // Create Order lines
+    for cl in cart_lines {
+        // Lock on the read of product to avoid dirty read
+        let product = product::Entity::find_by_id(cl.product_id)
+            .lock_exclusive()
+            .one(&txn)
+            .await?
+            .ok_or(crate::Error::EntityNotFound {
+                table_name: product::Entity.table_name(),
+            })?;
+
+        // Order line
+        let ol = order_line::ActiveModel {
+            id: NotSet,
+            quantity: Set(cl.quantity),
+            unit_price: Set(product.price),
+            product_id: Set(product.id.into()),
+            order_id: NotSet,
+        };
+        order_lines.push(ol);
+
+        // Total
+        // TODO: Take discount into a count
+        total_price += product.price * cl.quantity as f32;
+
+        // if product stock is not enough rollback
+        if product.stock < cl.quantity {
+            txn.rollback().await?;
+            return Err(crate::Error::BadRequestError("Not enough stock".into()));
+        }
+    }
+
+    // Create address
+    let addr = address::ActiveModel {
+        id: NotSet,
+        firstname: Set(postal_info.firstname.to_owned()),
+        lastname: Set(postal_info.lastname.to_owned()),
+        city: Set(postal_info.city.to_owned()),
+        country: Set(postal_info.country.to_owned()),
+        street: Set(postal_info.street.to_owned()),
+        postal_code: Set(postal_info.postal_code.to_owned()),
     };
+    let addr = addr.insert(&txn).await?;
 
-    info!(
-        "created a payment method with id {} and attached it to {}",
-        payment_method.id,
-        customer.name.unwrap()
-    );
+    // Order dates
+    let today = Utc::now().date_naive();
+    let arrival = (Utc::now() + Duration::days(DELIVERY_DAYS)).date_naive();
 
-    // lets update the payment intent with their details
-    let payment_intent = PaymentIntent::update(
-        &client,
-        &payment_intent.id,
-        UpdatePaymentIntent {
-            payment_method: Some(payment_method.id),
-            customer: Some(customer.id), // this is not strictly required but good practice to ensure we have the right person
+    // Create command commande
+    let order = order::ActiveModel {
+        id: NotSet,
+        total_price: Set(total_price.to_owned()),
+        status: Set(OrderStatus::PendingPayment),
+        creation_date: Set(today.into()),
+        arrival_date: Set(arrival.into()),
+        user_id: Set(user.id.into()),
+        adress_id: Set(addr.id.into()),
+        ..Default::default()
+    };
+    let order = order.insert(&txn).await?;
+
+    // For all order_lines insert order ids
+    for mut ol in order_lines {
+        ol.order_id = Set(order.id.into());
+        ol.insert(&txn).await?;
+    }
+
+    // Empty cart
+    cart_line::Entity::delete_many()
+        .filter(cart_line::Column::CartId.eq(cart.id))
+        .exec(&txn)
+        .await?;
+
+    Ok((order, txn))
+}
+
+async fn build_stripe_line_items(
+    order: &order::Model,
+    txn: &DatabaseTransaction,
+    client: &Client,
+) -> crate::Result<Vec<CreateCheckoutSessionLineItems>> {
+    let order_dto = order::Entity::find_by_id(order.id)
+        .into_dto::<OrderDto>()
+        .one(txn)
+        .await?
+        .expect("has just been built")
+        .finalize(txn)
+        .await?;
+
+    let mut line_items = Vec::new();
+    for order_line in order_dto.order_lines.unwrap_or_default().iter() {
+        let db_product = &order_line.product;
+        // TODO: Take discount into a count
+        let product_price_cents = (db_product.price * 100.0).round() as i64;
+
+        let product = {
+            let create_product = CreateProduct::new(&db_product.name);
+            stripe::Product::create(&client, create_product).await?
+        };
+
+        let price = {
+            let mut create_price = CreatePrice::new(Currency::EUR);
+            create_price.product = Some(IdOrCreate::Id(&product.id));
+            create_price.unit_amount = Some(product_price_cents);
+            create_price.expand = &["product"];
+            Price::create(&client, create_price).await?
+        };
+
+        let line_item = CreateCheckoutSessionLineItems {
+            quantity: Some(order_line.quantity as u64),
+            price: Some(price.id.to_string()),
             ..Default::default()
-        },
-    )
-    .await?;
+        };
+        line_items.push(line_item);
+    }
 
-    info!(
-        "updated payment intent with status '{}'",
-        payment_intent.status
-    );
-
-    let payment_intent = PaymentIntent::confirm(
-        &client,
-        &payment_intent.id,
-        PaymentIntentConfirmParams {
-            ..Default::default()
-        },
-    )
-    .await?;
-
-    info!(
-        "completed payment intent with status {}",
-        payment_intent.status
-    );
-
-    todo!()
+    Ok(line_items)
 }
