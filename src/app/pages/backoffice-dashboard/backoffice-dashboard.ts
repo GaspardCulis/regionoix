@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { AdminMenu } from '../../utils/admin-menu/admin-menu';
 
 @Component({
   selector: 'app-backoffice-dashboard',
-  imports: [AdminMenu],
+  imports: [],
   templateUrl: './backoffice-dashboard.html',
   styleUrl: './backoffice-dashboard.css'
 })

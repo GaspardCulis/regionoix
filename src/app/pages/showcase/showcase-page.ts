@@ -6,8 +6,9 @@ import { OnInit } from '@angular/core';
 import { SnackbarService } from '../../services/snackbar-service';
 import { BasketStateService } from '../../services/basket-state-service';
 import { ActivatedRoute } from '@angular/router';
-import { BasketService, CategoriesService, CategoryDto, ProductDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
+import { BasketService, BrandDto, BrandsService, CategoriesService, CategoryDto, LoggedUser, ProductDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
 import { Subscription } from 'rxjs';
+import { AuthStateService } from '../../services/auth-state-service';
 
 @Component({
   selector: 'app-showcase',
@@ -27,6 +28,8 @@ export class ShowcasePage implements OnInit, OnDestroy {
   private readonly categoriesService = inject(CategoriesService);
   private readonly regionsService = inject(RegionsService);
   private readonly tagsService = inject(TagsService);
+  private authStateService = inject(AuthStateService);
+  private readonly brandsService = inject(BrandsService);
 
   private queryParamSub!: Subscription;
 
@@ -35,12 +38,15 @@ export class ShowcasePage implements OnInit, OnDestroy {
   categories!: CategoryDto[];
   regions!: RegionDto[];
   tags!: TagDto[];
+  user: null | LoggedUser = null;
+  brands!: BrandDto[];
 
   productAvailable = false;
   productUnavailable = false;
   selectedCategorys: string[] = [];
   selectedRegions: string[] = [];
   selectedTags: string[] = [];
+  selectedBrands: string[] = [];
   maxPrice: number | null = null;
   minPrice: number | null = null;
 
@@ -49,7 +55,10 @@ export class ShowcasePage implements OnInit, OnDestroy {
     this.loadCategories();
     this.loadRegions();
     this.loadTags();
+    this.loadBrands();
     this.basketState.refreshCount();
+    this.user = this.authStateService.currentUser;
+    this.loadProducts();
   }
 
   ngOnDestroy(): void {
@@ -58,23 +67,30 @@ export class ShowcasePage implements OnInit, OnDestroy {
 
   // Load methods
   loadProducts(): void {
+    const queryParams = this.route.snapshot.queryParamMap;
+    // Category
+    const categoryFilter = queryParams.get('c');
+    if (categoryFilter) {
+      this.selectedCategorys = [categoryFilter];
+    }
+
+    // Region
+    const regionFilter = queryParams.get('region');
+    if (regionFilter) {
+      this.selectedRegions = [regionFilter];
+    }
     const filters = this.buildFilters();
 
-    if (this.route.snapshot.queryParamMap.has('search')) {
-      const search = this.route.snapshot.queryParamMap.get('search') || '';
+    if (queryParams.has('search')) {
+      const search = queryParams.get('search') || '';
       this.productService.search(search, filters).subscribe({
         next: (products) => this.products = products,
-        error: () => {
-          this.snackbar.show("Erreur lors de la récupération des produits", "error");
-        }
+        error: () => this.snackbar.show("Erreur lors de la récupération des produits", "error")
       });
-      return;
     } else {
       this.productService.search("", filters).subscribe({
         next: (data) => this.products = data,
-        error: () => {
-          this.snackbar.show("Erreur lors de la récupération des produits", "error");
-        }
+        error: () => this.snackbar.show("Erreur lors de la récupération des produits", "error")
       });
     }
   }
@@ -118,6 +134,19 @@ export class ShowcasePage implements OnInit, OnDestroy {
     });
   }
 
+  loadBrands(): void {
+    this.brandsService.get().subscribe({
+      next: (data) => {
+        console.log("brands: " + data);
+        this.brands = data
+      },
+      error: () => {
+        this.snackbar.show('Erreur lors de la récupération des marques', 'error')
+        this.brands = [];
+      }
+    });
+  }
+
   // Toggle methods
   toggleCategory(categoryName: string, checked: boolean): void {
     if (checked) {
@@ -149,8 +178,23 @@ export class ShowcasePage implements OnInit, OnDestroy {
     this.loadProducts();
   }
 
+  toggleBrand(brandName: string, checked: boolean): void {
+    if (checked) {
+      this.selectedBrands.push(brandName);
+    } else {
+      this.selectedBrands = this.selectedBrands.filter(t => t !== brandName);
+    }
+    console.log('Selected brands:', this.selectedBrands);
+    this.loadProducts();
+  }
+
 
   addItem(productId: number) {
+    const user = this.authStateService.currentUser;
+    if (!user) {
+      this.snackbar.show('Veuillez vous connecter pour ajouter au panier !', 'error');
+      return;
+    }
     this.basketService.add({ product_id: productId, quantity: 1 }).subscribe({
       next: () => {
         this.snackbar.show('Produit ajouté au panier ✅', 'success');
@@ -160,6 +204,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
         this.snackbar.show('Stock insuffisant !', 'error');
       }
     });
+
   }
 
   private buildFilters(): string {
@@ -179,7 +224,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
     // Regions
     if (this.selectedRegions.length > 0) {
       filters.push(
-        `(${this.selectedRegions.map(r => `region = "${r}"`).join(' OR ')})`
+        `(${this.selectedRegions.map(r => `region_name = "${r}"`).join(' OR ')})`
       );
     }
 
@@ -188,6 +233,13 @@ export class ShowcasePage implements OnInit, OnDestroy {
       filters.push(
         `(${this.selectedTags.map(t => `tags = "${t}"`).join(' OR ')})`
       );
+    }
+    // Brands
+    if (this.selectedBrands.length > 0) {
+      filters.push(
+        `(${this.selectedBrands.map(b => `brand_name = "${b}"`).join(' OR ')})`
+      );
+
     }
 
     // Availability  TODO

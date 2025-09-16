@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use regionoix::utils::PaginateQuery;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 
 use crate::{AppState, dtos::category::CategoryDto, prelude::Category};
@@ -10,6 +11,7 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[utoipa::path(
     summary="Returns category list",
     tag="Categories",
+    params(PaginateQuery),
     responses(
         (
             status=200,
@@ -21,9 +23,14 @@ pub fn config(cfg: &mut ServiceConfig) {
     ),
 )]
 #[get("")]
-pub async fn get(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
+pub async fn get(
+    query: web::Query<PaginateQuery>,
+    data: web::Data<AppState>,
+) -> crate::Result<HttpResponse> {
     let db = &data.db;
-    let categories: Vec<CategoryDto> = Category::find().into_dto().all(&db.conn).await?;
+    let categories: Vec<CategoryDto> = query
+        .paginate(Category::find().into_dto(), &db.conn)
+        .await?;
 
     Ok(HttpResponse::Ok().json(categories))
 }

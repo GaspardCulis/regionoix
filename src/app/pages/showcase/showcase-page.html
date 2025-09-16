@@ -49,6 +49,15 @@
                 {{ t.name }}
             </label>
         </fieldset>
+
+        <!--Brands-->
+        <fieldset class="availability">
+            <legend>Marques</legend>
+            <label *ngFor="let b of brands">
+                <input type="checkbox" [value]="b.name" (change)="toggleBrand(b.name, $event.target.checked)" />
+                {{ b.name }}
+            </label>
+        </fieldset>
     </aside>
 
     <main class="product-grid">

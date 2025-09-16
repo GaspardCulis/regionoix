@@ -19,15 +19,21 @@
   margin-left: auto;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+}
+
 .logo {
-  width: 200px;
-  height: 80px;
+  width: 100px;
+  height: auto;
   object-fit: contain;
-  margin-right: 1rem;
 }
 
 .title {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 600;
   margin: 0 1.5rem 0 0;
   color: var(--color-text);
@@ -35,8 +41,8 @@
 }
 
 .search {
-  flex: 0 0 220px;
-  max-width: 220px;
+  flex: 1;
+  max-width: 300px;
   padding: 0.5rem 1rem;
   border: 1px solid var(--color-text-muted);
   border-radius: 20px;
@@ -46,9 +52,8 @@
   background-color: var(--color-bg);
 }
 
-.user-basket img {
-  width: 40px;
-  height: 40px;
+.user-basket {
+  cursor: pointer;
 }
 
 .user-profile img {

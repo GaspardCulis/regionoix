@@ -1,23 +1,21 @@
 <div class="topbar">
-  <a href="/">
-    <img class="logo" src={{pathLogo}} alt="Logo de la region">
+  <a href="/" class="logo-container">
+    <img class="logo" src="{{ pathLogo }}" alt="Logo de la region" />
     <h1 class="title">{{ title }}</h1>
   </a>
   <input class="search" type="text" [(ngModel)]="searchText" placeholder="Rechercher..." (keyup)="search()" />
   <div class="topbar-actions">
     <button class="user-basket" (click)="goToBasket()">
-      <img src="assets/panier1.png" alt="logo panier">
-      @if (basketCount !== 0) {
-      <span class="basket-count">{{basketCount}}</span>
-      }
+      <div class="indicator">
+        <span
+          class="indicator-item indicator-bottom indicator-end badge badge-secondary rounded-full font-semibold py-[2px] px-[6px]">
+          {{ basketCount }}
+        </span>
+        <fa-icon [icon]="faBasketShopping" class="fa-2xl text-primary inline-block" aria-label="panier"></fa-icon>
+      </div>
     </button>
     <button class="user-profile btn btn-primary" (click)="onProfileClick()">
-      @if (user) {
-      Mon compte
-      }
-      @else {
-      Se connecter
-      }
+      @if (user) { Mon compte } @else { Se connecter }
     </button>
   </div>
 </div>
@@ -30,7 +28,8 @@
         Régions {{ selectedRegion ? ': ' + selectedRegion : '' }}
       </button>
       <div class="dropdown-content">
-        <button *ngFor="let r of regions" (click)="selectedRegion = r.name">
+        <button (click)="selectedRegion = ''">Toutes</button>
+        <button *ngFor="let r of regions" (click)="selectRegion(r)">
           {{ r.name }}
         </button>
       </div>
@@ -41,7 +40,8 @@
         {{cat.name}} {{ selectedCategory ? ': ' + selectedSubCategory : '' }}
       </button>
       <div class="dropdown-content">
-        <button *ngFor="let child of cat.childs" (click)="selectedSubCategory = child.name">
+        <button (click)="selectCategory(cat)">{{ cat.name }}</button>
+        <button *ngFor="let child of cat.childs" (click)="selectSubCategory(child)">
           {{ child.name }}
         </button>
       </div>
