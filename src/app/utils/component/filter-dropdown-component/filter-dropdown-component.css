@@ -19,6 +19,9 @@
   font-weight: 600;
   padding: 0.75rem 1rem;
   color: inherit;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* Content styling */
@@ -29,6 +32,8 @@
   gap: 0.5rem;
   background-color: white;
   border-top: 1px solid lightgray;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 /* Label styling */
@@ -40,6 +45,8 @@
   color: inherit;
   cursor: pointer;
   transition: color 0.2s ease-in-out;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .label:hover {
@@ -50,12 +57,13 @@
 .checkbox {
   width: 18px;
   height: 18px;
+  cursor: pointer;
 }
 
 .checkbox:checked {
-    background-color: var(--color-primary);
+  background-color: var(--color-primary);
 }
 
 .checkbox:hover {
-    background-color: lightgrey;
+  background-color: lightgrey;
 }
