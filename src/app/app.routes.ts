@@ -11,11 +11,11 @@ import { AdminGuard } from './services/auth-admin';
 import { BackofficeDashboard } from './pages/backoffice-dashboard/backoffice-dashboard';
 import { BackofficeProducts } from './pages/backoffice-products/backoffice-products';
 import { FormProduct } from './pages/form-product/form-product';
-import { CreateAccount } from './pages/create-account/create-account';
+import { HomePage } from './pages/home-page/home-page';
 import { BackofficeProduct } from './pages/backoffice-product/backoffice-product';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'showcase', pathMatch: 'full' },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'showcase', component: ShowcasePage },
     { path: 'basket', component: BasketPage, canActivate: [AuthGuard] },
     { path: 'backoffice', component: BackofficeDashboard, canActivate: [AdminGuard] },
@@ -26,5 +26,5 @@ export const routes: Routes = [
     { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
     { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
     { path: 'products/:id', component: ProductPage },
-    { path: 'create-account', component: CreateAccount, canActivate: [NoAuthGuard] }
+    { path: 'home', component: HomePage }
 ];
