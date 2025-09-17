@@ -118,7 +118,7 @@
 
     <div class="orders-container" *ngIf="orders.length > 0; else noOrders">
       @for(order of orders; track order.id){
-      <div class="order-card cursor-pointer" (click)="onDetails(order)">
+      <button class="order-card" (click)="onDetails(order)">
         @if(isDelivered(order)) {
         <div class="order-header" [ngClass]="{'delivered': isDelivered(order), 'in-delivery': !isDelivered(order)}">
           <h3>Commande N°{{ order.id }}</h3>
@@ -140,7 +140,7 @@
             <p class="product-price">{{ line.quantity }} × {{ line.product.price }} €</p>
           </div>
         </div>
-      </div>
+      </button>
       }
     </div>
 
