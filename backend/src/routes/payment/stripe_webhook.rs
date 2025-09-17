@@ -74,43 +74,45 @@ pub async fn webhook(
 /// Updates order status to Payed
 async fn handle_successful_payment(
     order: order::Model,
-    tnx: &DatabaseTransaction,
+    txn: &DatabaseTransaction,
 ) -> crate::Result<()> {
     if order.status != OrderStatus::PendingPayment {
         return Err(crate::Error::BadRequestError("order already payed".into()));
     }
-    // Update order status
-    let mut order_am = order.into_active_model();
-    order_am.status = Set(OrderStatus::Payed);
-    order_am.update(tnx).await?;
 
-    info!("order status updated");
-    Ok(())
-}
-
-/// Re-stocks reserved products
-async fn handle_expired_payment(
-    order: order::Model,
-    tnx: &DatabaseTransaction,
-) -> crate::Result<()> {
     let order_lines = order
         .find_related(order_line::Entity)
         .find_also_related(product::Entity)
-        .all(tnx)
+        .all(txn)
         .await?;
 
-    // Re-increment stock
+    // Decrement stock
     for (line, product) in order_lines.into_iter() {
         let product = product.ok_or(crate::Error::InternalError(anyhow::anyhow!(
             "Failed to find order-line product"
         )))?;
 
+        // if product stock is not enough rollback
+        if product.stock < line.quantity {
+            return Err(crate::Error::BadRequestError("Not enough stock".into()));
+        }
+
         let mut product_am: product::ActiveModel = product.into();
         product_am.stock = Set(product_am.stock.unwrap() - line.quantity);
-        product_am.update(tnx).await?;
+        product_am.update(txn).await?;
     }
 
-    info!("stock updated");
+    // Update order status
+    let mut order_am = order.into_active_model();
+    order_am.status = Set(OrderStatus::Payed);
+    order_am.update(txn).await?;
+
+    info!("order status updated");
+    Ok(())
+}
+
+async fn handle_expired_payment(order: order::Model, _: &DatabaseTransaction) -> crate::Result<()> {
+    info!("order {} payment has expired", order.id);
     Ok(())
 }
 

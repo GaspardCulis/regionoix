@@ -161,11 +161,6 @@ async fn build_order(
             txn.rollback().await?;
             return Err(crate::Error::BadRequestError("Not enough stock".into()));
         }
-
-        // Decrement stock
-        let mut product_am: product::ActiveModel = product.into();
-        product_am.stock = Set(product_am.stock.unwrap() - cl.quantity);
-        product_am.update(&txn).await?;
     }
 
     // Create address
