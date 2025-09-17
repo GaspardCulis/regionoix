@@ -13,11 +13,11 @@ _High quality French regional products reseller, world-wide._
 
 ## Technologies
 
-| Stack Tier                  | Technologies                                                                                                                                                                                                                                                                                    |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Frontend (Typescript)**   | [Angular](https://angular.dev/) / [TailwindCSS](https://tailwindcss.com/) / [DaisyUI](https://daisyui.com/) / [FontAwesome](https://github.com/FortAwesome/angular-fontawesome) / [OpenAPI generator CLI](https://github.com/OpenAPITools/openapi-generator-cli)                                |
-| **Backend (Rust)**          | [actix-web](https://actix.rs/) / [sea-orm](https://www.sea-ql.org/SeaORM/) / [utoipa](https://github.com/juhaku/utoipa) / [swagger-ui](https://github.com/juhaku/utoipa/tree/master/utoipa-swagger-ui) / [async-stripe](https://payments.rs/)                                                   |
-| **System Services (NixOS)** | [Garage S3](https://garagehq.deuxfleurs.fr/) / [MeiliSearch](https://www.meilisearch.com/) / [Caddy](https://caddyserver.com) / [Beszel](https://beszel.dev/*) / [Uptime Kuma](https://github.com/louislam/uptime-kuma) / [PosgreSQL](https://www.postgresql.org/) / [Redis](https://redis.io/) |
+| Stack Tier                  | Technologies                                                                                                                                                                                                                                                                                     |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Frontend (Typescript)**   | [Angular](https://angular.dev/) / [TailwindCSS](https://tailwindcss.com/) / [DaisyUI](https://daisyui.com/) / [FontAwesome](https://github.com/FortAwesome/angular-fontawesome) / [OpenAPI generator CLI](https://github.com/OpenAPITools/openapi-generator-cli)                                 |
+| **Backend (Rust)**          | [actix-web](https://actix.rs/) / [sea-orm](https://www.sea-ql.org/SeaORM/) / [utoipa](https://github.com/juhaku/utoipa) / [swagger-ui](https://github.com/juhaku/utoipa/tree/master/utoipa-swagger-ui) / [async-stripe](https://payments.rs/)                                                    |
+| **System Services (NixOS)** | [Garage S3](https://garagehq.deuxfleurs.fr/) / [MeiliSearch](https://www.meilisearch.com/) / [Caddy](https://caddyserver.com) / [Beszel](https://beszel.dev/*) / [Uptime Kuma](https://github.com/louislam/uptime-kuma) / [PostgreSQL](https://www.postgresql.org/) / [Redis](https://redis.io/) |
 
 ## Architecture
 
@@ -32,19 +32,19 @@ _High quality French regional products reseller, world-wide._
 <br>
 
 <figure>
-    <img width="4184" height="1994" alt="Pregionoix product (wine) page" src="https://github.com/user-attachments/assets/a0961ec9-1126-4119-bc10-4ad32cac7cb2" />
+    <img width="4184" height="1994" alt="Regionoix product (wine) page" src="https://github.com/user-attachments/assets/a0961ec9-1126-4119-bc10-4ad32cac7cb2" />
     <figcaption>Product page</figcaption>
 </figure>
 <br>
 
 <figure>
-    <img width="4184" height="1994" alt="Pregionoix account page" src="https://github.com/user-attachments/assets/186c4a0b-b88a-4662-9f2b-c624ba32a981" />
+    <img width="4184" height="1994" alt="Regionoix account page" src="https://github.com/user-attachments/assets/186c4a0b-b88a-4662-9f2b-c624ba32a981" />
     <figcaption>Account page</figcaption>
 </figure>
 <br>
 
 <figure>
-    <img width="4184" height="1994" alt="image" src="https://github.com/user-attachments/assets/eb3e9387-f7e4-4256-bbaa-06f3e55f7811" />
+    <img width="4184" height="1994" alt="Regionoix basket page" src="https://github.com/user-attachments/assets/eb3e9387-f7e4-4256-bbaa-06f3e55f7811" />
     <figcaption>Basket page</figcaption>
 </figure>
 <br>
@@ -78,7 +78,7 @@ of RAM and SSD storage.
 
 The system CPU usage peaked at 46.78% and RAM usage stayed under 1GB.
 
-These results show that out system can handle almost 1K req/sec without
-overloading the system while still acheiving low latency responses. The Actix
+These results show that our system can handle almost 1K req/sec without
+overloading the system while still achieving low latency responses. The Actix
 CPU cores config could even be doubled (uses systems core count as default
 thread count) to max out CPU usage.
