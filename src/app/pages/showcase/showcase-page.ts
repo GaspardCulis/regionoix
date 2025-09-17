@@ -223,22 +223,22 @@ export class ShowcasePage implements OnInit, OnDestroy {
     if (this.minPrice !== null) filters.push(`price >= ${this.minPrice}`);
     if (this.maxPrice !== null) filters.push(`price <= ${this.maxPrice}`);
 
-    const selectedCategories = this.categoriesState.filter(([_, checked]) => checked).map(([name]) => name);
+    const selectedCategories = this.categoriesState.filter(([, checked]) => checked).map(([name]) => name);
     if (selectedCategories.length > 0) {
       filters.push(`(${selectedCategories.map(c => `categories = "${c}"`).join(' OR ')})`);
     }
 
-    const selectedRegions = this.regionsState.filter(([_, checked]) => checked).map(([name]) => name);
+    const selectedRegions = this.regionsState.filter(([, checked]) => checked).map(([name]) => name);
     if (selectedRegions.length > 0) {
       filters.push(`(${selectedRegions.map(r => `region_name = "${r}"`).join(' OR ')})`);
     }
 
-    const selectedTags = this.propertiesState.filter(([_, checked]) => checked).map(([name]) => name);
+    const selectedTags = this.propertiesState.filter(([, checked]) => checked).map(([name]) => name);
     if (selectedTags.length > 0) {
       filters.push(`(${selectedTags.map(t => `tags = "${t}"`).join(' OR ')})`);
     }
 
-    const selectedBrands = this.brandsState.filter(([_, checked]) => checked).map(([name]) => name);
+    const selectedBrands = this.brandsState.filter(([, checked]) => checked).map(([name]) => name);
     if (selectedBrands.length > 0) {
       filters.push(`(${selectedBrands.map(b => `brand_name = "${b}"`).join(' OR ')})`);
     }
@@ -249,7 +249,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
   private buildSorts(): string {
     if (!this.sortsState || this.sortsState.length === 0) return '';
 
-    const sortMap: { [key: string]: string } = {
+    const sortMap: Record<string, string> = {
       'Nom A-Z': 'name:asc',
       'Nom Z-A': 'name:desc',
       'Prix croissant': 'price:asc',
@@ -258,11 +258,11 @@ export class ShowcasePage implements OnInit, OnDestroy {
       'Plus lourd': 'weight:desc',
     };
 
-    const selected = this.sortsState.filter(([_, checked]) => checked).map(([label]) => label);
+    const selected = this.sortsState.filter(([, checked]) => checked).map(([label]) => label);
 
     if (selected.length === 0) return '';
 
-    const fieldMap: { [key: string]: string } = {};
+    const fieldMap: Record<string, string> = {};
 
     for (const label of selected) {
       const [field, direction] = sortMap[label].split(':');
