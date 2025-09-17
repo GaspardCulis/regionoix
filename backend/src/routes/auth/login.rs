@@ -86,6 +86,15 @@ mod tests {
             Response = ServiceResponse,
         >,
     > {
+        let (database_service, redis_store) = services_setup().await;
+        App::new()
+            .wrap(IdentityMiddleware::default())
+            .wrap(SessionMiddleware::new(redis_store, Key::generate()))
+            .app_data(web::Data::new(database_service))
+            .service(login)
+    }
+
+    async fn services_setup() -> (DatabaseService, RedisSessionStore) {
         dotenv::dotenv().unwrap();
 
         let database_service = DatabaseService::build_integration_test(
@@ -104,10 +113,7 @@ mod tests {
             .await
             .expect("Failed to connect to Redis session store");
 
-        App::new()
-            .wrap(IdentityMiddleware::default())
-            .wrap(SessionMiddleware::new(redis_store, Key::generate()))
-            .app_data(web::Data::new(database_service))
+        (database_service, redis_store)
     }
 
     async fn user_setup(db: &DatabaseService) {
@@ -136,7 +142,7 @@ mod tests {
 
     #[actix_web::test]
     async fn login_success() {
-        let app = test::init_service(app_setup().await.service(login)).await;
+        let app = test::init_service(app_setup().await).await;
         let req = test::TestRequest::post()
             .uri("/login")
             .insert_header(ContentType::json())
@@ -151,7 +157,7 @@ mod tests {
 
     #[actix_web::test]
     async fn login_email_failure() {
-        let app = test::init_service(app_setup().await.service(login)).await;
+        let app = test::init_service(app_setup().await).await;
         let req = test::TestRequest::post()
             .uri("/login")
             .insert_header(ContentType::json())
@@ -166,7 +172,7 @@ mod tests {
 
     #[actix_web::test]
     async fn login_password_failure() {
-        let app = test::init_service(app_setup().await.service(login)).await;
+        let app = test::init_service(app_setup().await).await;
         let req = test::TestRequest::post()
             .uri("/login")
             .insert_header(ContentType::json())
