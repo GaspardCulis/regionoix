@@ -6,11 +6,13 @@ import { SnackbarService } from '../../services/snackbar-service';
 import { Router } from '@angular/router';
 import { AuthStateService } from '../../services/auth-state-service';
 import { BasketStateService } from '../../services/basket-state-service';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './profile-page.html',
   styleUrls: ['./profile-page.css'],
 })
@@ -21,10 +23,12 @@ export class ProfilePage implements OnInit {
   private readonly snackBar = inject(SnackbarService);
   private readonly router = inject(Router);
   private readonly basketState = inject(BasketStateService);
+  faArrowLeft = faArrowLeft;
 
   informationPage = true;
   user!: LoggedUser;
   orders: OrderDto[] = [];
+  selectedOrder: OrderDto | null = null;
 
   ngOnInit(): void {
     this.loadUser();
@@ -83,5 +87,13 @@ export class ProfilePage implements OnInit {
       },
       error: () => this.snackBar.show('Erreur lors de la déconnexion', 'error'),
     });
+  }
+
+  onDetails(order: OrderDto) {
+    this.selectedOrder = order;
+  }
+
+  backToOrders() {
+    this.selectedOrder = null;
   }
 }
