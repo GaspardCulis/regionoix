@@ -284,6 +284,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
     this.brandsState = this.brandsState.map(([opt]) => [opt, false]);
     this.minPrice = null;
     this.maxPrice = null;
+    this.sortsState = this.sortsState.map(([opt]) => [opt, false]);
     this.currentPage = 1;
     this.loadProducts();
   }
