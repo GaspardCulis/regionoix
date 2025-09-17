@@ -11,7 +11,7 @@ mod error;
 mod routes;
 
 pub use error::*;
-use regionoix::{state::AppState, utils::get_env_var, *};
+use regionoix::{utils::get_env_var, *};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -33,7 +33,9 @@ async fn main() -> std::io::Result<()> {
     let listen_port: u16 = get_env_var("API_PORT").unwrap();
     let redis_url: String = get_env_var("REDIS_URL").unwrap();
 
-    let app_state = AppState::build().await.unwrap();
+    let database_service = services::DatabaseService::build().await.unwrap();
+    let s3_service = services::S3Service::build().unwrap();
+    let search_service = services::SearchService::build_search().unwrap();
 
     info!("Connecting to Redis session store");
     let redis_store = RedisSessionStore::new(redis_url)
@@ -50,7 +52,9 @@ async fn main() -> std::io::Result<()> {
                 redis_store.clone(),
                 Key::from(secret_key.as_bytes()),
             ))
-            .app_data(Data::new(app_state.clone()))
+            .app_data(Data::new(database_service.clone()))
+            .app_data(Data::new(s3_service.clone()))
+            .app_data(Data::new(search_service.clone()))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
             .service(utoipa_actix_web::scope("/api").configure(routes::config))

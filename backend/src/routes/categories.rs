@@ -2,7 +2,7 @@ use crate::prelude::*;
 use regionoix::utils::PaginateQuery;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 
-use crate::{AppState, dtos::category::CategoryDto, prelude::Category};
+use crate::{dtos::category::CategoryDto, prelude::Category};
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get).service(get_parents);
@@ -24,10 +24,9 @@ pub fn config(cfg: &mut ServiceConfig) {
 )]
 #[get("")]
 pub async fn get(
+    db: web::Data<DatabaseService>,
     query: web::Query<PaginateQuery>,
-    data: web::Data<AppState>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let categories: Vec<CategoryDto> = query
         .paginate(Category::find().into_dto(), &db.conn)
         .await?;
@@ -49,8 +48,7 @@ pub async fn get(
     ),
 )]
 #[get("/hierarchy")]
-pub async fn get_parents(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
-    let db = &data.db;
+pub async fn get_parents(db: web::Data<DatabaseService>) -> crate::Result<HttpResponse> {
     let mut result: Vec<CategoryDto> = Vec::new();
     let categories_parents: Vec<CategoryDto> = Category::find()
         .filter(category::Column::CategoryParent.is_null())

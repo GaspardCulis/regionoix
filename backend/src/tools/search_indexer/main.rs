@@ -1,7 +1,6 @@
 use regionoix::{
-    dtos::{IntoDto, PartialDto, product_index::ProductIndex},
-    services::{database::DatabaseService, meilisearch::SearchService},
-    *,
+    dtos::{product::ProductDto, product_index::ProductIndex},
+    prelude::*,
 };
 
 use sea_orm::EntityTrait;
@@ -20,8 +19,8 @@ async fn main() {
     let search = SearchService::build_admin().expect("failed to build Meilisearch service");
 
     info!("Querying products");
-    let products = entities::product::Entity::find()
-        .into_dto::<dtos::product::ProductDto>()
+    let products = product::Entity::find()
+        .into_dto::<ProductDto>()
         .all(&db.conn)
         .await
         .expect("valid connection");

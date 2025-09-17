@@ -1,7 +1,7 @@
 use regionoix::{dtos::cart_line::CartLineDto, prelude::*};
 use sea_orm::{ActiveValue::Set, prelude::*};
 
-use crate::{AppState, routes::auth::LoggedUser};
+use crate::routes::auth::LoggedUser;
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct FormAddToBasket {
@@ -29,11 +29,10 @@ struct FormUpdateQuantityBasket {
 ))]
 #[post("/items")]
 async fn add(
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
     form_data: web::Json<FormAddToBasket>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let quantity = form_data.quantity.unwrap_or(1);
 
     let product = Product::find_by_id(form_data.product_id)
@@ -111,12 +110,11 @@ async fn add(
 ))]
 #[patch("/items/{product_id}")]
 async fn update_quantity(
-    data: web::Data<AppState>,
-    form_data: web::Json<FormUpdateQuantityBasket>,
     req: HttpRequest,
+    db: web::Data<DatabaseService>,
+    form_data: web::Json<FormUpdateQuantityBasket>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let product_id: i32 = req.match_info().query("product_id").parse()?;
 
     let form_data = form_data.into_inner();
@@ -173,11 +171,10 @@ async fn update_quantity(
 )]
 #[delete("/items/{product_id}")]
 async fn remove(
-    data: web::Data<AppState>,
     req: HttpRequest,
+    db: web::Data<DatabaseService>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let product_id: i32 = req.match_info().query("product_id").parse()?;
 
     let cart = cart::Entity::find()

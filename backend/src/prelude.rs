@@ -3,6 +3,8 @@ pub use crate::dtos::{DtoTrait, IntoDto as _, PartialDto};
 #[allow(unused_imports)]
 pub use crate::entities::{prelude::*, *};
 #[allow(unused_imports)]
+pub use crate::services::*;
+#[allow(unused_imports)]
 pub use actix_web::{
     HttpMessage as _, HttpRequest, HttpResponse, Responder, delete, get, patch, post, put, web,
 };

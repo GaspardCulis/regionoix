@@ -2,8 +2,6 @@ use actix_identity::Identity;
 use regionoix::prelude::*;
 use sea_orm::prelude::*;
 
-use crate::AppState;
-
 use super::{LoggedUser, utils::check_password};
 
 #[derive(Serialize, Deserialize, ToSchema, Debug)]
@@ -31,9 +29,8 @@ struct LoginRequest {
 async fn login(
     request: HttpRequest,
     login_request: web::Json<LoginRequest>,
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let user = user::Entity::find()
         .filter(user::Column::Email.eq(&login_request.email))
         .one(&db.conn)
@@ -83,7 +80,7 @@ mod tests {
     > {
         dotenv::dotenv().unwrap();
 
-        let app_state = AppState::build().await.unwrap();
+        let database_service = DatabaseService::build().await.unwrap();
 
         let redis_url: String = get_env_var("REDIS_URL").unwrap();
         info!("Connecting to Redis session store");
@@ -94,7 +91,7 @@ mod tests {
         App::new()
             .wrap(IdentityMiddleware::default())
             .wrap(SessionMiddleware::new(redis_store, Key::generate()))
-            .app_data(web::Data::new(app_state))
+            .app_data(web::Data::new(database_service))
     }
 
     #[actix_web::test]

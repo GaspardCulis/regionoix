@@ -6,7 +6,7 @@ use sea_orm::{
     prelude::*,
 };
 
-use crate::{AppState, routes::auth::LoggedUser};
+use crate::routes::auth::LoggedUser;
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct FormDataMakeOrder {
@@ -33,12 +33,11 @@ struct FormDataMakeOrder {
 )]
 #[post("/order")]
 async fn make(
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
     form_data: web::Json<FormDataMakeOrder>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
     const DELIVERY_DAYS: i64 = 4;
-    let db = &data.db;
     let txn = db.begin().await?;
 
     // Get cart

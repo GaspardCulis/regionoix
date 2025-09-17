@@ -1,7 +1,7 @@
 use regionoix::prelude::*;
 use sea_orm::prelude::*;
 
-use crate::{AppState, routes::auth::LoggedUser};
+use crate::routes::auth::LoggedUser;
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct CountBasket {
@@ -21,9 +21,10 @@ struct CountBasket {
       ),
 ))]
 #[get("/count")]
-async fn get(data: web::Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-
+async fn get(
+    db: web::Data<DatabaseService>,
+    logged_user: LoggedUser,
+) -> crate::Result<HttpResponse> {
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
         .one(&db.conn)
