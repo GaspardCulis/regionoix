@@ -91,4 +91,8 @@ export class HomePage implements OnInit {
     this.router.navigate(['/products/', id]);
   }
 
+  goToShowcase() {
+    this.router.navigate(['/showcase']);
+  }
+
 }
