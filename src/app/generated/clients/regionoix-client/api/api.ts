@@ -14,8 +14,6 @@ export * from './default.service';
 import { DefaultService } from './default.service';
 export * from './discounts.service';
 import { DiscountsService } from './discounts.service';
-export * from './discounts.service';
-import { DiscountsService } from './discounts.service';
 export * from './orders.service';
 import { OrdersService } from './orders.service';
 export * from './payment.service';
