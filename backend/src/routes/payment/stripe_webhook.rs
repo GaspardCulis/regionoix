@@ -47,12 +47,11 @@ pub async fn webhook(
                 .parse::<i32>()?;
 
             let txn = db.begin().await?;
-            let order = order::Entity::find_by_id(order_id)
-                .one(&data.db.conn)
-                .await?
-                .ok_or(crate::Error::EntityNotFound {
+            let order = order::Entity::find_by_id(order_id).one(&txn).await?.ok_or(
+                crate::Error::EntityNotFound {
                     table_name: order::Entity.table_name(),
-                })?;
+                },
+            )?;
 
             match event.type_ {
                 EventType::CheckoutSessionCompleted => handle_successful_payment(order, &txn).await,
