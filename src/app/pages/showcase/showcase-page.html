@@ -3,6 +3,9 @@
     <aside class="filters">
 
         <h3>Filtres</h3>
+        <app-filter-dropdown-component title="Tri" [selectedOptions]="sortsState"
+            (optionToggled)="onSortsChange($event)"></app-filter-dropdown-component>
+
         <label class="price-filter">
             Prix :
             <div class="inputs">

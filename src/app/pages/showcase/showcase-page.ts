@@ -58,7 +58,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
   regionsState: [string, boolean][] = [];
   propertiesState: [string, boolean][] = [];
   brandsState: [string, boolean][] = [];
-
+  sortsState: [string, boolean][] = [];
   // Filters
   maxPrice: number | null = null;
   minPrice: number | null = null;
@@ -73,6 +73,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
     this.loadRegions();
     this.loadTags();
     this.loadBrands();
+    this.loadSorts();
     this.basketState.refreshCount();
     this.user = this.authStateService.currentUser;
     this.loadProducts();
@@ -83,17 +84,20 @@ export class ShowcasePage implements OnInit, OnDestroy {
   }
 
   // ---- Loading methods ----
-  loadProducts(): void {
-    const filters = this.buildFilters();
+loadProducts(): void {
+  const filters = this.buildFilters();
+  const sorts = this.buildSorts();
 
-    const queryParams = this.route.snapshot.queryParamMap;
-    const search = queryParams.get('search') || '';
+  const queryParams = this.route.snapshot.queryParamMap;
+  const search = queryParams.get('search') || '';
 
-    this.productService.search(search, filters, undefined, this.pageSize, this.currentPage).subscribe({
-      next: (products) => (this.products = products),
+  this.productService.search(search, filters || undefined, sorts || undefined, this.pageSize, this.currentPage)
+    .subscribe({
+      next: (products) => this.products = products,
       error: () => this.snackbar.show('Erreur lors de la récupération des produits', 'error')
     });
-  }
+}
+
 
   loadCategories(): void {
     this.categoriesService.get().subscribe({
@@ -147,6 +151,17 @@ export class ShowcasePage implements OnInit, OnDestroy {
     });
   }
 
+  loadSorts(): void {
+    this.sortsState = [
+      ["Nom A-Z", false],
+      ["Nom Z-A", false],
+      ["Prix croissant", false],
+      ["Prix décroissant", false],
+      ["Moins lourd", false],
+      ["Plus lourd", false],
+    ]
+  }
+
   // ---- Handlers for dropdown selections ----
   onCategoriesChange({ name, checked }: { name: string; checked: boolean }) {
     this.categoriesState = this.categoriesState.map(([opt, state]) =>
@@ -171,6 +186,13 @@ export class ShowcasePage implements OnInit, OnDestroy {
 
   onBrandsChange({ name, checked }: { name: string; checked: boolean }) {
     this.brandsState = this.brandsState.map(([opt, state]) =>
+      opt === name ? [opt, checked] : [opt, state]
+    );
+    this.loadProducts();
+  }
+
+  onSortsChange({ name, checked }: { name: string; checked: boolean }) {
+    this.sortsState = this.sortsState.map(([opt, state]) =>
       opt === name ? [opt, checked] : [opt, state]
     );
     this.loadProducts();
@@ -221,6 +243,28 @@ export class ShowcasePage implements OnInit, OnDestroy {
     }
 
     return filters.join(' AND ');
+  }
+
+  private buildSorts(): string {
+    if (!this.sortsState || this.sortsState.length === 0) {
+      return '';
+    }
+
+    const selected = this.sortsState.find(([_, checked]) => checked);
+    if (!selected) return '';
+
+    const [label] = selected;
+
+    const sortMap: { [key: string]: string } = {
+      'Nom A-Z': 'name:asc',
+      'Nom Z-A': 'name:desc',
+      'Prix croissant': 'price:asc',
+      'Prix décroissant': 'price:desc',
+      'Moins lourd': 'weight:asc',
+      'Plus lourd': 'weight:desc',
+    };
+
+    return sortMap[label];
   }
 
   resetFilters(): void {
