@@ -107,7 +107,7 @@ mod tests {
 
         user_setup(&database_service).await;
 
-        let redis_url: String = get_env_var("REDIS_URL").unwrap();
+        let redis_url: String = get_env_var("REDIS_URL").unwrap_or("redis://127.0.0.1:6379".into());
         info!("Connecting to Redis session store");
         let redis_store = RedisSessionStore::new(redis_url)
             .await

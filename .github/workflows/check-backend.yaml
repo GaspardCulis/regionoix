@@ -23,6 +23,7 @@ jobs:
       matrix:
         toolchain:
           - stable
+        redis-version: [6, 7]
 
     steps:
     - uses: actions/checkout@v4
@@ -38,5 +39,9 @@ jobs:
         rustc --version
     - name: Lint (rustfmt)
       run: cargo fmt --all --check
+    - name: Start Redis for tests
+      uses: supercharge/redis-github-action@1.7.0
+      with:
+        redis-version: ${{ matrix.redis-version }}
     - name: Test (cargo)
       run: cargo test
