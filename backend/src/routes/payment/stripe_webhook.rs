@@ -31,7 +31,7 @@ pub async fn webhook(
             let EventObject::CheckoutSession(session) = event.data.object else {
                 error!("Couldn't pattern-match checkout-session, shouldn't happen");
                 return Err(crate::Error::BadRequestError(
-                    "Couldn't retreive checkout-session from request".into(),
+                    "Couldn't retrieve checkout-session from request".into(),
                 ));
             };
 
