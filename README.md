@@ -7,7 +7,7 @@
 
 E-Commerce website made for a 2 weeks school project.
 
-_High qualityv French regional products reseller, world-wide._
+_High quality French regional products reseller, world-wide._
 
 </div>
 
