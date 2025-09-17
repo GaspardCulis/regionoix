@@ -21,6 +21,8 @@ export class HomePage implements OnInit {
 
   currentIndex = 0;
 
+  activeTab: 'promotion' | 'nouveaute' = 'promotion';
+
   ngOnInit(): void {
     this.loadPromotionalProducts();
     this.loadNewProducts();

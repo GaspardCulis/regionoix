@@ -2,9 +2,10 @@
 
     <!-- Banner Hero -->
     <section class="hero">
-        <div class="hero-text">
+        <div class="hero-overlay">
             <h1>Bienvenue sur Regionoix</h1>
             <p>Découvrez nos produits locaux et promotions exclusives !</p>
+            <button class="btn-discover">Découvrir</button>
         </div>
     </section>
 
@@ -37,14 +38,31 @@
     </section>
 
 
-    <!-- Nouveautés -->
-    <section class="new-products">
-        <h2>Nouveautés</h2>
-        <div class="grid">
-            <app-product-card-component *ngFor="let product of newProducts" [id]="product.id" [name]="product.name"
-                [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
-                [price]="product.price">
-            </app-product-card-component>
+    <!-- Nouveautés & Promotions-->
+    <section class="tabs-section">
+        <div class="tabs">
+            <button class="tab" [class.active]="activeTab === 'promotion'" (click)="activeTab = 'promotion'">
+                En promotion
+            </button>
+            <button class="tab" [class.active]="activeTab === 'nouveaute'" (click)="activeTab = 'nouveaute'">
+                Nouveautés
+            </button>
+        </div>
+
+        <div class="products-grid">
+            <ng-container *ngIf="activeTab === 'promotion'">
+                <app-product-card-component *ngFor="let product of promotionalProducts" [id]="product.id"
+                    [name]="product.name" [image]="product.image ?? '/assets/default.png'"
+                    [discount]="product.discount?.percentage_off ?? null" [price]="product.price">
+                </app-product-card-component>
+            </ng-container>
+
+            <ng-container *ngIf="activeTab === 'nouveaute'">
+                <app-product-card-component *ngFor="let product of newProducts" [id]="product.id" [name]="product.name"
+                    [image]="product.image ?? '/assets/default.png'"
+                    [discount]="product.discount?.percentage_off ?? null" [price]="product.price">
+                </app-product-card-component>
+            </ng-container>
         </div>
     </section>
 
