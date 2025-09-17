@@ -17,6 +17,7 @@ export class HomePage implements OnInit {
   private readonly router = inject(Router);
   promotionalProducts: ProductDto[] = [];
   newProducts: ProductDto[] = [];
+  bestProducts: ProductDto[] = [];
   topCategories: CategoryDto[] = [];
 
   currentIndex = 0;
@@ -26,15 +27,24 @@ export class HomePage implements OnInit {
   ngOnInit(): void {
     this.loadPromotionalProducts();
     this.loadNewProducts();
+    this.loadBestProducts();
     this.loadTopCategories();
   }
 
   loadPromotionalProducts() {
-    this.productService.search('', 'tags = "Best-seller"').subscribe({
+    this.productService.getDiscounts(4, 1).subscribe({
       next: (products) => this.promotionalProducts = products,
       error: () => console.error('Erreur chargement promotions')
     });
   }
+
+  loadBestProducts() {
+    this.productService.search('', 'tags = "Best-seller"').subscribe({
+      next: (products) => this.bestProducts = products,
+      error: () => console.error('Erreur chargement best-sellers')
+    });
+  }
+
 
   loadNewProducts() {
     this.productService.search('', 'tags = "nouveauté"').subscribe({
@@ -51,7 +61,7 @@ export class HomePage implements OnInit {
   }
 
   nextSlide() {
-    if (this.currentIndex < this.promotionalProducts.length - 1) {
+    if (this.currentIndex < this.bestProducts.length - 1) {
       this.currentIndex++;
     } else {
       this.currentIndex = 0; // boucle au début
@@ -62,7 +72,7 @@ export class HomePage implements OnInit {
     if (this.currentIndex > 0) {
       this.currentIndex--;
     } else {
-      this.currentIndex = this.promotionalProducts.length - 1; // boucle à la fin
+      this.currentIndex = this.bestProducts.length - 1; // boucle à la fin
     }
   }
 
