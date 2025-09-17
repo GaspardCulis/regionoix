@@ -12,6 +12,7 @@ api/client.service.ts
 api/default.service.ts
 api/discounts.service.ts
 api/orders.service.ts
+api/payment.service.ts
 api/products.service.ts
 api/regions.service.ts
 api/tags.service.ts
@@ -27,6 +28,7 @@ model/categoryDto.ts
 model/countBasket.ts
 model/discountDto.ts
 model/formAddToBasket.ts
+model/formDataCreateCheckoutSession.ts
 model/formDataMakeOrder.ts
 model/formUpdateQuantityBasket.ts
 model/loggedUser.ts
@@ -35,6 +37,7 @@ model/models.ts
 model/orderDto.ts
 model/orderLineDto.ts
 model/orderStatus.ts
+model/postalInfo.ts
 model/productDto.ts
 model/regionDto.ts
 model/registerForm.ts
