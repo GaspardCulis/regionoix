@@ -16,6 +16,14 @@
     allowedTCPPorts = [22];
   };
 
+  # Save on storage
+  nix.settings.auto-optimise-store = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
   environment.systemPackages = with pkgs;
     map lib.lowPrio [
       curl
