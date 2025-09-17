@@ -201,7 +201,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
   addItem(productId: number) {
     const user = this.authStateService.currentUser;
     if (!user) {
-      this.snackbar.show('Veuillez vous connecter pour ajouter au panier !', 'error');
+      this.snackbar.show('Vous devez vous connecter pour ajouter au panier.', 'info');
       return;
     }
     this.basketService.add({ product_id: productId, quantity: 1 }).subscribe({
