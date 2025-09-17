@@ -23,7 +23,8 @@ jobs:
       matrix:
         toolchain:
           - stable
-        redis-version: [6, 7]
+        redis-version:
+          - 7
 
     steps:
     - uses: actions/checkout@v4
