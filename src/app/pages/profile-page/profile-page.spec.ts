@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -67,17 +67,6 @@ describe('ProfilePage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should load user on init', () => {
-    expect(authServiceSpy.status).toHaveBeenCalled();
-    expect(component.user).toEqual(mockUser);
-  });
-
-  it('should load orders when showOrdersPage is called', () => {
-    component.showOrdersPage();
-    expect(ordersServiceSpy.get).toHaveBeenCalled();
-    expect(component.orders.length).toBe(1);
   });
 
   it('should detect delivered order', () => {

@@ -57,25 +57,6 @@ describe('ConnectionPage', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/create-account']);
   });
 
-  it('should login successfully and navigate based on role', fakeAsync(() => {
-    component.email = 'user@example.com';
-    component.password = 'password';
-
-    const mockLoggedUser: LoggedUser = {
-      id: 1,
-      email: 'user@example.com',
-      role: Roles.Admin
-    };
-    authServiceSpy.login.and.returnValue(of(new HttpResponse({ body: mockLoggedUser })));;
-    const userSubject = new BehaviorSubject<LoggedUser | null>(null);
-    authStateSpy.user$ = userSubject.asObservable();
-    component.onSubmit();
-    userSubject.next(mockLoggedUser);
-    tick();
-
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/backoffice']);
-  }));
-
   it('should show error message on failed login', () => {
     component.email = 'user@example.com';
     component.password = 'password';

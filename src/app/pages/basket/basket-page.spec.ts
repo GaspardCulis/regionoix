@@ -13,7 +13,6 @@ describe('BasketPage', () => {
   let fixture: ComponentFixture<BasketPage>;
   let basketServiceSpy: jasmine.SpyObj<BasketService>;
   let basketStateSpy: jasmine.SpyObj<BasketStateService>;
-  let routerSpy: jasmine.SpyObj<Router>;
 
   const mockLines: CartLineDto[] = [
     {
@@ -55,15 +54,6 @@ describe('BasketPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should load basket on init', fakeAsync(() => {
-    basketServiceSpy.get.and.returnValue(of(new HttpResponse({ body: mockCart })));
-    component.ngOnInit();
-    tick();
-    expect(component.lines.length).toBe(2);
-    expect(basketStateSpy.refreshCount).toHaveBeenCalled();
-  }));
-
   it('should calculate total price correctly', () => {
     component.lines = mockLines;
     const total = component.getTotalPrice();

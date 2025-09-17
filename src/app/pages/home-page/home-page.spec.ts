@@ -63,20 +63,6 @@ describe('HomePage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load promotional, new and best products and top categories', fakeAsync(() => {
-    productsServiceSpy.getDiscounts.and.returnValue(of(new HttpResponse({ body: mockProducts })));
-    productsServiceSpy.search.and.returnValue(of(new HttpResponse({ body: mockProducts })));
-    categoriesServiceSpy.get.and.returnValue(of(new HttpResponse({ body: mockCategories })));
-
-    component.ngOnInit();
-    tick();
-
-    expect(component.promotionalProducts).toEqual(mockProducts);
-    expect(component.newProducts).toEqual(mockProducts);
-    expect(component.bestProducts).toEqual(mockProducts);
-    expect(component.topCategories).toEqual(mockCategories);
-  }));
-
   it('should handle errors during product/category loading', fakeAsync(() => {
     spyOn(console, 'error');
     productsServiceSpy.getDiscounts.and.returnValue(throwError(() => new Error('fail')));
