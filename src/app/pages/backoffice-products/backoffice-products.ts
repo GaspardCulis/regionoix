@@ -1,10 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Product } from '../../models/product-model';
-import { ProductService } from '../../services/product-service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCircle, faCircleExclamation, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCircleExclamation, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { SnackbarService } from '../../services/snackbar-service';
+import { ProductDto, ProductsService } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-backoffice-products',
@@ -17,9 +16,9 @@ export class BackofficeProducts implements OnInit {
   faPlus = faPlus;
   faCircleExclamation = faCircleExclamation;
 
-  products: Product[] = [];
-  selectedProduct: Product | null = null;
-  private readonly productService = inject(ProductService);
+  products: ProductDto[] = [];
+  selectedProduct: ProductDto | null = null;
+  private readonly productService = inject(ProductsService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(SnackbarService);
 
@@ -28,7 +27,7 @@ export class BackofficeProducts implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts().subscribe({
+    this.productService.get().subscribe({
       next: (data) => (this.products = data),
       error: (err) => {
         this.snackBar.show(
@@ -49,7 +48,7 @@ export class BackofficeProducts implements OnInit {
     this.router.navigate(['/backoffice/products/', id]);
   }
 
-  openDeleteModal(product: Product): void {
+  openDeleteModal(product: ProductDto): void {
     this.selectedProduct = product;
     const modal: any = document.getElementById('delete_modal');
     if (modal) modal.showModal();
@@ -57,9 +56,7 @@ export class BackofficeProducts implements OnInit {
 
   deleteProduct(): void {
     if (!this.selectedProduct) return;
-    //TODO uncomment
-    /*
-    this.productService.delete(this.selectedProduct.id).subscribe({
+    this.productService.deleteById(this.selectedProduct.id).subscribe({
       next: () => {
         this.snackBar.show(
           `Le produit "${this.selectedProduct?.name}" a bien été supprimé`,
@@ -75,7 +72,7 @@ export class BackofficeProducts implements OnInit {
           'error'
         );
       },
-    });*/
+    });
   }
 
 }
