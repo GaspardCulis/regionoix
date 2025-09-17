@@ -16,6 +16,8 @@ use crate::{AppState, routes::auth::LoggedUser};
 
 // TODO: Contact DHL
 const DELIVERY_DAYS: i64 = 4;
+/// Customer has 10min to confirm payment
+const PAYMENT_TIMEOUT_SECS: i64 = 600;
 
 #[derive(serde::Serialize, serde::Deserialize, ToSchema)]
 struct PostalInfo {
@@ -91,6 +93,7 @@ pub async fn create_checkout_session(
         params.customer = Some(customer.id);
         params.mode = Some(CheckoutSessionMode::Payment);
         params.line_items = Some(line_items);
+        params.expires_at = Some(PAYMENT_TIMEOUT_SECS);
         params.metadata = Some(HashMap::from([(
             "order-id".into(),
             format!("{}", order.id).into(),
