@@ -3,7 +3,7 @@
 
 <h1>Regionoix</h1>
 
-![www.regionoix.gasdev.fr](https://www.regionoix.gasdev.fr)
+[www.regionoix.gasdev.fr](https://www.regionoix.gasdev.fr)
 
 E-Commerce website made for a 2 weeks school project.
 
