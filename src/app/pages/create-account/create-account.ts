@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SnackbarService } from '../../services/snackbar-service';
+import { ClientService } from '../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-create-account',
@@ -17,6 +18,7 @@ export class CreateAccount {
   confirmPassword = '';
   private readonly router = inject(Router);
   private readonly snackBar = inject(SnackbarService);
+  private readonly clientService = inject(ClientService);
 
   onRegister(form: NgForm) {
     if (form.invalid) {
@@ -37,10 +39,14 @@ export class CreateAccount {
       this.snackBar.show('Veuillez saisir une adresse email correct.', 'error');
       return;
     }
-
-    this.snackBar.show('Compte créé avec succès !', 'success');
-
-    form.resetForm();
+    this.clientService.register({ email: this.email, firstname: this.fisrtname, lastname: this.lastname, password: this.password }).subscribe({
+      next: () => {
+        this.snackBar.show('Compte créé avec succès !', 'success');
+        form.resetForm();
+        this.goToLogin();
+      },
+      error: () => this.snackBar.show('Une erreur est survenu, veuillez contacter le support', 'error')
+    })
   }
 
   goToLogin() {

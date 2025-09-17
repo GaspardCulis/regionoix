@@ -87,7 +87,7 @@ pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Re
         ),
     ),
 )]
-#[get("discounts")]
+#[get("/discounts")]
 pub async fn get_discounts(
     query: web::Query<PaginateQuery>,
     data: web::Data<AppState>,

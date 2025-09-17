@@ -50,7 +50,7 @@ export class ProductPage implements OnInit {
   addItem(productId: number) {
     const user = this.authStateService.currentUser;
     if (!user) {
-      this.snackbarService.show('Veuillez vous connecter pour ajouter au panier !', 'error');
+      this.snackbarService.show('Vous devez être connecté pour ajouter au panier.', 'info');
       return;
     }
 
