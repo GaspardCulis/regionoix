@@ -5,7 +5,7 @@ use crate::utils::get_env_var;
 #[derive(Clone)]
 pub struct StripeService {
     pub client: Client,
-    pub api_key: String,
+    pub webhook_signing_key: String,
 }
 
 impl StripeService {
@@ -16,19 +16,21 @@ impl StripeService {
 
         Ok(Self {
             client,
-            api_key: secrets.api_key,
+            webhook_signing_key: secrets.webhook_signing_key,
         })
     }
 }
 
 struct StripeSecrets {
     pub api_key: String,
+    pub webhook_signing_key: String,
 }
 
 impl StripeSecrets {
     fn load() -> anyhow::Result<Self> {
         Ok(Self {
             api_key: get_env_var("STRIPE_API_KEY")?,
+            webhook_signing_key: get_env_var("STRIPE_WEBHOOK_SIGNING_KEY")?,
         })
     }
 }

@@ -10,8 +10,8 @@ use tracing::error;
 
 use crate::AppState;
 
-#[utoipa::path()]
-#[post("/stripe_webhooks")]
+#[utoipa::path(summary = "Stripe reserved webhooks endpoint", tag = "Payment")]
+#[post("/stripe-webhooks")]
 pub async fn webhook(
     req: HttpRequest,
     payload: web::Payload,
@@ -125,5 +125,9 @@ fn build_webhook(
 
     let stripe_signature = get_header_value(req, "Stripe-Signature").unwrap_or_default();
 
-    Webhook::construct_event(payload_str, stripe_signature, &app_data.stripe.api_key)
+    Webhook::construct_event(
+        payload_str,
+        stripe_signature,
+        &app_data.stripe.webhook_signing_key,
+    )
 }
