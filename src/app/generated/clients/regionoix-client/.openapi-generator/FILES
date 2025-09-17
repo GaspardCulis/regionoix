@@ -10,6 +10,7 @@ api/brands.service.ts
 api/categories.service.ts
 api/client.service.ts
 api/default.service.ts
+api/discounts.service.ts
 api/orders.service.ts
 api/products.service.ts
 api/regions.service.ts
