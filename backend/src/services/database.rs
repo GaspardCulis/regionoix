@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use sea_orm::{Database, DatabaseConnection};
+use sea_orm::*;
 
 use crate::utils::get_env_var;
 
@@ -14,6 +14,21 @@ impl DatabaseService {
         let secrets = DatabaseSecrets::load()?;
 
         let db = Database::connect(&secrets.database_url).await?;
+
+        Ok(Self { conn: db })
+    }
+
+    pub async fn build_integration_test<F>(schema_builder: F) -> anyhow::Result<Self>
+    where
+        F: FnOnce(Schema, &DbBackend) -> Vec<Statement>,
+    {
+        let db = Database::connect("sqlite::memory:").await?;
+
+        let schema = Schema::new(DbBackend::Sqlite);
+        let statements = schema_builder(schema, &DatabaseBackend::Sqlite);
+        for stmt in statements {
+            db.execute(stmt).await?;
+        }
 
         Ok(Self { conn: db })
     }

@@ -65,9 +65,17 @@ mod tests {
         http::{StatusCode, header::ContentType},
         test,
     };
-    use regionoix::utils::get_env_var;
+    use argon2::{
+        Argon2, PasswordHasher,
+        password_hash::{SaltString, rand_core::OsRng},
+    };
+    use regionoix::{prelude::sea_orm_active_enums::Roles, utils::get_env_var};
+    use sea_orm::{DbBackend, IntoActiveModel, StatementBuilder as SB};
 
     use super::*;
+
+    const TEST_USER_EMAIL: &str = "testuser@regionoix.fr";
+    const TEST_USER_PASSWORD: &str = "youratruehackerifyoureadme";
 
     async fn app_setup() -> App<
         impl ServiceFactory<
@@ -80,7 +88,15 @@ mod tests {
     > {
         dotenv::dotenv().unwrap();
 
-        let database_service = DatabaseService::build().await.unwrap();
+        let database_service = DatabaseService::build_integration_test(
+            |schema: sea_orm::Schema, backend: &DbBackend| {
+                vec![SB::build(&schema.create_table_from_entity(User), backend)]
+            },
+        )
+        .await
+        .unwrap();
+
+        user_setup(&database_service).await;
 
         let redis_url: String = get_env_var("REDIS_URL").unwrap();
         info!("Connecting to Redis session store");
@@ -94,6 +110,30 @@ mod tests {
             .app_data(web::Data::new(database_service))
     }
 
+    async fn user_setup(db: &DatabaseService) {
+        let password_hash = Argon2::default()
+            .hash_password(
+                TEST_USER_PASSWORD.as_bytes(),
+                &SaltString::generate(&mut OsRng),
+            )
+            .map_err(|err| crate::Error::InternalError(anyhow::Error::msg(err)))
+            .unwrap()
+            .to_string();
+        let test_user = user::Model {
+            id: 1,
+            email: TEST_USER_EMAIL.into(),
+            password: password_hash,
+            role: Roles::Client,
+            fistname: Some("Tom".into()),
+            lastname: Some("Cruise".into()),
+        };
+        test_user
+            .into_active_model()
+            .insert(&db.conn)
+            .await
+            .unwrap();
+    }
+
     #[actix_web::test]
     async fn login_success() {
         let app = test::init_service(app_setup().await.service(login)).await;
@@ -101,8 +141,8 @@ mod tests {
             .uri("/login")
             .insert_header(ContentType::json())
             .set_json(LoginRequest {
-                email: "testuser@regionoix.fr".into(),
-                password: "testpassword".into(),
+                email: TEST_USER_EMAIL.into(),
+                password: TEST_USER_PASSWORD.into(),
             })
             .to_request();
         let resp = test::call_service(&app, req).await;
@@ -131,7 +171,7 @@ mod tests {
             .uri("/login")
             .insert_header(ContentType::json())
             .set_json(LoginRequest {
-                email: "testuser@regionoix.fr".into(),
+                email: TEST_USER_EMAIL.into(),
                 password: "wrongpassword".into(),
             })
             .to_request();
