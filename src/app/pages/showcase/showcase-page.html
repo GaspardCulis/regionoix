@@ -63,10 +63,16 @@
 
     <main class="product-grid">
 
+        @if (products.length === 0) {
+        <div class="no-products-message">
+            <p> Aucun produit ne correspond à votre recherche </p>
+        </div>
+        } @else {
         <app-product-card-component *ngFor="let product of products" [id]="product.id" [name]="product.name"
             [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
             [price]="product.price" (addToBasket)="addItem($event)">
         </app-product-card-component>
+        }
 
     </main>
 

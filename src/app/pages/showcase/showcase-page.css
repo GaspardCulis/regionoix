@@ -8,6 +8,11 @@
     align-content: start;
 }
 
+.product-grid:has(.no-products-message) {
+  display: flex;
+  justify-content: center;
+}
+
 @media (min-width: 640px) {
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -24,6 +29,18 @@
     .product-grid {
         grid-template-columns: repeat(6, 1fr);
     }
+}
+
+.no-products-message {
+  margin: 2rem auto;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: black;
+  background: #f9fafb;
+  padding: 1rem 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
 .page-container {
