@@ -242,7 +242,8 @@ async fn build_stripe_line_items(
         let product_price_cents = (db_product.price * 100.0).round() as i64;
 
         let product = {
-            let create_product = CreateProduct::new(&db_product.name);
+            let mut create_product = CreateProduct::new(&db_product.name);
+            create_product.images = db_product.image.clone().map(|image| vec![image]);
             stripe::Product::create(&client, create_product).await?
         };
 
