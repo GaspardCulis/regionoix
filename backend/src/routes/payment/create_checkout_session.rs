@@ -86,8 +86,8 @@ pub async fn create_checkout_session(
 
     let checkout_session = {
         let mut params = CreateCheckoutSession::new();
-        params.cancel_url = Some(&form_data.success_url);
-        params.success_url = Some(&form_data.cancel_url);
+        params.cancel_url = Some(&form_data.cancel_url);
+        params.success_url = Some(&form_data.success_url);
         params.customer = Some(customer.id);
         params.mode = Some(CheckoutSessionMode::Payment);
         params.line_items = Some(line_items);
