@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use chrono::{Duration, Utc};
 use regionoix::{
     dtos::order::OrderDto,
@@ -87,6 +89,10 @@ pub async fn create_checkout_session(
         params.customer = Some(customer.id);
         params.mode = Some(CheckoutSessionMode::Payment);
         params.line_items = Some(line_items);
+        params.metadata = Some(HashMap::from([(
+            "order-id".into(),
+            format!("{}", order.id).into(),
+        )]));
 
         CheckoutSession::create(&client, params).await?
     };
@@ -155,6 +161,11 @@ async fn build_order(
             txn.rollback().await?;
             return Err(crate::Error::BadRequestError("Not enough stock".into()));
         }
+
+        // Decrement stock
+        let mut product_am: product::ActiveModel = product.into();
+        product_am.stock = Set(product_am.stock.unwrap() - cl.quantity);
+        product_am.update(&txn).await?;
     }
 
     // Create address
