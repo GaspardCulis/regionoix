@@ -95,7 +95,7 @@ mod tests {
     }
 
     async fn services_setup() -> (DatabaseService, RedisSessionStore) {
-        dotenv::dotenv().unwrap();
+        let _ = dotenv::dotenv().is_ok();
 
         let database_service = DatabaseService::build_integration_test(
             |schema: sea_orm::Schema, backend: &DbBackend| {
