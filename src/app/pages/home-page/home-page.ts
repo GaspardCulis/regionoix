@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductsService, ProductDto, CategoriesService, CategoryDto } from '../../generated/clients/regionoix-client';
+import { ProductsService, ProductDto, CategoryDto } from '../../generated/clients/regionoix-client';
 import { ProductCardComponent } from '../../utils/component/product-card-component/product-card-component';
 import { Router } from '@angular/router';
 
@@ -9,11 +9,10 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, ProductCardComponent],
   templateUrl: './home-page.html',
-  styleUrl: './home-page.css'
+  styleUrl: './home-page.css',
 })
 export class HomePage implements OnInit {
   private readonly productService = inject(ProductsService);
-  private readonly categoriesService = inject(CategoriesService);
   private readonly router = inject(Router);
   promotionalProducts: ProductDto[] = [];
   newProducts: ProductDto[] = [];
@@ -22,69 +21,33 @@ export class HomePage implements OnInit {
 
   currentIndex = 0;
 
-  activeTab: 'promotion' | 'nouveaute' = 'promotion';
+  activeTab: 'promotion' | 'nouveaute' | 'bestSellers' = 'promotion';
 
   ngOnInit(): void {
     this.loadPromotionalProducts();
     this.loadNewProducts();
     this.loadBestProducts();
-    this.loadTopCategories();
   }
 
   loadPromotionalProducts() {
     this.productService.getDiscounts(4, 0).subscribe({
-      next: (products) => this.promotionalProducts = products,
-      error: () => console.error('Erreur chargement promotions')
+      next: (products) => (this.promotionalProducts = products),
+      error: () => console.error('Erreur chargement promotions'),
     });
   }
 
   loadBestProducts() {
     this.productService.search('', 'tags = "Best-seller"').subscribe({
-      next: (products) => this.bestProducts = products,
-      error: () => console.error('Erreur chargement best-sellers')
+      next: (products) => (this.bestProducts = products),
+      error: () => console.error('Erreur chargement best-sellers'),
     });
   }
-
 
   loadNewProducts() {
     this.productService.search('', 'tags = "nouveauté"').subscribe({
-      next: (products) => this.newProducts = products,
-      error: () => console.error('Erreur chargement nouveautés')
+      next: (products) => (this.newProducts = products),
+      error: () => console.error('Erreur chargement nouveautés'),
     });
-  }
-
-  loadTopCategories() {
-    this.categoriesService.get().subscribe({
-      next: (cats) => this.topCategories = cats.filter(c => !c.category_parent),
-      error: () => console.error('Erreur chargement catégories')
-    });
-  }
-
-  nextSlide() {
-    if (this.currentIndex < this.bestProducts.length - 1) {
-      this.currentIndex++;
-    } else {
-      this.currentIndex = 0; // boucle au début
-    }
-  }
-
-  prevSlide() {
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-    } else {
-      this.currentIndex = this.bestProducts.length - 1; // boucle à la fin
-    }
-  }
-
-  getTransform(): string {
-    return `translateX(-${this.currentIndex * 100}%)`;
-  }
-  updateTrack() {
-    const track = document.querySelector<HTMLElement>('.carousel-track');
-    if (track) {
-      const offset = this.currentIndex * 260; // largeur produit + gap
-      track.style.transform = `translateX(-${offset}px)`;
-    }
   }
 
   goToProduct(id: number) {
@@ -94,5 +57,4 @@ export class HomePage implements OnInit {
   goToShowcase() {
     this.router.navigate(['/showcase']);
   }
-
 }
