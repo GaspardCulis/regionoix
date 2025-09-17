@@ -12,7 +12,7 @@ use sea_orm::{
 };
 use stripe::*;
 
-use crate::{AppState, routes::auth::LoggedUser};
+use crate::routes::auth::LoggedUser;
 
 // TODO: Contact DHL
 const DELIVERY_DAYS: i64 = 4;
@@ -49,18 +49,16 @@ struct FormDataCreateCheckoutSession {
 )]
 #[post("/create-checkout-session")]
 pub async fn create_checkout_session(
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
+    stripe: web::Data<StripeService>,
     form_data: web::Json<FormDataCreateCheckoutSession>,
     logged_user: LoggedUser,
 ) -> crate::Result<web::Redirect> {
-    let db = &data.db;
-    let client = &data.stripe.client;
-
-    let (order, txn) = build_order(db, &logged_user, &form_data.postal_info).await?;
-    let line_items = build_stripe_line_items(&order, &txn, client).await?;
+    let (order, txn) = build_order(&db.conn, &logged_user, &form_data.postal_info).await?;
+    let line_items = build_stripe_line_items(&order, &txn, &stripe.client).await?;
 
     let customer = Customer::create(
-        client,
+        &stripe.client,
         CreateCustomer {
             name: Some(&format!(
                 "{} {}",
@@ -96,7 +94,7 @@ pub async fn create_checkout_session(
             format!("{}", order.id).into(),
         )]));
 
-        CheckoutSession::create(&client, params).await?
+        CheckoutSession::create(&stripe.client, params).await?
     };
 
     txn.commit().await?;

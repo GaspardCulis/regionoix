@@ -11,20 +11,7 @@ mod error;
 mod routes;
 
 pub use error::*;
-use regionoix::{
-    services::{
-        database::DatabaseService, meilisearch::SearchService, s3::S3Service, stripe::StripeService,
-    },
-    utils::get_env_var,
-    *,
-};
-
-pub struct AppState {
-    db: DatabaseService,
-    search: SearchService,
-    s3: S3Service,
-    stripe: StripeService,
-}
+use regionoix::{utils::get_env_var, *};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -46,24 +33,15 @@ async fn main() -> std::io::Result<()> {
     let listen_port: u16 = get_env_var("API_PORT").unwrap();
     let redis_url: String = get_env_var("REDIS_URL").unwrap();
 
-    info!("Connecting to database");
-    let db = DatabaseService::build()
-        .await
-        .expect("failed to build DB service");
+    let database_service = services::DatabaseService::build().await.unwrap();
+    let s3_service = services::S3Service::build().unwrap();
+    let search_service = services::SearchService::build_search().unwrap();
+    let stripe_service = services::StripeService::build().unwrap();
 
     info!("Connecting to Redis session store");
     let redis_store = RedisSessionStore::new(redis_url)
         .await
         .expect("Failed to connect to Redis session store");
-
-    info!("Connecting to Meilisearch indexer");
-    let search = SearchService::build_search().expect("failed to build Meilisearch service");
-
-    info!("Building to S3 service");
-    let s3 = S3Service::build().expect("failed to build S3 service");
-
-    info!("Building to Stripe service");
-    let stripe = StripeService::build().expect("failed to build Stripe service");
 
     info!("Starting server app");
 
@@ -75,12 +53,10 @@ async fn main() -> std::io::Result<()> {
                 redis_store.clone(),
                 Key::from(secret_key.as_bytes()),
             ))
-            .app_data(Data::new(AppState {
-                db: db.clone(),
-                search: search.clone(),
-                s3: s3.clone(),
-                stripe: stripe.clone(),
-            }))
+            .app_data(Data::new(database_service.clone()))
+            .app_data(Data::new(s3_service.clone()))
+            .app_data(Data::new(search_service.clone()))
+            .app_data(Data::new(stripe_service.clone()))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
             .service(utoipa_actix_web::scope("/api").configure(routes::config))

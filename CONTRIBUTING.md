@@ -60,6 +60,20 @@ To start the backend server, run:
 cargo run
 ```
 
+The dev server requires a properly setup `.env` file containing the entries
+documented in [.env.example](./.env.example).
+
+#### Testing
+
+To execute tests, run:
+
+```bash
+cargo test
+```
+
+The testing process requires the `REDIS_URL` environment variable to be set to a
+running Redis server.
+
 #### Code coverage
 
 Requires [cargo-llvm-cov](https://crates.io/crates/cargo-llvm-cov).

@@ -8,22 +8,19 @@ use sea_orm::{
 use stripe::*;
 use tracing::error;
 
-use crate::AppState;
-
 #[utoipa::path(summary = "Stripe reserved webhooks endpoint", tag = "Payment")]
 #[post("/stripe-webhooks")]
 pub async fn webhook(
     req: HttpRequest,
     payload: web::Payload,
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
+    stripe: web::Data<StripeService>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-
     let payload = payload
         .to_bytes()
         .await
         .map_err(|_| crate::Error::BadRequestError("Failed to get payload bytes".into()))?;
-    let event = build_webhook(&req, &payload, &data)
+    let event = build_webhook(&req, &payload, &stripe)
         .map_err(|_| crate::Error::BadRequestError("Failed to build stripe webhook".into()))?;
 
     match event.type_ {
@@ -116,15 +113,11 @@ async fn handle_expired_payment(
 fn build_webhook(
     req: &HttpRequest,
     payload: &web::Bytes,
-    app_data: &AppState,
+    stripe: &StripeService,
 ) -> Result<Event, WebhookError> {
     let payload_str = std::str::from_utf8(payload).unwrap();
 
     let stripe_signature = get_header_value(req, "Stripe-Signature").unwrap_or_default();
 
-    Webhook::construct_event(
-        payload_str,
-        stripe_signature,
-        &app_data.stripe.webhook_signing_key,
-    )
+    Webhook::construct_event(payload_str, stripe_signature, &stripe.webhook_signing_key)
 }

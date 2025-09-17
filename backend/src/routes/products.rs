@@ -1,9 +1,6 @@
 use crate::dtos::product::ProductDto;
+use crate::entities::{prelude::Product, product};
 use crate::prelude::*;
-use crate::{
-    AppState,
-    entities::{prelude::Product, product},
-};
 use regionoix::utils::PaginateQuery;
 use sea_orm::ColumnTrait;
 use sea_orm::{EntityName, EntityTrait as _, QueryFilter};
@@ -31,11 +28,9 @@ pub fn config(cfg: &mut ServiceConfig) {
 )]
 #[get("")]
 pub async fn get(
+    db: web::Data<DatabaseService>,
     query: web::Query<PaginateQuery>,
-    data: web::Data<AppState>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-
     let products: Vec<ProductDto> = query.paginate(Product::find().into_dto(), &db.conn).await?;
 
     Ok(HttpResponse::Ok().json(products))
@@ -56,8 +51,10 @@ pub async fn get(
     ),
 )]
 #[get("/{id}")]
-pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Result<HttpResponse> {
-    let db = &data.db;
+pub async fn get_by_id(
+    req: HttpRequest,
+    db: web::Data<DatabaseService>,
+) -> crate::Result<HttpResponse> {
     let id: i32 = req.match_info().query("id").parse()?;
 
     let product = Product::find_by_id(id)
@@ -89,11 +86,9 @@ pub async fn get_by_id(data: web::Data<AppState>, req: HttpRequest) -> crate::Re
 )]
 #[get("/discounts")]
 pub async fn get_discounts(
+    db: web::Data<DatabaseService>,
     query: web::Query<PaginateQuery>,
-    data: web::Data<AppState>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-
     let products: Vec<ProductDto> = query
         .paginate(
             Product::find()
@@ -121,10 +116,9 @@ pub async fn get_discounts(
 )]
 #[delete("/{id}")]
 pub async fn delete_by_id(
-    data: web::Data<AppState>,
     req: HttpRequest,
+    db: web::Data<DatabaseService>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let id: i32 = req.match_info().query("id").parse()?;
 
     Product::delete_by_id(id).exec(&db.conn).await?;

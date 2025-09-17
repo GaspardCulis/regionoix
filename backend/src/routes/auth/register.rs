@@ -14,7 +14,7 @@ use sea_orm::{
     EntityTrait, QueryFilter,
 };
 
-use crate::{AppState, prelude::*, routes::auth::LoggedUser};
+use crate::{prelude::*, routes::auth::LoggedUser};
 
 #[derive(Debug, Deserialize, ToSchema)]
 struct RegisterForm {
@@ -56,10 +56,8 @@ struct RegisterForm {
 #[post("/register")]
 async fn register(
     form_data: web::Json<RegisterForm>,
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-
     let form_data = form_data.into_inner();
 
     // Check if user already exists with email
