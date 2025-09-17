@@ -264,3 +264,25 @@
     min-width: 60px;
     text-align: center;
 }
+
+.reset-filters {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.reset-filters button {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s;
+}
+
+.reset-filters button:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.05);
+}

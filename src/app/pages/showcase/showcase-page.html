@@ -49,6 +49,11 @@
             </label>
         </fieldset>
 
+        <!--Reset Filters-->
+        <div class="reset-filters">
+            <button (click)="resetFilters()">Réinitialiser les filtres</button>
+        </div>
+
         <!--Pagination-->
         <nav class="pagination">
             <button (click)="prevPage()" [disabled]="currentPage === 1">⬅ </button>

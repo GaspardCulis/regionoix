@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { SnackbarService } from '../../services/snackbar-service';
 import { BasketStateService } from '../../services/basket-state-service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BasketService, BrandDto, BrandsService, CategoriesService, CategoryDto, LoggedUser, ProductDto, ProductsService, RegionDto, RegionsService, TagDto, TagsService } from '../../generated/clients/regionoix-client';
 import { Subscription } from 'rxjs';
 import { AuthStateService } from '../../services/auth-state-service';
@@ -21,6 +21,7 @@ import { AuthStateService } from '../../services/auth-state-service';
 export class ShowcasePage implements OnInit, OnDestroy {
   private readonly snackbar = inject(SnackbarService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   private readonly basketState = inject(BasketStateService);
   private readonly basketService = inject(BasketService);
@@ -28,7 +29,7 @@ export class ShowcasePage implements OnInit, OnDestroy {
   private readonly categoriesService = inject(CategoriesService);
   private readonly regionsService = inject(RegionsService);
   private readonly tagsService = inject(TagsService);
-  private authStateService = inject(AuthStateService);
+  private readonly authStateService = inject(AuthStateService);
   private readonly brandsService = inject(BrandsService);
 
   private queryParamSub!: Subscription;
@@ -258,6 +259,11 @@ export class ShowcasePage implements OnInit, OnDestroy {
     const filterString = filters.join(' AND ');
     console.log('API filters:', filterString);
     return filterString;
+  }
+
+  resetFilters(): void {
+    this.router.navigate(["/"]);
+    this.loadProducts();
   }
 
   onPageSizeChange(): void {
