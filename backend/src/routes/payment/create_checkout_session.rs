@@ -155,8 +155,12 @@ async fn build_order(
         order_lines.push(ol);
 
         // Total
-        // TODO: Take discount into a count
-        total_price += product.price * cl.quantity as f32;
+        total_price +=
+            if let Some(discount) = product.find_related(discount::Entity).one(&txn).await? {
+                product.price * cl.quantity as f32 * (1.0 - discount.percentage_off as f32 / 100.0)
+            } else {
+                product.price * cl.quantity as f32
+            };
 
         // if product stock is not enough rollback
         if product.stock < cl.quantity {
@@ -230,8 +234,12 @@ async fn build_stripe_line_items(
     let mut line_items = Vec::new();
     for order_line in order_dto.order_lines.unwrap_or_default().iter() {
         let db_product = &order_line.product;
-        // TODO: Take discount into a count
-        let product_price_cents = (db_product.price * 100.0).round() as i64;
+        let product_price_cents = if let Some(discount) = &db_product.discount {
+            ((db_product.price * (1.0 - discount.percentage_off as f32 / 100.0)) * 100.0).round()
+                as i64
+        } else {
+            (db_product.price * 100.0).round() as i64
+        };
 
         let product = {
             let mut create_product = CreateProduct::new(&db_product.name);
