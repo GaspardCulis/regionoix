@@ -47,6 +47,7 @@ export class BasketService extends BaseService {
 
     /**
      * Add product to basket of current user
+     * Add product to basket of current user or if already in cart update quantity
      * @param formAddToBasket 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
