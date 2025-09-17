@@ -26,6 +26,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(scope("/regions").configure(regions::config))
         .service(scope("/orders").configure(orders::config))
         .service(scope("/payment").configure(payment::config))
-        .service(scope("/tags").configure(tags::config));
+        .service(scope("/tags").configure(tags::config))
         .service(scope("/discounts").configure(discounts::config));
 }
