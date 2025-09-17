@@ -35,6 +35,12 @@
     color: var(--color-bg);
 }
 
+.btn-validate:disabled {
+    background-color: #dbd4d4;
+    color: #9b999a;
+    cursor: not-allowed;
+}
+
 .btn-empty {
     background-color: var(--color-primary-light);
     color: var(--color-bg);
