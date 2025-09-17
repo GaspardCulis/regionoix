@@ -41,10 +41,10 @@ export class PaymentService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<string>;
+    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
+    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
+    public createCheckoutSession(formDataCreateCheckoutSession: FormDataCreateCheckoutSession, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (formDataCreateCheckoutSession === null || formDataCreateCheckoutSession === undefined) {
             throw new Error('Required parameter formDataCreateCheckoutSession was null or undefined when calling createCheckoutSession.');
         }
@@ -52,6 +52,7 @@ export class PaymentService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -84,7 +85,7 @@ export class PaymentService extends BaseService {
 
         let localVarPath = `/api/payment/create-checkout-session`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<string>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: formDataCreateCheckoutSession,

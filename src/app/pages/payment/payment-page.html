@@ -47,30 +47,6 @@
                 </div>
             </div>
 
-            <!-- Paiement -->
-            <div class="accordion-item">
-                <button class="accordion-header" (click)="toggleSection('payment')">Informations de paiement</button>
-                <div class="accordion-body" [class.open]="openSection === 'payment'">
-                    <label class="form-control">
-                        <span class="label-text">Numéro de carte</span>
-                        <input type="text" class="input" placeholder="1234 5678 9012 3456" (input)="onCardInput($event)"
-                            maxlength="19" />
-                    </label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="form-control">
-                            <span class="label-text">Date d'expiration</span>
-                            <input type="text" class="input" placeholder="MM/AA" maxlength="5"
-                                (input)="onExpiryInput($event)" />
-                        </label>
-                        <label class="form-control">
-                            <span class="label-text">CVV</span>
-                            <input type="text" class="input" placeholder="123" maxlength="3"
-                                (input)="onCVVInput($event)" />
-                        </label>
-                    </div>
-                </div>
-            </div>
-
             <button class="btn mt-4" (click)="submitAll()">Soumettre la commande</button>
 
         </div>
