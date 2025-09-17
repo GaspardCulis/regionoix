@@ -19,9 +19,9 @@
                 <div *ngFor="let product of bestProducts" class="carousel-item">
                     <div class="hero">
                         <div class="hero-content flex-col lg:flex-row items-center justify-center gap-6">
-                            <img [src]="product.image ?? '/assets/default.png'" [alt]="product.name"
-                                class="max-w-sm rounded-lg shadow-2xl cursor-pointer"
-                                (click)="goToProduct(product.id)" />
+                            <button (click)="goToProduct(product.id)"><img
+                                    [src]="product.image ?? '/assets/default.png'" [alt]="product.name"
+                                    class="max-w-sm rounded-lg shadow-2xl cursor-pointer" /></button>
                             <div class="text-center lg:text-left">
                                 <h1 class="text-5xl font-bold">{{ product.name }}</h1>
                                 <p class="py-6">{{ product.description }}</p>
