@@ -1,6 +1,6 @@
 use sea_orm::{
-    DatabaseConnection, DbErr, EntityTrait, FromQueryResult, PartialModelTrait, Select,
-    SelectModel, Selector,
+    ConnectionTrait, DbErr, EntityTrait, FromQueryResult, PartialModelTrait, Select, SelectModel,
+    Selector,
 };
 
 pub mod address;
@@ -24,9 +24,9 @@ pub trait DtoTrait: FromQueryResult + PartialModelTrait {
 }
 
 pub trait PartialDto: FromQueryResult + PartialModelTrait {
-    fn finalize(
+    fn finalize<C: ConnectionTrait>(
         self,
-        db: &DatabaseConnection,
+        db: &C,
     ) -> impl std::future::Future<Output = Result<Self, DbErr>> + Send;
 }
 

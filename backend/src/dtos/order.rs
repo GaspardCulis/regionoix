@@ -2,8 +2,8 @@ use crate::dtos::order_line::OrderLineDto;
 use crate::entities::order;
 use chrono::NaiveDate;
 use sea_orm::{
-    DbErr, DerivePartialModel, EntityTrait, JoinType, ModelTrait, QuerySelect as _,
-    RelationTrait as _,
+    ConnectionTrait, DbErr, DerivePartialModel, EntityTrait, JoinType, ModelTrait,
+    QuerySelect as _, RelationTrait as _,
 };
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -37,7 +37,7 @@ impl DtoTrait for OrderDto {
 }
 
 impl PartialDto for OrderDto {
-    async fn finalize(mut self, db: &sea_orm::DatabaseConnection) -> Result<Self, DbErr> {
+    async fn finalize<C: ConnectionTrait>(mut self, db: &C) -> Result<Self, DbErr> {
         let order = order::Entity::find_by_id(self.id)
             .one(db)
             .await?

@@ -13,6 +13,8 @@ in {
   sops.secrets."backend/meilisearch/search_key".owner = "regionoix";
   sops.secrets."backend/s3/access_key".owner = "regionoix";
   sops.secrets."backend/s3/secret_access_key".owner = "regionoix";
+  sops.secrets."backend/stripe/api_key".owner = "regionoix";
+  sops.secrets."backend/stripe/webhook_signing_key".owner = "regionoix";
   sops.templates."regionoix-backend.env" = {
     content = ''
       DATABASE_URL=${config.sops.placeholder."backend/database_url"}
@@ -23,6 +25,9 @@ in {
 
       S3_ACCESS_KEY=${config.sops.placeholder."backend/s3/access_key"}
       S3_SECRET_ACCESS_KEY=${config.sops.placeholder."backend/s3/secret_access_key"}
+
+      STRIPE_API_KEY=${config.sops.placeholder."backend/stripe/api_key"}
+      STRIPE_WEBHOOK_SIGNING_KEY=${config.sops.placeholder."backend/stripe/webhook_signing_key"}
     '';
     owner = "regionoix";
   };

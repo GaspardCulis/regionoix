@@ -5,16 +5,14 @@ use sea_orm::prelude::*;
 
 mod count;
 mod items;
-mod order;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get)
+        .service(empty)
+        .service(count::get)
         .service(items::add)
         .service(items::update_quantity)
-        .service(items::remove)
-        .service(empty)
-        .service(order::make)
-        .service(count::get);
+        .service(items::remove);
 }
 
 #[utoipa::path(
