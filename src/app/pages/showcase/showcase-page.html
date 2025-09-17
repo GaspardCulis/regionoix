@@ -13,18 +13,6 @@
             </div>
         </label>
 
-        <!-- <fieldset class="availability">
-            <legend>Disponibilité</legend>
-            <label>
-                <input type="checkbox" [(ngModel)]="productAvailable" />
-                En stock
-            </label>
-            <label>
-                <input type="checkbox" [(ngModel)]="productUnavailable" />
-                Rupture
-            </label>
-        </fieldset> -->
-
         <!-- Catégories -->
         <fieldset class="availability">
             <legend>Catégories</legend>
@@ -63,8 +51,6 @@
 
         <!--Pagination-->
         <nav class="pagination">
-            <label>
-            </label>
             <button (click)="prevPage()" [disabled]="currentPage === 1">⬅ </button>
             <span>Page {{ currentPage }}</span>
 
