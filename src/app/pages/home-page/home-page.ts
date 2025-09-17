@@ -32,7 +32,7 @@ export class HomePage implements OnInit {
   }
 
   loadPromotionalProducts() {
-    this.productService.getDiscounts(4, 1).subscribe({
+    this.productService.getDiscounts(4, 0).subscribe({
       next: (products) => this.promotionalProducts = products,
       error: () => console.error('Erreur chargement promotions')
     });
