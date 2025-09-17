@@ -36,8 +36,8 @@
 }
 
 .btn-validate:disabled {
-    background-color: #dbd4d4;
-    color: #9b999a;
+    background-color: var(--color-bg-disable);
+    color: var(--color-content-disable);
     cursor: not-allowed;
 }
 
