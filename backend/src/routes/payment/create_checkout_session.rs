@@ -51,18 +51,10 @@ struct FormDataCreateCheckoutSession {
 pub async fn create_checkout_session(
     data: web::Data<AppState>,
     form_data: web::Json<FormDataCreateCheckoutSession>,
-    // logged_user: LoggedUser,
+    logged_user: LoggedUser,
 ) -> crate::Result<web::Redirect> {
     let db = &data.db;
     let client = &data.stripe.client;
-
-    let logged_user = LoggedUser {
-        id: 1,
-        email: "".into(),
-        role: sea_orm_active_enums::Roles::Client,
-        firstname: Some("".into()),
-        lastname: Some("".into()),
-    };
 
     let (order, txn) = build_order(db, &logged_user, &form_data.postal_info).await?;
     let line_items = build_stripe_line_items(&order, &txn, client).await?;
