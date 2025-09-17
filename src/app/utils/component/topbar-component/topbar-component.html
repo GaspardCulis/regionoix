@@ -19,32 +19,4 @@
     </button>
   </div>
 </div>
-<div class="bottom">
-  <!-- Navbar -->
-  <nav class="navbar">
-    <!-- Dropdown régions -->
-    <div class="dropdown">
-      <button class="dropbtn">
-        Régions {{ selectedRegion ? ': ' + selectedRegion : '' }}
-      </button>
-      <div class="dropdown-content">
-        <button (click)="selectedRegion = ''">Toutes</button>
-        <button *ngFor="let r of regions" (click)="selectRegion(r)">
-          {{ r.name }}
-        </button>
-      </div>
-    </div>
-    <!-- Dropdown catégories -->
-    <div class="dropdown" *ngFor="let cat of categories">
-      <button class="dropbtn">
-        {{cat.name}} {{ selectedCategory ? ': ' + selectedSubCategory : '' }}
-      </button>
-      <div class="dropdown-content">
-        <button (click)="selectCategory(cat)">{{ cat.name }}</button>
-        <button *ngFor="let child of cat.childs" (click)="selectSubCategory(child)">
-          {{ child.name }}
-        </button>
-      </div>
-    </div>
-  </nav>
-</div>
+<div class="bottom"></div>
