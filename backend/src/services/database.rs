@@ -25,7 +25,7 @@ impl DatabaseService {
         let db = Database::connect("sqlite::memory:").await?;
 
         let schema = Schema::new(DbBackend::Sqlite);
-        let statements = schema_builder(schema, &DatabaseBackend::Sqlite);
+        let statements = schema_builder(schema, &DbBackend::Sqlite);
         for stmt in statements {
             db.execute(stmt).await?;
         }
