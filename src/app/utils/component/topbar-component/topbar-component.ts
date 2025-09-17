@@ -6,6 +6,7 @@ import { CategoriesService, CategoryDto, LoggedUser, RegionDto, RegionsService }
 import { AuthStateService } from '../../../services/auth-state-service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
+import { SnackbarService } from '../../../services/snackbar-service';
 
 @Component({
   selector: 'app-topbar',
@@ -17,6 +18,7 @@ import { faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 export class TopbarComponent implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthStateService);
+  private snackbar = inject(SnackbarService);
   // icon for basket shopping
   faBasketShopping = faBasketShopping;
 
@@ -65,7 +67,11 @@ export class TopbarComponent implements OnInit {
   }
 
   goToBasket() {
-    this.router.navigate(['/basket']);
+    if (this.user) {
+      this.router.navigate(['/basket']);
+    } else {
+      this.snackbar.show('Vous devez être connecté pour accéder au panier.','info')
+    }
   }
 
   goHome() {

@@ -23,7 +23,7 @@ struct ApiDoc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
+    env_logger::init_from_env(env_logger::Env::default().default_filter_or("info,sqlx=off"));
     if dotenv::dotenv().is_err() {
         warn!("Failed to read .env, falling back to existing env vars");
     }
@@ -36,6 +36,7 @@ async fn main() -> std::io::Result<()> {
     let database_service = services::DatabaseService::build().await.unwrap();
     let s3_service = services::S3Service::build().unwrap();
     let search_service = services::SearchService::build_search().unwrap();
+    let stripe_service = services::StripeService::build().unwrap();
 
     info!("Connecting to Redis session store");
     let redis_store = RedisSessionStore::new(redis_url)
@@ -55,6 +56,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(database_service.clone()))
             .app_data(Data::new(s3_service.clone()))
             .app_data(Data::new(search_service.clone()))
+            .app_data(Data::new(stripe_service.clone()))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
             .service(utoipa_actix_web::scope("/api").configure(routes::config))

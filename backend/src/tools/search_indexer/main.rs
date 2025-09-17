@@ -27,7 +27,7 @@ async fn main() {
 
     // Finalize (fetch tags)
     let products: Vec<_> =
-        futures::future::try_join_all(products.into_iter().map(|p| p.finalize(&db)))
+        futures::future::try_join_all(products.into_iter().map(|p| p.finalize(&db.conn)))
             .await
             .unwrap();
 
