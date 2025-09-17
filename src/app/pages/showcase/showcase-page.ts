@@ -84,19 +84,19 @@ export class ShowcasePage implements OnInit, OnDestroy {
   }
 
   // ---- Loading methods ----
-loadProducts(): void {
-  const filters = this.buildFilters();
-  const sorts = this.buildSorts();
+  loadProducts(): void {
+    const filters = this.buildFilters();
+    const sorts = this.buildSorts();
 
-  const queryParams = this.route.snapshot.queryParamMap;
-  const search = queryParams.get('search') || '';
+    const queryParams = this.route.snapshot.queryParamMap;
+    const search = queryParams.get('search') || '';
 
-  this.productService.search(search, filters || undefined, sorts || undefined, this.pageSize, this.currentPage)
-    .subscribe({
-      next: (products) => this.products = products,
-      error: () => this.snackbar.show('Erreur lors de la récupération des produits', 'error')
-    });
-}
+    this.productService.search(search, filters || undefined, sorts || undefined, this.pageSize, this.currentPage)
+      .subscribe({
+        next: (products) => this.products = products,
+        error: () => this.snackbar.show('Erreur lors de la récupération des produits', 'error')
+      });
+  }
 
 
   loadCategories(): void {
@@ -192,11 +192,12 @@ loadProducts(): void {
   }
 
   onSortsChange({ name, checked }: { name: string; checked: boolean }) {
-    this.sortsState = this.sortsState.map(([opt, state]) =>
-      opt === name ? [opt, checked] : [opt, state]
-    );
+    this.sortsState = this.sortsState.map(([opt]) => [opt, opt === name && checked]);
+
     this.loadProducts();
   }
+
+
 
   addItem(productId: number) {
     const user = this.authStateService.currentUser;
@@ -246,14 +247,7 @@ loadProducts(): void {
   }
 
   private buildSorts(): string {
-    if (!this.sortsState || this.sortsState.length === 0) {
-      return '';
-    }
-
-    const selected = this.sortsState.find(([_, checked]) => checked);
-    if (!selected) return '';
-
-    const [label] = selected;
+    if (!this.sortsState || this.sortsState.length === 0) return '';
 
     const sortMap: { [key: string]: string } = {
       'Nom A-Z': 'name:asc',
@@ -264,7 +258,23 @@ loadProducts(): void {
       'Plus lourd': 'weight:desc',
     };
 
-    return sortMap[label];
+    const selected = this.sortsState.filter(([_, checked]) => checked).map(([label]) => label);
+
+    if (selected.length === 0) return '';
+
+    const fieldMap: { [key: string]: string } = {};
+
+    for (const label of selected) {
+      const [field, direction] = sortMap[label].split(':');
+
+      if (fieldMap[field]) {
+        fieldMap[field] = direction;
+      } else {
+        fieldMap[field] = direction;
+      }
+    }
+
+    return Object.entries(fieldMap).map(([field, dir]) => `${field}:${dir}`).join(',');
   }
 
   resetFilters(): void {
