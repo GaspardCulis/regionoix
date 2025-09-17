@@ -13,6 +13,7 @@ import { BackofficeProducts } from './pages/backoffice-products/backoffice-produ
 import { FormProduct } from './pages/form-product/form-product';
 import { HomePage } from './pages/home-page/home-page';
 import { BackofficeProduct } from './pages/backoffice-product/backoffice-product';
+import { CreateAccount } from './pages/create-account/create-account';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -26,5 +27,6 @@ export const routes: Routes = [
     { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
     { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
     { path: 'products/:id', component: ProductPage },
-    { path: 'home', component: HomePage }
+    { path: 'home', component: HomePage },
+    { path: 'create-account', component: CreateAccount, canActivate: [NoAuthGuard] }
 ];
