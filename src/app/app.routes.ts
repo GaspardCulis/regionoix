@@ -13,7 +13,6 @@ import { BackofficeProducts } from './pages/backoffice-products/backoffice-produ
 import { FormProduct } from './pages/form-product/form-product';
 import { HomePage } from './pages/home-page/home-page';
 import { BackofficeProduct } from './pages/backoffice-product/backoffice-product';
-import { CreateAccount } from './pages/create-account/create-account';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
