@@ -5,6 +5,7 @@ pub mod auth;
 pub mod basket;
 pub mod brands;
 pub mod categories;
+pub mod discounts;
 pub mod health;
 pub mod orders;
 pub mod products;
@@ -23,5 +24,6 @@ pub fn config(cfg: &mut ServiceConfig) {
         .service(scope("/products").configure(products::config))
         .service(scope("/regions").configure(regions::config))
         .service(scope("/orders").configure(orders::config))
-        .service(scope("/tags").configure(tags::config));
+        .service(scope("/tags").configure(tags::config))
+        .service(scope("/discounts").configure(discounts::config));
 }
