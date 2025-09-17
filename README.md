@@ -68,6 +68,11 @@ using the [backend/benchmark.yml](./backend/benchmark.yml) config.
 | 99.5'th percentile        | 76ms           |
 | 99.9'th percentile        | 83ms           |
 
+> NOTE:
+> Failed requests are requests with non 200 status codes.
+> They are deliberate and due to non-authenticated/invalid requests,
+> they still are handled by the server.
+
 These were ran against a 6c Intel Haswell (no TSX) @ 2.399GHz VPS with 11679MiB
 of RAM and SSD storage.
 
