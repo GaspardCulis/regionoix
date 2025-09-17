@@ -4,10 +4,13 @@ import { TopbarComponent } from './utils/component/topbar-component/topbar-compo
 import { SnackbarComponent } from "./utils/component/snackbar-component/snackbar-component";
 import { SnackbarService } from './services/snackbar-service';
 import { BasketStateService } from './services/basket-state-service';
+import { AdminMenu } from "./utils/component/admin-menu-component/admin-menu";
+import { AuthStateService } from './services/auth-state-service';
+import { LoggedUser } from './generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TopbarComponent, SnackbarComponent],
+  imports: [RouterOutlet, TopbarComponent, SnackbarComponent, AdminMenu],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -17,8 +20,11 @@ export class App implements OnInit {
 
   private readonly snackBar = inject(SnackbarService);
   private readonly basketState = inject(BasketStateService);
+  private readonly authState = inject(AuthStateService);
+  user: LoggedUser | null = null;
 
   ngOnInit(): void {
+    this.authState.user$.subscribe((u) => (this.user = u));
     this.basketState.basketCount$.subscribe({
       next: (count) => this.basketItemCount = count,
       error: () => {

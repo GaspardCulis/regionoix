@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '../../services/snackbar-service';
-import { BasketService, ProductDto, ProductsService } from '../../generated/clients/regionoix-client';
+import { BasketService, LoggedUser, ProductDto, ProductsService } from '../../generated/clients/regionoix-client';
+import { BasketStateService } from '../../services/basket-state-service';
+import { AuthStateService } from '../../services/auth-state-service';
 
 @Component({
   selector: 'app-product-page',
@@ -17,9 +19,12 @@ export class ProductPage implements OnInit {
   final_price: number | null = null;
 
   private basketService = inject(BasketService);
+  private basketStateService = inject(BasketStateService);
+  private authStateService = inject(AuthStateService);
   private productService = inject(ProductsService);
   private route = inject(ActivatedRoute);
   private snackbarService = inject(SnackbarService);
+  user: LoggedUser | null = null;
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -41,18 +46,22 @@ export class ProductPage implements OnInit {
     }
   }
 
+
   addItem(productId: number) {
+    const user = this.authStateService.currentUser;
+    if (!user) {
+      this.snackbarService.show('Veuillez vous connecter pour ajouter au panier !', 'error');
+      return;
+    }
+
     this.basketService.add({ product_id: productId, quantity: this.quantity }).subscribe({
       next: () => {
         this.snackbarService.show('Produit ajouté au panier ✅', 'success');
-      },
-      error: (err) => {
-        console.error(err);
-        this.snackbarService.show('Stock insuffisant !', 'error');
+        this.basketStateService.refreshCount();
       }
     });
-
   }
+
 
   increaseQuantity() {
     if (this.product && this.quantity < this.product.stock) {

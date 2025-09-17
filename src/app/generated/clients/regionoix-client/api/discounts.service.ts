@@ -17,7 +17,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { RegionDto } from '../model/regionDto';
+import { DiscountDto } from '../model/discountDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -29,22 +29,22 @@ import { BaseService } from '../api.base.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RegionsService extends BaseService {
+export class DiscountsService extends BaseService {
 
     constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string|string[], @Optional() configuration?: Configuration) {
         super(basePath, configuration);
     }
 
     /**
-     * Returns region list
+     * Returns discounts
      * @param pageSize Number of results in a page. Defaults to all results.
      * @param pageIndex Specific page to fetch; page index starts from zero. Defaults to zero.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public get(pageSize?: number, pageIndex?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RegionDto>>;
-    public get(pageSize?: number, pageIndex?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RegionDto>>>;
-    public get(pageSize?: number, pageIndex?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RegionDto>>>;
+    public get(pageSize?: number, pageIndex?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<DiscountDto>>;
+    public get(pageSize?: number, pageIndex?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<DiscountDto>>>;
+    public get(pageSize?: number, pageIndex?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<DiscountDto>>>;
     public get(pageSize?: number, pageIndex?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -78,9 +78,9 @@ export class RegionsService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/regions`;
+        let localVarPath = `/api/discounts`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<Array<RegionDto>>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<Array<DiscountDto>>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

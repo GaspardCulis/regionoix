@@ -6,13 +6,15 @@ use regionoix::prelude::{sea_orm_active_enums::Roles, *};
 
 mod login;
 mod logout;
+mod register;
 mod status;
 mod utils;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(login::login)
         .service(logout::logout)
-        .service(status::status);
+        .service(status::status)
+        .service(register::register);
 }
 
 #[derive(Debug, Serialize, Deserialize, utoipa::ToSchema)]
