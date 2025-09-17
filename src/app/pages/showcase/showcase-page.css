@@ -8,6 +8,11 @@
     align-content: start;
 }
 
+.product-grid:has(.no-products-message) {
+  display: flex;
+  justify-content: center;
+}
+
 @media (min-width: 640px) {
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -26,6 +31,18 @@
     }
 }
 
+.no-products-message {
+  margin: 2rem auto;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: black;
+  background: #f9fafb;
+  padding: 1rem 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
 .page-container {
     display: grid;
     grid-template-columns: 250px 1fr;
@@ -34,28 +51,6 @@
     background: var(--color-bg);
     color: var(--color-text);
     font-family: system-ui, sans-serif;
-}
-
-/* Navbar */
-.navbar {
-    grid-column: 1 / -1;
-    background: var(--color-primary);
-    color: var(--color-bg);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar .brand {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--color-bg);
-}
-
-.navbar .nav-right {
-    display: flex;
-    gap: 1rem;
 }
 
 /* Sidebar */
@@ -207,4 +202,87 @@
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+/* Conteneur pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.2rem;
+    margin-top: 1.5rem;
+    flex-wrap: nowrap;
+}
+
+/* Label + select */
+.pagination label {
+    font-size: 0.9rem;
+    color: var(--color-accent-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-text-muted);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.pagination select:hover {
+    border-color: var(--color-primary-hover);
+}
+
+/* Boutons pagination */
+.pagination {
+    width: 100%;
+}
+
+.pagination button {
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.pagination button:hover {
+    background-color: var(--color-surface);
+    transform: translateY(-2px);
+}
+
+/* Texte du numéro de page */
+.pagination span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-text-muted);
+    min-width: 60px;
+    text-align: center;
+}
+
+.reset-filters {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.reset-filters button {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s;
+}
+
+.reset-filters button:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.05);
 }

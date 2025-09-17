@@ -1,0 +1,139 @@
+.home-container {
+    padding: 2rem;
+    background-color: var(--color-bg);
+}
+
+.hero {
+    background: url('/assets/noix-banner.jpeg') center/cover no-repeat;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.hero-overlay {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 600px;
+}
+
+.hero-overlay h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.hero-overlay p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-discover {
+    background: var(--color-primary);
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+/* Carrousel */
+.carousel-section {
+    margin-bottom: 3rem;
+}
+
+.carousel-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--color-accent-dark);
+}
+
+.carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+    width: 100%;
+}
+
+.carousel-item {
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    z-index: 10;
+}
+
+.carousel-btn.prev {
+    left: -1rem;
+}
+
+.carousel-btn.next {
+    right: -1rem;
+}
+
+/*Nouveauté & Promotions*/
+.tabs-section {
+    margin: 2rem 0;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.tab {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    color: var(--color-primary);
+    transition: background 0.2s
+}
+
+.tab.active {
+    background: var(--color-primary);
+    border-radius: 8px;
+    color: var(--color-surface)
+}
+
+.products-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}

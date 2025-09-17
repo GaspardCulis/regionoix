@@ -16,6 +16,7 @@ struct FormUpdateQuantityBasket {
 
 #[utoipa::path(
     summary = "Add product to basket of current user",
+    description = "Add product to basket of current user or if already in cart update quantity",
     tag="Basket",
     request_body(content= FormAddToBasket, content_type= "Application/Json"),
     responses(
@@ -67,21 +68,31 @@ async fn add(
         .await?;
 
     if cart_line.is_some() {
-        return Err(crate::Error::BadRequestError(
-            "Product already added to cart, try updating quantity".into(),
-        ));
+        // Update cart line with more quantity
+
+        // Into ActiveModel
+        let mut cart_line: cart_line::ActiveModel = cart_line.unwrap().into();
+        let new_quantity = cart_line.quantity.unwrap() + quantity as i32;
+
+        // Update quantity attribute
+        cart_line.quantity = Set(new_quantity);
+
+        let updated_cart_line = cart_line.update(&db.conn).await?;
+
+        Ok(HttpResponse::Created().json(updated_cart_line))
+    } else {
+        // Insert new cart line
+        let cart_line = cart_line::ActiveModel {
+            cart_id: Set(Some(cart.id)),
+            product_id: Set(form_data.product_id),
+            quantity: Set(quantity),
+            ..Default::default()
+        };
+
+        let res = cart_line.insert(&db.conn).await?;
+
+        Ok(HttpResponse::Created().json(res))
     }
-
-    let cart_line = cart_line::ActiveModel {
-        cart_id: Set(Some(cart.id)),
-        product_id: Set(form_data.product_id),
-        quantity: Set(quantity),
-        ..Default::default()
-    };
-
-    let res = cart_line.insert(&db.conn).await?;
-
-    Ok(HttpResponse::Created().json(res))
 }
 
 #[utoipa::path(
