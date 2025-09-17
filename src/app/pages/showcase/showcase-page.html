@@ -1,6 +1,8 @@
 <div class="page-container">
     <!-- Sidebar + Produits -->
     <aside class="filters">
+
+
         <h3>Filtres</h3>
         <label class="price-filter">
             Prix :
@@ -10,18 +12,6 @@
                 <input type="number" [(ngModel)]="maxPrice" placeholder="Max" min="0" (change)="loadProducts()" />
             </div>
         </label>
-
-        <!-- <fieldset class="availability">
-            <legend>Disponibilité</legend>
-            <label>
-                <input type="checkbox" [(ngModel)]="productAvailable" />
-                En stock
-            </label>
-            <label>
-                <input type="checkbox" [(ngModel)]="productUnavailable" />
-                Rupture
-            </label>
-        </fieldset> -->
 
         <!-- Catégories -->
         <fieldset class="availability">
@@ -58,6 +48,17 @@
                 {{ b.name }}
             </label>
         </fieldset>
+
+        <!--Pagination-->
+        <nav class="pagination">
+            <button (click)="prevPage()" [disabled]="currentPage === 1">⬅ </button>
+            <span>Page {{ currentPage }}</span>
+
+            <button (click)="nextPage()"> ➡</button>
+            <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+                <option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }}</option>
+            </select>
+        </nav>
     </aside>
 
     <main class="product-grid">
@@ -68,4 +69,5 @@
         </app-product-card-component>
 
     </main>
+
 </div>

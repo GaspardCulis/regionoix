@@ -36,28 +36,6 @@
     font-family: system-ui, sans-serif;
 }
 
-/* Navbar */
-.navbar {
-    grid-column: 1 / -1;
-    background: var(--color-primary);
-    color: var(--color-bg);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar .brand {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--color-bg);
-}
-
-.navbar .nav-right {
-    display: flex;
-    gap: 1rem;
-}
-
 /* Sidebar */
 
 @media (max-width: 768px) {
@@ -207,4 +185,65 @@
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+/* Conteneur pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.2rem;
+    margin-top: 1.5rem;
+    flex-wrap: nowrap;
+}
+
+/* Label + select */
+.pagination label {
+    font-size: 0.9rem;
+    color: var(--color-accent-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-text-muted);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.pagination select:hover {
+    border-color: var(--color-primary-hover);
+}
+
+/* Boutons pagination */
+.pagination {
+    width: 100%;
+}
+
+.pagination button {
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.pagination button:hover {
+    background-color: var(--color-surface);
+    transform: translateY(-2px);
+}
+
+/* Texte du numéro de page */
+.pagination span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--color-text-muted);
+    min-width: 60px;
+    text-align: center;
 }

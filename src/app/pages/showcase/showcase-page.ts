@@ -50,6 +50,11 @@ export class ShowcasePage implements OnInit, OnDestroy {
   maxPrice: number | null = null;
   minPrice: number | null = null;
 
+  //pagination variables
+  currentPage = 1;
+  pageSize = 20;
+
+
   ngOnInit(): void {
     this.queryParamSub = this.route.queryParamMap.subscribe(() => this.loadProducts());
     this.loadCategories();
@@ -83,13 +88,17 @@ export class ShowcasePage implements OnInit, OnDestroy {
 
     if (queryParams.has('search')) {
       const search = queryParams.get('search') || '';
-      this.productService.search(search, filters).subscribe({
-        next: (products) => this.products = products,
+      this.productService.search(search, filters, undefined, this.pageSize, this.currentPage).subscribe({
+        next: (products) => {
+          this.products = products;
+        },
         error: () => this.snackbar.show("Erreur lors de la récupération des produits", "error")
       });
     } else {
-      this.productService.search("", filters).subscribe({
-        next: (data) => this.products = data,
+      this.productService.search("", filters, undefined, this.pageSize, this.currentPage).subscribe({
+        next: (data) => {
+          this.products = data;
+        },
         error: () => this.snackbar.show("Erreur lors de la récupération des produits", "error")
       });
     }
@@ -250,4 +259,25 @@ export class ShowcasePage implements OnInit, OnDestroy {
     console.log('API filters:', filterString);
     return filterString;
   }
+
+  onPageSizeChange(): void {
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+
+  nextPage(): void {
+    if (this.products.length >= this.pageSize) {
+      this.currentPage++;
+      this.loadProducts();
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadProducts();
+    }
+  }
+
 }
