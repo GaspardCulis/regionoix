@@ -26,8 +26,12 @@
     ];
 
   virtualisation = {
-    docker.enable = true;
-    oci-containers.backend = "docker";
+    containers.enable = true;
+    podman = {
+      enable = true;
+      # Required for containers to be able to talk to each other.
+      defaultNetwork.settings.dns_enabled = true;
+    };
   };
 
   # SSH

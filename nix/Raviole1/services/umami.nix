@@ -13,14 +13,14 @@ in {
       APP_SECRET=${config.sops.placeholder."umami/app_secret"}
       DATABASE_URL=postgresql://${config.sops.placeholder."umami/db_user"}:${config.sops.placeholder."umami/db_pass"}@umami-db:5432/umami
     '';
-    owner = "docker";
+    owner = "root";
   };
   sops.templates."umami-db.env" = {
     content = ''
       POSTGRES_USER=${config.sops.placeholder."umami/db_user"}
       POSTGRES_PASSWORD=${config.sops.placeholder."umami/db_pass"}
     '';
-    owner = "docker";
+    owner = "root";
   };
 
   services.caddy.virtualHosts."analytics.${domain}".extraConfig = ''
