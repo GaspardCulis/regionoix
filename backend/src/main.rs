@@ -11,17 +11,7 @@ mod error;
 mod routes;
 
 pub use error::*;
-use regionoix::{
-    services::{database::DatabaseService, meilisearch::SearchService, s3::S3Service},
-    utils::get_env_var,
-    *,
-};
-
-pub struct AppState {
-    db: DatabaseService,
-    search: SearchService,
-    s3: S3Service,
-}
+use regionoix::{state::AppState, utils::get_env_var, *};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -43,21 +33,12 @@ async fn main() -> std::io::Result<()> {
     let listen_port: u16 = get_env_var("API_PORT").unwrap();
     let redis_url: String = get_env_var("REDIS_URL").unwrap();
 
-    info!("Connecting to database");
-    let db = DatabaseService::build()
-        .await
-        .expect("failed to build DB service");
+    let app_state = AppState::build().await.unwrap();
 
     info!("Connecting to Redis session store");
     let redis_store = RedisSessionStore::new(redis_url)
         .await
         .expect("Failed to connect to Redis session store");
-
-    info!("Connecting to Meilisearch indexer");
-    let search = SearchService::build_search().expect("failed to build Meilisearch service");
-
-    info!("Connecting to S3 bucket");
-    let s3 = S3Service::build().expect("failed to build S3 service");
 
     info!("Starting server app");
 
@@ -69,11 +50,7 @@ async fn main() -> std::io::Result<()> {
                 redis_store.clone(),
                 Key::from(secret_key.as_bytes()),
             ))
-            .app_data(Data::new(AppState {
-                db: db.clone(),
-                search: search.clone(),
-                s3: s3.clone(),
-            }))
+            .app_data(Data::new(app_state.clone()))
             .into_utoipa_app()
             .openapi(ApiDoc::openapi())
             .service(utoipa_actix_web::scope("/api").configure(routes::config))

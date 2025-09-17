@@ -56,3 +56,89 @@ async fn login(
 
     Ok(HttpResponse::Ok().finish())
 }
+
+#[cfg(test)]
+mod tests {
+    use actix_identity::IdentityMiddleware;
+    use actix_session::{SessionMiddleware, storage::RedisSessionStore};
+    use actix_web::{
+        App,
+        cookie::Key,
+        dev::{ServiceFactory, ServiceRequest, ServiceResponse},
+        http::{StatusCode, header::ContentType},
+        test,
+    };
+    use regionoix::utils::get_env_var;
+
+    use super::*;
+
+    async fn app_setup() -> App<
+        impl ServiceFactory<
+            ServiceRequest,
+            Config = (),
+            Error = actix_web::Error,
+            InitError = (),
+            Response = ServiceResponse,
+        >,
+    > {
+        dotenv::dotenv().unwrap();
+
+        let app_state = AppState::build().await.unwrap();
+
+        let redis_url: String = get_env_var("REDIS_URL").unwrap();
+        info!("Connecting to Redis session store");
+        let redis_store = RedisSessionStore::new(redis_url)
+            .await
+            .expect("Failed to connect to Redis session store");
+
+        App::new()
+            .wrap(IdentityMiddleware::default())
+            .wrap(SessionMiddleware::new(redis_store, Key::generate()))
+            .app_data(web::Data::new(app_state))
+    }
+
+    #[actix_web::test]
+    async fn login_success() {
+        let app = test::init_service(app_setup().await.service(login)).await;
+        let req = test::TestRequest::post()
+            .uri("/login")
+            .insert_header(ContentType::json())
+            .set_json(LoginRequest {
+                email: "testuser@regionoix.fr".into(),
+                password: "testpassword".into(),
+            })
+            .to_request();
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+    }
+
+    #[actix_web::test]
+    async fn login_email_failure() {
+        let app = test::init_service(app_setup().await.service(login)).await;
+        let req = test::TestRequest::post()
+            .uri("/login")
+            .insert_header(ContentType::json())
+            .set_json(LoginRequest {
+                email: "testuser_absent@regionoix.fr".into(),
+                password: "doesnotmatter".into(),
+            })
+            .to_request();
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status() == StatusCode::NOT_FOUND);
+    }
+
+    #[actix_web::test]
+    async fn login_password_failure() {
+        let app = test::init_service(app_setup().await.service(login)).await;
+        let req = test::TestRequest::post()
+            .uri("/login")
+            .insert_header(ContentType::json())
+            .set_json(LoginRequest {
+                email: "testuser@regionoix.fr".into(),
+                password: "wrongpassword".into(),
+            })
+            .to_request();
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status() == StatusCode::UNAUTHORIZED);
+    }
+}
