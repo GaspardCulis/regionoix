@@ -50,8 +50,8 @@ export class BackofficeProducts implements OnInit {
 
   openDeleteModal(product: ProductDto): void {
     this.selectedProduct = product;
-    const modal: any = document.getElementById('delete_modal');
-    if (modal) modal.showModal();
+    const modal = document.getElementById('delete_modal');
+    if (modal instanceof HTMLDialogElement) modal.showModal();
   }
 
   deleteProduct(): void {
