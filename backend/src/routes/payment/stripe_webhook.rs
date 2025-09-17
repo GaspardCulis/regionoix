@@ -74,45 +74,43 @@ pub async fn webhook(
 /// Updates order status to Payed
 async fn handle_successful_payment(
     order: order::Model,
-    txn: &DatabaseTransaction,
+    tnx: &DatabaseTransaction,
 ) -> crate::Result<()> {
     if order.status != OrderStatus::PendingPayment {
         return Err(crate::Error::BadRequestError("order already payed".into()));
     }
-
-    let order_lines = order
-        .find_related(order_line::Entity)
-        .find_also_related(product::Entity)
-        .all(txn)
-        .await?;
-
-    // Decrement stock
-    for (line, product) in order_lines.into_iter() {
-        let product = product.ok_or(crate::Error::InternalError(anyhow::anyhow!(
-            "Failed to find order-line product"
-        )))?;
-
-        // if product stock is not enough rollback
-        if product.stock < line.quantity {
-            return Err(crate::Error::BadRequestError("Not enough stock".into()));
-        }
-
-        let mut product_am: product::ActiveModel = product.into();
-        product_am.stock = Set(product_am.stock.unwrap() - line.quantity);
-        product_am.update(txn).await?;
-    }
-
     // Update order status
     let mut order_am = order.into_active_model();
     order_am.status = Set(OrderStatus::Payed);
-    order_am.update(txn).await?;
+    order_am.update(tnx).await?;
 
     info!("order status updated");
     Ok(())
 }
 
-async fn handle_expired_payment(order: order::Model, _: &DatabaseTransaction) -> crate::Result<()> {
-    info!("order {} payment has expired", order.id);
+/// Re-stocks reserved products
+async fn handle_expired_payment(
+    order: order::Model,
+    tnx: &DatabaseTransaction,
+) -> crate::Result<()> {
+    let order_lines = order
+        .find_related(order_line::Entity)
+        .find_also_related(product::Entity)
+        .all(tnx)
+        .await?;
+
+    // Re-increment stock
+    for (line, product) in order_lines.into_iter() {
+        let product = product.ok_or(crate::Error::InternalError(anyhow::anyhow!(
+            "Failed to find order-line product"
+        )))?;
+
+        let mut product_am: product::ActiveModel = product.into();
+        product_am.stock = Set(product_am.stock.unwrap() - line.quantity);
+        product_am.update(tnx).await?;
+    }
+
+    info!("stock updated");
     Ok(())
 }
 
