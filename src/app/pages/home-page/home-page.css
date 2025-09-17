@@ -109,6 +109,7 @@
 
 .tabs {
     display: flex;
+    justify-content: center;
     gap: 2rem;
     margin-bottom: 1rem;
 }
@@ -131,7 +132,8 @@
 }
 
 .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
+    justify-content: center;
 }
