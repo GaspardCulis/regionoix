@@ -41,8 +41,9 @@ struct FormDataCreateCheckoutSession {
     request_body(content_type="application/json", content=FormDataCreateCheckoutSession),
     responses(
         (
-            status=307,
-            description="Redirect to Stripe payment page",
+            status=200,
+            description="Link to Stripe payment page",
+            body=String,
         ),
         // TODO: Document failure cases
     ),
@@ -53,7 +54,7 @@ pub async fn create_checkout_session(
     stripe: web::Data<StripeService>,
     form_data: web::Json<FormDataCreateCheckoutSession>,
     logged_user: LoggedUser,
-) -> crate::Result<web::Redirect> {
+) -> crate::Result<HttpResponse> {
     let (order, txn) = build_order(&db.conn, &logged_user, &form_data.postal_info).await?;
     let line_items = build_stripe_line_items(&order, &txn, &stripe.client).await?;
 
@@ -99,7 +100,7 @@ pub async fn create_checkout_session(
 
     txn.commit().await?;
 
-    Ok(web::Redirect::to(checkout_session.url.unwrap()).see_other())
+    Ok(HttpResponse::Ok().body(checkout_session.url.unwrap()))
 }
 
 async fn build_order(

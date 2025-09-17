@@ -106,6 +106,9 @@ async fn handle_expired_payment(
         product_am.update(txn).await?;
     }
 
+    // Delete expired order
+    order.into_active_model().delete(txn).await?;
+
     info!("stock updated");
     Ok(())
 }
