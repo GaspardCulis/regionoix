@@ -17,21 +17,23 @@ import { CreateAccount } from './pages/create-account/create-account';
 import { PaymentError } from './pages/payment-error/payment-error';
 import { PaymentSuccessful } from './pages/payment-successful/payment-successful';
 import { BasketNotEmptyGuard } from './services/basket-not-empty-guard';
+import { Cgv } from './pages/cgv/cgv';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'showcase', component: ShowcasePage },
-    { path: 'basket', component: BasketPage, canActivate: [AuthGuard] },
-    { path: 'backoffice', component: BackofficeDashboard, canActivate: [AdminGuard] },
-    { path: 'backoffice/products', component: BackofficeProducts, canActivate: [AdminGuard] },
-    { path: 'backoffice/create-product', component: FormProduct, canActivate: [AdminGuard] },
-    { path: 'backoffice/products/:id', component: BackofficeProduct, canActivate: [AdminGuard] },
-    { path: 'payment', component: PaymentPage, canActivate: [AuthGuard, BasketNotEmptyGuard] },
-    { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
-    { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
-    { path: 'products/:id', component: ProductPage },
-    { path: 'home', component: HomePage },
-    { path: 'create-account', component: CreateAccount, canActivate: [NoAuthGuard] },
-    { path: 'error-payment', component: PaymentError },
-    { path: 'payment-successful', component: PaymentSuccessful }
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'showcase', component: ShowcasePage },
+  { path: 'basket', component: BasketPage, canActivate: [AuthGuard] },
+  { path: 'backoffice', component: BackofficeDashboard, canActivate: [AdminGuard] },
+  { path: 'backoffice/products', component: BackofficeProducts, canActivate: [AdminGuard] },
+  { path: 'backoffice/create-product', component: FormProduct, canActivate: [AdminGuard] },
+  { path: 'backoffice/products/:id', component: BackofficeProduct, canActivate: [AdminGuard] },
+  { path: 'payment', component: PaymentPage, canActivate: [AuthGuard, BasketNotEmptyGuard] },
+  { path: 'connection', component: ConnectionPage, canActivate: [NoAuthGuard] },
+  { path: 'profile', component: ProfilePage, canActivate: [AuthGuard] },
+  { path: 'products/:id', component: ProductPage },
+  { path: 'home', component: HomePage },
+  { path: 'create-account', component: CreateAccount, canActivate: [NoAuthGuard] },
+  { path: 'error-payment', component: PaymentError },
+  { path: 'payment-successful', component: PaymentSuccessful },
+  { path: 'cgv', component: Cgv },
 ];
