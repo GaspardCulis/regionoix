@@ -76,7 +76,7 @@ using the [backend/benchmark.yml](./backend/benchmark.yml) config.
 These were ran against a 6c Intel Haswell (no TSX) @ 2.399GHz VPS with 11679MiB
 of RAM and SSD storage.
 
-The system CPU usage peaked at 46.78% and RAM usage stayed under 1GB.
+The system CPU usage peaked at 46.78% and total system RAM usage stayed under 1GB.
 
 These results show that our system can handle almost 1K req/sec without
 overloading the system while still achieving low latency responses. The Actix
