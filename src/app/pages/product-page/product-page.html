@@ -23,6 +23,11 @@
         <!--Description-->
         <p class="product-description">{{ product.description }}</p>
 
+        <div>
+            <span>@if(product.stock >0){ <span><fa-icon [icon]="faCheck" class="text-success" /> En
+                    stock</span>}@else{<fa-icon [icon]="faXmark" class="text-error" />Rupture de stock }</span>
+        </div>
+
         <!--Complements-->
         <div class="extra-info">
             <p><strong>Poids :</strong> {{ product.weight }} kg</p>
