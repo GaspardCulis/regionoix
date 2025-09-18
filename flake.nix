@@ -100,6 +100,7 @@
           pkg-config
         ];
         buildInputs = with pkgs; [
+          glibc
           openssl
         ];
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath buildInputs;
