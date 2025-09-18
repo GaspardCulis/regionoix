@@ -13,15 +13,15 @@ _High quality French regional products reseller, world-wide._
 
 ## Technologies
 
-| Stack Tier                  | Technologies                                                                                                                                                                                                                                                                                     |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Frontend (Typescript)**   | [Angular](https://angular.dev/) / [TailwindCSS](https://tailwindcss.com/) / [DaisyUI](https://daisyui.com/) / [FontAwesome](https://github.com/FortAwesome/angular-fontawesome) / [OpenAPI generator CLI](https://github.com/OpenAPITools/openapi-generator-cli)                                 |
-| **Backend (Rust)**          | [actix-web](https://actix.rs/) / [sea-orm](https://www.sea-ql.org/SeaORM/) / [utoipa](https://github.com/juhaku/utoipa) / [swagger-ui](https://github.com/juhaku/utoipa/tree/master/utoipa-swagger-ui) / [async-stripe](https://payments.rs/)                                                    |
-| **System Services (NixOS)** | [Garage S3](https://garagehq.deuxfleurs.fr/) / [MeiliSearch](https://www.meilisearch.com/) / [Caddy](https://caddyserver.com) / [Beszel](https://beszel.dev/*) / [Uptime Kuma](https://github.com/louislam/uptime-kuma) / [PostgreSQL](https://www.postgresql.org/) / [Redis](https://redis.io/) |
+| Stack Tier                  | Technologies                                                                                                                                                                                                                                                                                                                 |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend (Typescript)**   | [Angular](https://angular.dev/) / [TailwindCSS](https://tailwindcss.com/) / [DaisyUI](https://daisyui.com/) / [FontAwesome](https://github.com/FortAwesome/angular-fontawesome) / [OpenAPI generator CLI](https://github.com/OpenAPITools/openapi-generator-cli)                                                             |
+| **Backend (Rust)**          | [actix-web](https://actix.rs/) / [sea-orm](https://www.sea-ql.org/SeaORM/) / [utoipa](https://github.com/juhaku/utoipa) / [swagger-ui](https://github.com/juhaku/utoipa/tree/master/utoipa-swagger-ui) / [async-stripe](https://payments.rs/)                                                                                |
+| **System Services (NixOS)** | [Garage S3](https://garagehq.deuxfleurs.fr/) / [MeiliSearch](https://www.meilisearch.com/) / [Caddy](https://caddyserver.com) / [Beszel](https://beszel.dev/*) / [Uptime Kuma](https://github.com/louislam/uptime-kuma) / [Umami](https://umami.is) / [PostgreSQL](https://www.postgresql.org/) / [Redis](https://redis.io/) |
 
 ## Architecture
 
-![Regionoix Architecture Mermaid Chart](https://github.com/user-attachments/assets/b03d7909-d8b8-497d-9b53-9b4056f7a9f2)
+![Regionoix Architecture Mermaid Chart](https://github.com/user-attachments/assets/1afb00ef-43c6-4d61-b709-b2134f12f635)
 
 ## Showcase
 
@@ -68,10 +68,9 @@ using the [backend/benchmark.yml](./backend/benchmark.yml) config.
 | 99.5'th percentile        | 76ms           |
 | 99.9'th percentile        | 83ms           |
 
-> NOTE:
-> Failed requests are requests with non 200 status codes.
-> They are deliberate and due to non-authenticated/invalid requests,
-> they still are handled by the server.
+> NOTE: Failed requests are requests with non 200 status codes. They are
+> deliberate and due to non-authenticated/invalid requests, they still are
+> handled by the server.
 
 These were ran against a 6c Intel Haswell (no TSX) @ 2.399GHz VPS with 11679MiB
 of RAM and SSD storage.
