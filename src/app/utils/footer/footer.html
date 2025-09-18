@@ -1,14 +1,19 @@
-<footer class="footer footer-center p-4 bg-primary">
-  <div>
-    <p class="text-sm">
-      © <span id="year">2025</span> Les Crustacés
-      <span class="mx-2">·</span>
-      <a
-        [routerLink]="['/cgv']"
-        class="link-cgv"
-        aria-label="Consulter les Conditions Générales de Vente"
-        >CGV</a
-      >
+<footer class="footer footer-horizontal footer-center bg-primary text-primary-content p-6">
+  <aside>
+    <img src="https://www.rustacean.net/favicon.png" width="50" height="50" alt="Regionoix logo">
+    <p class="font-bold">
+      Les Crustacés Ltd.
+      <br />
+      Providing reliable tech since 2003
     </p>
-  </div>
+    <p>Copyright © 2025
+    <span class="mx-2">·</span>
+    <a
+      [routerLink]="['/cgv']"
+      class="link-cgv"
+      aria-label="Consulter les Conditions Générales de Vente"
+      >CGV</a
+    >
+    </p>
+  </aside>
 </footer>
