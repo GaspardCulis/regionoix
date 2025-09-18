@@ -1,18 +1,19 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TopbarComponent } from './utils/component/topbar-component/topbar-component';
-import { SnackbarComponent } from "./utils/component/snackbar-component/snackbar-component";
+import { SnackbarComponent } from './utils/component/snackbar-component/snackbar-component';
 import { SnackbarService } from './services/snackbar-service';
 import { BasketStateService } from './services/basket-state-service';
-import { AdminMenu } from "./utils/component/admin-menu-component/admin-menu";
+import { AdminMenu } from './utils/component/admin-menu-component/admin-menu';
 import { AuthStateService } from './services/auth-state-service';
 import { LoggedUser } from './generated/clients/regionoix-client';
+import { Footer } from './utils/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TopbarComponent, SnackbarComponent, AdminMenu],
+  imports: [RouterOutlet, TopbarComponent, SnackbarComponent, AdminMenu, Footer],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App implements OnInit {
   basketItemCount = 0;
@@ -26,11 +27,11 @@ export class App implements OnInit {
   ngOnInit(): void {
     this.authState.user$.subscribe((u) => (this.user = u));
     this.basketState.basketCount$.subscribe({
-      next: (count) => this.basketItemCount = count,
+      next: (count) => (this.basketItemCount = count),
       error: () => {
         this.snackBar.show('Erreur lors de la récupération du panier.', 'error');
         this.basketItemCount = 0;
-      }
+      },
     });
     this.basketState.refreshCount();
   }

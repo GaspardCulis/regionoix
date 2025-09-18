@@ -1,20 +1,27 @@
 <div class="topbar">
-    <app-topbar pathLogo="assets/logo.webp" title="Regionoix" [basketCount]="basketItemCount" />
+  <app-topbar pathLogo="assets/logo.webp" title="Regionoix" [basketCount]="basketItemCount" />
 </div>
 
 @if (user && user.role === "Admin"){
 <div class="flex min-h-screen">
-    <!-- Sidebar -->
-    <app-admin-menu></app-admin-menu>
+  <!-- Sidebar -->
+  <app-admin-menu></app-admin-menu>
 
-    <!-- Content -->
-    <div class="flex-1 overflow-y-auto">
-        <router-outlet></router-outlet>
-    </div>
+  <!-- Content -->
+  <div class="flex-1 overflow-y-auto">
+    <router-outlet></router-outlet>
+  </div>
 </div>
+<app-footer />
 
 }@else {
-<router-outlet></router-outlet>
+<div class="flex min-h-screen">
+  <div class="flex-1 overflow-y-auto">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<app-footer />
+
 }
 
 <app-snackbar />
