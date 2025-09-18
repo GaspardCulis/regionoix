@@ -91,7 +91,15 @@ async fn upload(
         .to_str()
         .ok_or(crate::Error::BadRequestError(
             "invalid image file name encoding".into(),
-        ))?;
+        ))?
+        .to_ascii_lowercase();
+    // Validate allowed image extensions
+    let allowed_exts = ["jpg", "jpeg", "png", "webp"];
+    if !allowed_exts.contains(&image_ext.as_str()) {
+        return Err(crate::Error::BadRequestError(
+            format!("unsupported image file extension: {}", image_ext).into(),
+        ));
+    }
     let image_name = format!("{}.{}", Uuid::new_v4(), image_ext);
 
     info!(
