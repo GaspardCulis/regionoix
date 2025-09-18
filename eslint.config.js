@@ -40,5 +40,5 @@ module.exports = tseslint.config(
     ],
     rules: {},
   },
-  { ignores: ["node_modules/**", "src/app/generated/**"] },
+  { ignores: ["node_modules/**", "src/app/generated/**", "src/app/**/*spec.ts"] },
 );
