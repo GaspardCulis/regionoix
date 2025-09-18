@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SnackbarService } from '../../services/snackbar-service';
@@ -32,7 +32,7 @@ export class PaymentPage implements OnInit {
   private readonly paymentService = inject(PaymentService);
   private readonly snackBarService = inject(SnackbarService);
 
-  openSection: string = 'info';
+  openSection = 'info';
 
   ngOnInit(): void {
     this.authService.status().subscribe({
