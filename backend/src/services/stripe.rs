@@ -1,4 +1,5 @@
 use stripe::Client;
+use tracing::info;
 
 use crate::utils::get_env_var;
 
@@ -10,6 +11,8 @@ pub struct StripeService {
 
 impl StripeService {
     pub fn build() -> anyhow::Result<Self> {
+        info!("Building StripeService");
+
         let secrets = StripeSecrets::load()?;
 
         let client = Client::new(secrets.api_key.clone());

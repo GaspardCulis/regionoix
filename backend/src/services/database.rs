@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
 use sea_orm::*;
+use tracing::info;
 
 use crate::utils::get_env_var;
 
@@ -11,6 +12,7 @@ pub struct DatabaseService {
 
 impl DatabaseService {
     pub async fn build() -> anyhow::Result<Self> {
+        info!("Connecting to DatabaseService");
         let secrets = DatabaseSecrets::load()?;
 
         let db = Database::connect(&secrets.database_url).await?;

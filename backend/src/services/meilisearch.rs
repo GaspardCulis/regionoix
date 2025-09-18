@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
 use meilisearch_sdk::client::Client;
+use tracing::info;
 
 use crate::utils::get_env_var;
 
@@ -9,6 +10,7 @@ pub struct SearchService(Client);
 
 impl SearchService {
     pub fn build_search() -> anyhow::Result<Self> {
+        info!("Building SearchService");
         let secrets = MeiliSecrets::load()?;
 
         let search = Client::new(secrets.api_url, Some(secrets.search_api_key))?;

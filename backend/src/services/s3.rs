@@ -1,4 +1,5 @@
 use rusty_s3::{Bucket, Credentials};
+use tracing::info;
 
 use crate::utils::get_env_var;
 
@@ -11,6 +12,8 @@ pub struct S3Service {
 
 impl S3Service {
     pub fn build() -> anyhow::Result<Self> {
+        info!("Building S3Service");
+
         let secrets = S3Secrets::load()?;
 
         let api_bucket = Bucket::new(
