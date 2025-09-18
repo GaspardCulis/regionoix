@@ -3,7 +3,8 @@ use regionoix::{
     utils::get_header_value,
 };
 use sea_orm::{
-    ActiveValue::Set, DatabaseTransaction, IntoActiveModel as _, TransactionTrait as _, prelude::*,
+    ActiveValue::Set, DatabaseTransaction, IntoActiveModel as _, QueryOrder, QuerySelect,
+    TransactionTrait as _, prelude::*,
 };
 use stripe::*;
 use tracing::error;
@@ -89,9 +90,12 @@ async fn handle_expired_payment(
     order: order::Model,
     txn: &DatabaseTransaction,
 ) -> crate::Result<()> {
+    // Get order lines ordered by product to avoid deadlock
     let order_lines = order
         .find_related(order_line::Entity)
         .find_also_related(product::Entity)
+        .order_by_asc(order_line::Column::ProductId)
+        .lock_exclusive()
         .all(txn)
         .await?;
 
