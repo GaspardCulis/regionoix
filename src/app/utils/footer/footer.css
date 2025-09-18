@@ -1,0 +1,12 @@
+.link-cgv {
+  color: white !important;
+}
+
+.link-cgv:hover {
+  color: white !important;
+  text-decoration: underline !important;
+}
+
+.footer {
+  color: white !important;
+}
