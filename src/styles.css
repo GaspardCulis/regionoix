@@ -61,4 +61,6 @@ body {
 button[disabled] {
     cursor: not-allowed !important;
     pointer-events: all !important;
+    background-color: var(--color-bg-disable) !important;
+    color: var(--color-content-disable) !important;
 }
