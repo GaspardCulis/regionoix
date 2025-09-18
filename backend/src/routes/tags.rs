@@ -2,8 +2,6 @@ use crate::{dtos::tag::TagDto, prelude::*};
 use regionoix::utils::PaginateQuery;
 use sea_orm::EntityTrait;
 
-use crate::AppState;
-
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get);
 }
@@ -24,10 +22,9 @@ pub fn config(cfg: &mut ServiceConfig) {
 )]
 #[get("")]
 pub async fn get(
+    db: web::Data<DatabaseService>,
     query: web::Query<PaginateQuery>,
-    data: web::Data<AppState>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let tags: Vec<TagDto> = query.paginate(Tag::find().into_dto(), &db.conn).await?;
 
     Ok(HttpResponse::Ok().json(tags))

@@ -5,8 +5,6 @@ use regionoix::{prelude::*, utils::get_env_var};
 use reqwest::Client;
 use rusty_s3::S3Action as _;
 
-use crate::AppState;
-
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(health);
 }
@@ -22,13 +20,15 @@ pub fn config(cfg: &mut ServiceConfig) {
     ),
 )]
 #[get("")]
-async fn health(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
+async fn health(
+    db: web::Data<DatabaseService>,
+    s3: web::Data<S3Service>,
+    search: web::Data<SearchService>,
+) -> crate::Result<HttpResponse> {
     // Database connection check
-    let db = &data.db;
     db.ping().await?;
 
     // S3 connection check
-    let s3 = &data.s3;
     let client = Client::new();
     let action = s3.api_bucket.list_objects_v2(Some(&s3.credentials));
     let url = action.sign(Duration::from_secs(300));
@@ -36,7 +36,6 @@ async fn health(data: web::Data<AppState>) -> crate::Result<HttpResponse> {
     let _ = resp.text().await?;
 
     // Meilisearch conn check
-    let search = &data.search;
     let health = search.health().await.map_err(|e| anyhow::Error::from(e))?;
     if health.status != "available" {
         return Err(crate::Error::InternalError(anyhow::anyhow!(

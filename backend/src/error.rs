@@ -1,6 +1,7 @@
 use std::num::ParseIntError;
 
 use actix_web::{ResponseError, http::StatusCode};
+use stripe::StripeError;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -17,6 +18,8 @@ pub enum Error {
     },
     #[error("failed to parse: {0}")]
     ParseIntFailure(#[from] ParseIntError),
+    #[error("failed to process payment: {0}")]
+    PaymentError(#[from] StripeError),
     #[error("authentication failed: password mismatch")]
     AuthenticationFailure,
     #[error("unauthenticated")]

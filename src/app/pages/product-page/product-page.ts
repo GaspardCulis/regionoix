@@ -5,11 +5,14 @@ import { SnackbarService } from '../../services/snackbar-service';
 import { BasketService, LoggedUser, ProductDto, ProductsService } from '../../generated/clients/regionoix-client';
 import { BasketStateService } from '../../services/basket-state-service';
 import { AuthStateService } from '../../services/auth-state-service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
+import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-product-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   templateUrl: './product-page.html',
   styleUrls: ['./product-page.css']
 })
@@ -17,6 +20,11 @@ export class ProductPage implements OnInit {
   product!: ProductDto;
   quantity = 1;
   final_price: number | null = null;
+
+  faXmark = faXmark;
+
+  faCheck = faCheck;
+
 
   private basketService = inject(BasketService);
   private basketStateService = inject(BasketStateService);
@@ -50,7 +58,7 @@ export class ProductPage implements OnInit {
   addItem(productId: number) {
     const user = this.authStateService.currentUser;
     if (!user) {
-      this.snackbarService.show('Veuillez vous connecter pour ajouter au panier !', 'error');
+      this.snackbarService.show('Vous devez être connecté pour ajouter au panier.', 'info');
       return;
     }
 

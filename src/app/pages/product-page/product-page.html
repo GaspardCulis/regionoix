@@ -23,6 +23,11 @@
         <!--Description-->
         <p class="product-description">{{ product.description }}</p>
 
+        <div>
+            <span>@if(product.stock >0){ <span><fa-icon [icon]="faCheck" class="text-success" /> En
+                    stock</span>}@else{<fa-icon [icon]="faXmark" class="text-error" />Rupture de stock }</span>
+        </div>
+
         <!--Complements-->
         <div class="extra-info">
             <p><strong>Poids :</strong> {{ product.weight }} kg</p>
@@ -44,7 +49,8 @@
                 <button class="qty-btn" id="decrease" (click)="decreaseQuantity()">-</button>
                 <span id="quantity">{{ quantity }}</span>
                 <button class="qty-btn" id="increase" (click)="increaseQuantity()">+</button>
-                <button class="add-btn" (click)="addItem(product.id)">Ajouter au panier</button>
+                <button class="add-btn" (click)="addItem(product.id)" [disabled]="product.stock <= 0">Ajouter au
+                    panier</button>
             </div>
         </div>
     </div>

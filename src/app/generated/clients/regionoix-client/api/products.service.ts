@@ -246,7 +246,7 @@ export class ProductsService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/productsdiscounts`;
+        let localVarPath = `/api/products/discounts`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<Array<ProductDto>>('get', `${basePath}${localVarPath}`,
             {

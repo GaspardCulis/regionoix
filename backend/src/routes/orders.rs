@@ -1,6 +1,6 @@
 use crate::dtos::order::OrderDto;
 use crate::prelude::*;
-use crate::{AppState, routes::auth::LoggedUser};
+use crate::routes::auth::LoggedUser;
 use chrono::Utc;
 use regionoix::utils::PaginateQuery;
 use sea_orm::{ColumnTrait, EntityTrait as _, QueryFilter};
@@ -25,12 +25,10 @@ pub fn config(cfg: &mut ServiceConfig) {
 )]
 #[get("")]
 pub async fn get(
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
     query: web::Query<PaginateQuery>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-
     let orders: Vec<OrderDto> = query
         .paginate(
             Order::find()
@@ -65,11 +63,10 @@ pub async fn get(
 )]
 #[get("/in-progress")]
 pub async fn get_in_progress(
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
     query: web::Query<PaginateQuery>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let today = Utc::now().date_naive();
 
     let orders: Vec<OrderDto> = query
@@ -107,11 +104,10 @@ pub async fn get_in_progress(
 )]
 #[get("/past")]
 pub async fn get_past(
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
     query: web::Query<PaginateQuery>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
     let today = Utc::now().date_naive();
 
     let orders: Vec<OrderDto> = query

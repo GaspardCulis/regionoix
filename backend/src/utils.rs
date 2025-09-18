@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
+use actix_web::HttpRequest;
 use anyhow::anyhow;
 use sea_orm::{ConnectionTrait, DbErr, PaginatorTrait, Selector, SelectorTrait};
 use serde::Deserialize;
@@ -45,4 +46,8 @@ where
         .map_err(|_| anyhow!("Failed to get {} env var", env_var_name))?;
     var.parse::<T>()
         .map_err(|e| anyhow!("Failed to parse {}: {:?}", env_var_name, e))
+}
+
+pub fn get_header_value<'b>(req: &'b HttpRequest, key: &'b str) -> Option<&'b str> {
+    req.headers().get(key)?.to_str().ok()
 }

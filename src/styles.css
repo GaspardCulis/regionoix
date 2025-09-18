@@ -33,6 +33,8 @@
     --color-warning: #fcb700;
 
     --color-warning-content: #40322d;
+    --color-bg-disable: #dbd4d4;
+    --color-content-disable: #9b999a;
 
     /* Couleurs secondaires */
     --color-secondary: #bfa38a;
@@ -54,4 +56,11 @@
 body {
     margin: 0;
     font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+button[disabled] {
+    cursor: not-allowed !important;
+    pointer-events: all !important;
+    background-color: var(--color-bg-disable) !important;
+    color: var(--color-content-disable) !important;
 }

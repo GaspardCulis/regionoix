@@ -2,8 +2,10 @@
     <!-- Sidebar + Produits -->
     <aside class="filters">
 
-
         <h3>Filtres</h3>
+        <app-filter-dropdown-component title="Tri" [selectedOptions]="sortsState"
+            (optionToggled)="onSortsChange($event)"></app-filter-dropdown-component>
+
         <label class="price-filter">
             Prix :
             <div class="inputs">
@@ -14,40 +16,25 @@
         </label>
 
         <!-- Catégories -->
-        <fieldset class="availability">
-            <legend>Catégories</legend>
-            <label *ngFor="let c of categories">
-                <input type="checkbox" [value]="c.name" (change)="toggleCategory(c.name, $event.target.checked)" />
-                {{ c.name }}
-            </label>
-        </fieldset>
+        <app-filter-dropdown-component title="Catégories" [selectedOptions]="categoriesState"
+            (optionToggled)="onCategoriesChange($event)"></app-filter-dropdown-component>
 
         <!-- Régions -->
-        <fieldset class="availability">
-            <legend>Régions</legend>
-            <label *ngFor="let r of regions">
-                <input type="checkbox" [value]="r.name" (change)="toggleRegion(r.name, $event.target.checked)" />
-                {{ r.name }}
-            </label>
-        </fieldset>
+        <app-filter-dropdown-component title="Régions" [selectedOptions]="regionsState"
+            (optionToggled)="onRegionsChange($event)"></app-filter-dropdown-component>
 
         <!-- Propriétés -->
-        <fieldset class="availability">
-            <legend>Propriétés</legend>
-            <label *ngFor="let t of tags">
-                <input type="checkbox" [value]="t.name" (change)="toggleTag(t.name, $event.target.checked)" />
-                {{ t.name }}
-            </label>
-        </fieldset>
+        <app-filter-dropdown-component title="Propriétés" [selectedOptions]="propertiesState"
+            (optionToggled)="onTagChange($event)"></app-filter-dropdown-component>
 
         <!--Brands-->
-        <fieldset class="availability">
-            <legend>Marques</legend>
-            <label *ngFor="let b of brands">
-                <input type="checkbox" [value]="b.name" (change)="toggleBrand(b.name, $event.target.checked)" />
-                {{ b.name }}
-            </label>
-        </fieldset>
+        <app-filter-dropdown-component title="Marques" [selectedOptions]="brandsState"
+            (optionToggled)="onBrandsChange($event)"></app-filter-dropdown-component>
+
+        <!--Reset Filters-->
+        <div class="reset-filters">
+            <button (click)="resetFilters()">Réinitialiser les filtres</button>
+        </div>
 
         <!--Pagination-->
         <nav class="pagination">
@@ -63,10 +50,16 @@
 
     <main class="product-grid">
 
+        @if (products.length === 0) {
+        <div class="no-products-message">
+            <p> Aucun produit ne correspond à votre recherche </p>
+        </div>
+        } @else {
         <app-product-card-component *ngFor="let product of products" [id]="product.id" [name]="product.name"
             [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
-            [price]="product.price" (addToBasket)="addItem($event)">
+            [price]="product.price" [stock]="product.stock" (addToBasket)="addItem($event)">
         </app-product-card-component>
+        }
 
     </main>
 
