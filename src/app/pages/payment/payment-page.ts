@@ -62,6 +62,12 @@ export class PaymentPage implements OnInit {
   }
 
   submitAll() {
+    if (!this.address.lastname || !this.address.firstname ||
+      !this.address.street || !this.address.city ||
+      !this.address.postal_code || !this.address.country) {
+      this.snackBarService.show('Veuillez remplir tous les champs requis.', 'info');
+      return;
+    }
     const checkoutInterface: FormDataCreateCheckoutSession = {
       cancel_url: window.location.origin + "/error-payment",
       postal_info: this.address,
