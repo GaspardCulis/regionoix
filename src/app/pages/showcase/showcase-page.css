@@ -1,11 +1,11 @@
 .product-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    margin: 0 auto;
-    padding: 1rem;
-    align-items: start;
-    align-content: start;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin: 0 auto;
+  padding: 1rem;
+  align-items: start;
+  align-content: start;
 }
 
 .product-grid:has(.no-products-message) {
@@ -14,21 +14,21 @@
 }
 
 @media (min-width: 640px) {
-    .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 768px) {
-    .product-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (min-width: 1024px) {
-    .product-grid {
-        grid-template-columns: repeat(6, 1fr);
-    }
+  .product-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 .no-products-message {
@@ -44,225 +44,225 @@
 }
 
 .page-container {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    grid-template-rows: auto 1fr;
-    min-height: 100vh;
-    background: var(--color-bg);
-    color: var(--color-text);
-    font-family: system-ui, sans-serif;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
 }
 
 /* Sidebar */
 
 @media (max-width: 768px) {
-    .page-container {
-        grid-template-columns: 1fr;
-    }
+  .page-container {
+    grid-template-columns: 1fr;
+  }
 
-    .filters {
-        grid-row: 2;
-        border-right: none;
-        border-top: 2px solid var(--color-accent);
-        border-radius: 0;
-    }
+  .filters {
+    grid-row: 2;
+    border-right: none;
+    border-top: 2px solid var(--color-accent);
+    border-radius: 0;
+  }
 }
 
 .filters {
-    background: var(--color-surface);
-    padding: 1rem;
-    border-right: 1px solid var(--color-accent);
-    border-radius: 0 8px 8px 0;
+  background: var(--color-surface);
+  padding: 1rem;
+  border-right: 1px solid var(--color-accent);
+  border-radius: 0 8px 8px 0;
+  min-height: 100vh;
 }
 
 .filters h3 {
-    margin-bottom: 1rem;
-    color: var(--color-accent-dark);
+  margin-bottom: 1rem;
+  color: var(--color-accent-dark);
 }
 
 .filters label {
-    display: block;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
 }
 
 .price-filter {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .price-filter .inputs {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .price-filter input {
-    width: 80px;
-    padding: 5px;
-    border: 1px solid var(--color-text-muted);
-    border-radius: 4px;
+  width: 80px;
+  padding: 5px;
+  border: 1px solid var(--color-text-muted);
+  border-radius: 4px;
 }
 
 .availability {
-    border: 1px solid var(--color-text-muted);
-    border-radius: 6px;
-    padding: 10px 15px;
-    margin: 15px 0;
-    background: var(--color-bg);
+  border: 1px solid var(--color-text-muted);
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin: 15px 0;
+  background: var(--color-bg);
 }
 
 .availability legend {
-    font-weight: 600;
-    color: var(--color-text-muted);
-    margin-bottom: 8px;
-    padding: 0 5px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+  padding: 0 5px;
 }
 
 .availability label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 5px 0;
-    cursor: pointer;
-    font-size: 0.95rem;
-    color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 5px 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
 }
 
-.availability input[type="checkbox"] {
-    accent-color: var(--color-primary);
-    /* couleur native moderne */
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
+.availability input[type='checkbox'] {
+  accent-color: var(--color-primary);
+  /* couleur native moderne */
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
 .filters input,
 .filters select {
-    width: 100%;
-    padding: 0.4rem;
-    margin-top: 0.3rem;
-    border: 1px solid var(--color-primary-light);
-    border-radius: 6px;
-    background: var(--color-bg);
-    color: var(--color-text);
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 0.3rem;
+  border: 1px solid var(--color-primary-light);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .dropdown {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .dropbtn {
-    background: var(--color-bg);
-    color: var(--color-primary);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    border: none;
-    font-weight: bold;
-    transition: background 0.2s;
+  background: var(--color-bg);
+  color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+  transition: background 0.2s;
 }
 
 .dropbtn:hover {
-    background: var(--color-primary-hover);
-    color: var(--color-bg);
+  background: var(--color-primary-hover);
+  color: var(--color-bg);
 }
 
 .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 110%;
-    left: 0;
-    background: var(--color-surface);
-    min-width: 180px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    z-index: 10;
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: var(--color-surface);
+  min-width: 180px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
 }
 
 .dropdown-content button {
-    display: block;
-    width: 100%;
-    padding: 0.6rem 1rem;
-    background: none;
-    border: none;
-    text-align: left;
-    color: var(--color-text);
-    cursor: pointer;
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--color-text);
+  cursor: pointer;
 }
 
 .dropdown-content button:hover {
-    background: var(--color-accent);
-    color: var(--color-accent-dark);
+  background: var(--color-accent);
+  color: var(--color-accent-dark);
 }
 
-
 .dropdown:hover .dropdown-content {
-    display: block;
+  display: block;
 }
 
 /* Conteneur pagination */
 .pagination {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.2rem;
-    margin-top: 1.5rem;
-    flex-wrap: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.2rem;
+  margin-top: 1.5rem;
+  flex-wrap: nowrap;
 }
 
 /* Label + select */
 .pagination label {
-    font-size: 0.9rem;
-    color: var(--color-accent-dark);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-accent-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .pagination select {
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid var(--color-text-muted);
-    cursor: pointer;
-    transition: border-color 0.2s;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.2s;
 }
 
 .pagination select:hover {
-    border-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
 /* Boutons pagination */
 .pagination {
-    width: 100%;
+  width: 100%;
 }
 
 .pagination button {
-    background-color: var(--color-surface);
-    color: var(--color-primary);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s, transform 0.1s;
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .pagination button:hover {
-    background-color: var(--color-surface);
-    transform: translateY(-2px);
+  background-color: var(--color-surface);
+  transform: translateY(-2px);
 }
 
 /* Texte du numéro de page */
 .pagination span {
-    font-size: 1rem;
-    font-weight: bold;
-    color: var(--color-text-muted);
-    min-width: 60px;
-    text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-text-muted);
+  min-width: 60px;
+  text-align: center;
 }
 
 .reset-filters {
