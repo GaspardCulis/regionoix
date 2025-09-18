@@ -13,7 +13,7 @@ import { AuthentificationService, BasketService, CartDto, FormDataCreateCheckout
   styleUrls: ['./payment-page.css']
 })
 export class PaymentPage implements OnInit {
-  @Input() totalPrice!: number;
+  totalPrice!: number;
   client!: LoggedUser;
   basket!: CartDto;
 
@@ -32,7 +32,7 @@ export class PaymentPage implements OnInit {
   private readonly paymentService = inject(PaymentService);
   private readonly snackBarService = inject(SnackbarService);
 
-  openSection: string = 'info'; // default open accordion section
+  openSection: string = 'info';
 
   ngOnInit(): void {
     this.authService.status().subscribe({
@@ -51,6 +51,7 @@ export class PaymentPage implements OnInit {
     this.basketService.get().subscribe({
       next: (basket) => {
         this.basket = basket;
+        this.totalPrice = this.totalBasketPrice;
       },
       error: () => this.snackBarService.show('Erreur lors du chargement du panier.', 'error')
     });
@@ -81,4 +82,11 @@ export class PaymentPage implements OnInit {
     if (product.discount) return (product.price * (100 - product.discount.percentage_off)) / 100;
     else return product.price;
   }
+
+  get totalBasketPrice(): number {
+    return this.basket?.lines?.reduce((total, line) =>
+      total + this.getProductPrice(line.product) * line.quantity, 0
+    ) ?? 0;
+  }
+
 }
