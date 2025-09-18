@@ -1,20 +1,18 @@
-use crate::{AppState, prelude::*, routes::auth::LoggedUser};
+use crate::{prelude::*, routes::auth::LoggedUser};
 use actix_web::web;
 use regionoix::dtos::cart::CartDto;
 use sea_orm::prelude::*;
 
 mod count;
 mod items;
-mod order;
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get)
+        .service(empty)
+        .service(count::get)
         .service(items::add)
         .service(items::update_quantity)
-        .service(items::remove)
-        .service(empty)
-        .service(order::make)
-        .service(count::get);
+        .service(items::remove);
 }
 
 #[utoipa::path(
@@ -29,8 +27,10 @@ pub fn config(cfg: &mut ServiceConfig) {
       ),
 ))]
 #[get("")]
-async fn get(data: web::Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
-    let db = &data.db;
+async fn get(
+    db: web::Data<DatabaseService>,
+    logged_user: LoggedUser,
+) -> crate::Result<HttpResponse> {
     let basket = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
         .into_dto::<CartDto>()
@@ -57,9 +57,10 @@ async fn get(data: web::Data<AppState>, logged_user: LoggedUser) -> crate::Resul
     ),
 )]
 #[delete("")]
-async fn empty(data: web::Data<AppState>, logged_user: LoggedUser) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-
+async fn empty(
+    db: web::Data<DatabaseService>,
+    logged_user: LoggedUser,
+) -> crate::Result<HttpResponse> {
     let cart = cart::Entity::find()
         .filter(cart::Column::UserId.eq(logged_user.id))
         .one(&db.conn)

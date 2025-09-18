@@ -7,8 +7,6 @@ use regionoix::{
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use utoipa::IntoParams;
 
-use crate::AppState;
-
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(search);
 }
@@ -48,11 +46,9 @@ struct SearchQuery {
 #[get("/products")]
 async fn search(
     query: web::Query<SearchQuery>,
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
+    search: web::Data<SearchService>,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-    let search = &data.search;
-
     let search_results = search
         .index("products")
         .search()

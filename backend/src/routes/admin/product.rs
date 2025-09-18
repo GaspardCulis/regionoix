@@ -13,7 +13,7 @@ use sea_orm::{
 };
 use utoipa::PartialSchema;
 
-use crate::{AppState, prelude::*, routes::auth::LoggedUser};
+use crate::{prelude::*, routes::auth::LoggedUser};
 
 const SIGN_DURATION: Duration = Duration::from_secs(300);
 
@@ -69,14 +69,10 @@ struct UploadForm {
 #[post("/upload")]
 async fn upload(
     MultipartForm(mut form): MultipartForm<UploadForm>,
-    data: web::Data<AppState>,
+    db: web::Data<DatabaseService>,
+    s3: web::Data<S3Service>,
     logged_user: LoggedUser,
 ) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-    let bucket = &data.s3.api_bucket;
-    let web_bucket = &data.s3.web_bucket;
-    let credentials = &data.s3.credentials;
-
     if logged_user.role != Roles::Admin {
         return Err(crate::Error::Unauthorized);
     }
@@ -92,7 +88,7 @@ async fn upload(
         "Beginning uploading {} for product '{}'",
         image_name, form.meta.name
     );
-    let action = CreateMultipartUpload::new(&bucket, Some(&credentials), &image_name);
+    let action = CreateMultipartUpload::new(&s3.api_bucket, Some(&s3.credentials), &image_name);
     let url = action.sign(SIGN_DURATION);
     let resp = client.post(url).send().await?.error_for_status()?;
     let body = resp.text().await?;
@@ -106,8 +102,8 @@ async fn upload(
     );
 
     let part_upload = UploadPart::new(
-        &bucket,
-        Some(&credentials),
+        &s3.api_bucket,
+        Some(&s3.credentials),
         &image_name,
         1,
         multipart.upload_id(),
@@ -135,8 +131,8 @@ async fn upload(
     debug!("etag: {}", etag.to_str().unwrap());
 
     let action = CompleteMultipartUpload::new(
-        &bucket,
-        Some(&credentials),
+        &s3.api_bucket,
+        Some(&s3.credentials),
         &image_name,
         multipart.upload_id(),
         iter::once(etag.to_str().unwrap()),
@@ -153,7 +149,8 @@ async fn upload(
 
     info!("Upload successful!");
 
-    let upload_url = web_bucket
+    let upload_url = s3
+        .web_bucket
         .object_url(&image_name)
         .map_err(|e| anyhow::Error::new(e))?;
 
