@@ -7,7 +7,7 @@ use regionoix::{
 };
 use sea_orm::{
     ActiveValue::{NotSet, Set},
-    DatabaseTransaction, IntoActiveModel, QueryOrder as _, QuerySelect as _, TransactionTrait as _,
+    DatabaseTransaction, QueryOrder as _, QuerySelect as _, TransactionTrait as _,
     prelude::*,
 };
 use stripe::*;
@@ -119,7 +119,7 @@ async fn build_order(
         })?;
 
     // Get cart lines ordered to avoid deadlock
-    let cart_lines = cart
+    let cart_lines: Vec<cart_line::Model> = cart
         .find_related(cart_line::Entity)
         .order_by_asc(cart_line::Column::ProductId)
         .all(&txn)
@@ -135,9 +135,8 @@ async fn build_order(
     // Create Order lines
     for cl in cart_lines {
         // Lock on the read of product to avoid dirty read
-        let (product, discount) = product::Entity::find_by_id(cl.product_id)
+        let product = product::Entity::find_by_id(cl.product_id)
             .lock_exclusive()
-            .find_also_related(discount::Entity)
             .one(&txn)
             .await?
             .ok_or(crate::Error::EntityNotFound {
@@ -155,11 +154,12 @@ async fn build_order(
         order_lines.push(ol);
 
         // Total
-        total_price += if let Some(discount) = discount {
-            product.price * cl.quantity as f32 * (1.0 - discount.percentage_off as f32 / 100.0)
-        } else {
-            product.price * cl.quantity as f32
-        };
+        total_price +=
+            if let Some(discount) = product.find_related(discount::Entity).one(&txn).await? {
+                product.price * cl.quantity as f32 * (1.0 - discount.percentage_off as f32 / 100.0)
+            } else {
+                product.price * cl.quantity as f32
+            };
 
         // if product stock is not enough rollback
         if product.stock < cl.quantity {
@@ -168,7 +168,7 @@ async fn build_order(
         }
 
         // Decrement stock
-        let mut product_am = product.into_active_model();
+        let mut product_am: product::ActiveModel = product.into();
         product_am.stock = Set(product_am.stock.unwrap() - cl.quantity);
         product_am.update(&txn).await?;
     }
