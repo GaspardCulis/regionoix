@@ -28,6 +28,8 @@ pub enum Error {
     Unauthorized,
     #[error("bad request: {0}")]
     BadRequestError(String),
+    #[error("conflict")]
+    Conflict,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

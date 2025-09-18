@@ -103,7 +103,7 @@ pub async fn get_discounts(
 
 #[utoipa::path(
     summary="Delete product by id",
-    description="Product and its orders are deleted. Please refer to database schema to learn on cascade actions.",
+    description="Product and its orders are deleted if product does not appear in carts or orders. Please refer to database schema to learn on cascade actions.",
     tag="Products",
     params(("id" = i32, Path, description = "Product id")),
     responses(
@@ -111,6 +111,10 @@ pub async fn get_discounts(
             status=200,
             description="Product successfully deleted",
             body=String
+        ),
+         (
+            status=409,
+            description="Product could not be deleted because of its presence in orders or carts",
         ),
     ),
 )]
@@ -120,6 +124,25 @@ pub async fn delete_by_id(
     db: web::Data<DatabaseService>,
 ) -> crate::Result<HttpResponse> {
     let id: i32 = req.match_info().query("id").parse()?;
+
+    // Check if product exists in cart lines or order lines
+    // Throw error if product in cart lines or order lines
+    let cart_lines = cart_line::Entity::find()
+        .filter(cart_line::Column::ProductId.eq(id))
+        .all(&db.conn)
+        .await?;
+
+    if !cart_lines.is_empty() {
+        return Err(crate::Error::Conflict);
+    }
+    let order_lines = order_line::Entity::find()
+        .filter(order_line::Column::ProductId.eq(id))
+        .all(&db.conn)
+        .await?;
+
+    if !order_lines.is_empty() {
+        return Err(crate::Error::Conflict);
+    }
 
     Product::delete_by_id(id).exec(&db.conn).await?;
 
