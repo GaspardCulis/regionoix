@@ -28,21 +28,21 @@
       <ng-container *ngIf="activeTab === 'promotion'">
         <app-product-card-component *ngFor="let product of promotionalProducts" [id]="product.id" [name]="product.name"
           [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
-          [price]="product.price" (addToBasket)="addItem($event)">
+          [price]="product.price" [stock]="product.stock" (addToBasket)="addItem($event)">
         </app-product-card-component>
       </ng-container>
 
       <ng-container *ngIf="activeTab === 'nouveaute'">
         <app-product-card-component *ngFor="let product of newProducts" [id]="product.id" [name]="product.name"
           [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
-          [price]="product.price" (addToBasket)="addItem($event)">
+          [price]="product.price" [stock]="product.stock" (addToBasket)="addItem($event)">
         </app-product-card-component>
       </ng-container>
 
       <ng-container *ngIf="activeTab === 'bestSellers'">
         <app-product-card-component *ngFor="let product of bestProducts" [id]="product.id" [name]="product.name"
           [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
-          [price]="product.price" (addToBasket)="addItem($event)">
+          [price]="product.price" [stock]="product.stock" (addToBasket)="addItem($event)">
         </app-product-card-component>
       </ng-container>
     </div>

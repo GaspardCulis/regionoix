@@ -57,3 +57,10 @@ body {
     margin: 0;
     font-family: "Mona Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+button[disabled] {
+    cursor: not-allowed !important;
+    pointer-events: all !important;
+    background-color: var(--color-bg-disable) !important;
+    color: var(--color-content-disable) !important;
+}

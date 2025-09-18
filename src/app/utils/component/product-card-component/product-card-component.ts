@@ -16,6 +16,7 @@ export class ProductCardComponent implements OnInit {
   @Input() price!: number;
   @Input() id!: number;
   @Input() discount: number | null = null;
+  @Input() stock!: number;
   final_price: number | null = null;
 
   @Output() addToBasket = new EventEmitter<number>();
