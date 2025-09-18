@@ -60,7 +60,7 @@
 .subtotal {
     font-weight: bold;
     font-size: 0.95rem;
-    color: var(--color-accent-dark);
+    color: var(--color-text);
 }
 
 .details {
