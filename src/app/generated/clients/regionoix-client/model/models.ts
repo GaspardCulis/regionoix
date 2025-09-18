@@ -7,7 +7,6 @@ export * from './countBasket';
 export * from './discountDto';
 export * from './formAddToBasket';
 export * from './formDataCreateCheckoutSession';
-export * from './formDataMakeOrder';
 export * from './formUpdateQuantityBasket';
 export * from './loggedUser';
 export * from './loginRequest';

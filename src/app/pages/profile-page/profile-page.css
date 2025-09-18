@@ -138,6 +138,9 @@ input {
 
 /* Commandes */
 .order-card {
+  cursor: pointer;
+  display: block;
+  width: 100%;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -147,7 +150,6 @@ input {
 }
 
 .order-card h3 {
-  margin: 0 0 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -165,7 +167,7 @@ input {
   margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   border-radius: 12px;
-  border: 1px solid transparent; 
+  border: 1px solid transparent;
 }
 
 .order-header.delivered {
@@ -219,9 +221,11 @@ input {
 .order-status.pending .dot {
   background-color: orange;
 }
+
 .order-status.delivered .dot {
   background-color: green;
 }
+
 .order-status.cancelled .dot {
   background-color: red;
 }
@@ -246,6 +250,7 @@ input {
 .cancel-btn:hover {
   background: #ffcccc;
 }
+
 .orders-container {
   max-height: 400px;
   overflow-y: auto;
@@ -269,4 +274,3 @@ input {
 .orders-container::-webkit-scrollbar-track {
   background: transparent;
 }
-
