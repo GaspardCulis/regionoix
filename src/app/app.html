@@ -3,12 +3,12 @@
 </div>
 
 @if (user && user.role === "Admin"){
-<div class="flex h-100vh">
+<div class="flex min-h-screen">
     <!-- Sidebar -->
     <app-admin-menu></app-admin-menu>
 
     <!-- Content -->
-    <div class="flex-1 overflow-y-auto h-screen">
+    <div class="flex-1 overflow-y-auto">
         <router-outlet></router-outlet>
     </div>
 </div>
