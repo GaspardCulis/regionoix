@@ -5,7 +5,7 @@ pkgs.buildNpmPackage {
 
   src = ../../..;
 
-  npmDepsHash = "sha256-x3aqnQZiOEXv6KKC7LC+IVH/cSJEL9zvF9VZp/HKwXk=";
+  npmDepsHash = "sha256-M8gJPRVK6kWt41mGNxLERSt7zudJU3YstB0u2981SNU=";
   npmBuildScript = "build";
 
   installPhase = ''
