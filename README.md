@@ -21,7 +21,7 @@ _High quality French regional products reseller, world-wide._
 
 ## Architecture
 
-![Regionoix Architecture Mermaid Chart](https://github.com/user-attachments/assets/b03d7909-d8b8-497d-9b53-9b4056f7a9f2)
+![Regionoix Architecture Mermaid Chart](https://github.com/user-attachments/assets/1afb00ef-43c6-4d61-b709-b2134f12f635)
 
 ## Showcase
 
