@@ -29,7 +29,6 @@ model/countBasket.ts
 model/discountDto.ts
 model/formAddToBasket.ts
 model/formDataCreateCheckoutSession.ts
-model/formDataMakeOrder.ts
 model/formUpdateQuantityBasket.ts
 model/loggedUser.ts
 model/loginRequest.ts
