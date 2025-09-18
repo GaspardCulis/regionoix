@@ -1,69 +1,50 @@
 <div class="home-container">
+  <!-- Banner Hero -->
+  <section class="hero">
+    <div class="hero-overlay bg-secondary">
+      <h1>Bienvenue sur Regionoix</h1>
+      <p>Découvrez nos produits locaux et promotions exclusives !</p>
+      <button class="btn-discover" (click)="goToShowcase()">Découvrir</button>
+    </div>
+  </section>
 
-    <!-- Banner Hero -->
-    <section class="hero">
-        <div class="hero-overlay">
-            <h1>Bienvenue sur Regionoix</h1>
-            <p>Découvrez nos produits locaux et promotions exclusives !</p>
-            <button class="btn-discover" (click)="goToShowcase()">Découvrir</button>
-        </div>
-    </section>
+  <div class="bottom"></div>
 
-    <!-- Carrousel promotions -->
-    <section class="carousel-section">
-        <h2>Best-sellers</h2>
-        <div class="carousel-wrapper">
-            <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
+  <!-- Nouveautés, Promotions & Best-sellers-->
+  <section class="tabs-section">
+    <div class="tabs">
+      <button class="tab" [class.active]="activeTab === 'promotion'" (click)="activeTab = 'promotion'">
+        En promotion
+      </button>
+      <button class="tab" [class.active]="activeTab === 'nouveaute'" (click)="activeTab = 'nouveaute'">
+        Nouveautés
+      </button>
+      <button class="tab" [class.active]="activeTab === 'bestSellers'" (click)="activeTab = 'bestSellers'">
+        Best-sellers
+      </button>
+    </div>
 
-            <div class="carousel-track" [style.transform]="getTransform()">
-                <div *ngFor="let product of bestProducts" class="carousel-item">
-                    <div class="hero">
-                        <div class="hero-content flex-col lg:flex-row items-center justify-center gap-6">
-                            <button (click)="goToProduct(product.id)"><img
-                                    [src]="product.image ?? '/assets/default.png'" [alt]="product.name"
-                                    class="max-w-sm rounded-lg shadow-2xl cursor-pointer" /></button>
-                            <div class="text-center lg:text-left">
-                                <h1 class="text-5xl font-bold">{{ product.name }}</h1>
-                                <p class="py-6">{{ product.description }}</p>
-                                <button class="btn btn-primary" (click)="goToProduct(product.id)">Voir le
-                                    produit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="products-grid">
+      <ng-container *ngIf="activeTab === 'promotion'">
+        <app-product-card-component *ngFor="let product of promotionalProducts" [id]="product.id" [name]="product.name"
+          [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
+          [price]="product.price" (addToBasket)="addItem($event)">
+        </app-product-card-component>
+      </ng-container>
 
-            <button class="carousel-btn next" (click)="nextSlide()">›</button>
-        </div>
-    </section>
+      <ng-container *ngIf="activeTab === 'nouveaute'">
+        <app-product-card-component *ngFor="let product of newProducts" [id]="product.id" [name]="product.name"
+          [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
+          [price]="product.price" (addToBasket)="addItem($event)">
+        </app-product-card-component>
+      </ng-container>
 
-
-    <!-- Nouveautés & Promotions-->
-    <section class="tabs-section">
-        <div class="tabs">
-            <button class="tab" [class.active]="activeTab === 'promotion'" (click)="activeTab = 'promotion'">
-                En promotion
-            </button>
-            <button class="tab" [class.active]="activeTab === 'nouveaute'" (click)="activeTab = 'nouveaute'">
-                Nouveautés
-            </button>
-        </div>
-
-        <div class="products-grid">
-            <ng-container *ngIf="activeTab === 'promotion'">
-                <app-product-card-component *ngFor="let product of promotionalProducts" [id]="product.id"
-                    [name]="product.name" [image]="product.image ?? '/assets/default.png'"
-                    [discount]="product.discount?.percentage_off ?? null" [price]="product.price">
-                </app-product-card-component>
-            </ng-container>
-
-            <ng-container *ngIf="activeTab === 'nouveaute'">
-                <app-product-card-component *ngFor="let product of newProducts" [id]="product.id" [name]="product.name"
-                    [image]="product.image ?? '/assets/default.png'"
-                    [discount]="product.discount?.percentage_off ?? null" [price]="product.price">
-                </app-product-card-component>
-            </ng-container>
-        </div>
-    </section>
-
+      <ng-container *ngIf="activeTab === 'bestSellers'">
+        <app-product-card-component *ngFor="let product of bestProducts" [id]="product.id" [name]="product.name"
+          [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
+          [price]="product.price" (addToBasket)="addItem($event)">
+        </app-product-card-component>
+      </ng-container>
+    </div>
+  </section>
 </div>
