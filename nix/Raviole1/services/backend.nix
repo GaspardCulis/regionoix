@@ -81,8 +81,8 @@ in {
   systemd.timers.regionoix-search-indexer = {
     wantedBy = ["timers.target"];
     timerConfig = {
-      OnBootSec = "5m";
-      OnUnitActiveSec = "5m";
+      OnBootSec = "1m";
+      OnUnitActiveSec = "1m";
       Unit = "regionoix-search-indexer.service";
     };
   };
