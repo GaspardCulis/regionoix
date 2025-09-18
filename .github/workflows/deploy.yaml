@@ -9,10 +9,9 @@ jobs:
     environment: Nix deployment
     steps:
     - uses: actions/checkout@v4
-    - uses: wimpysworld/nothing-but-nix@main
+    - uses: cachix/install-nix-action@v31
       with:
-        hatchet-protocol: 'rampage'
-    - uses: DeterminateSystems/determinate-nix-action@main
+          nix_path: nixpkgs=channel:nixos-25.05
     - name: Set up SSH key
       run: |
           mkdir -p ~/.ssh
@@ -20,7 +19,8 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "Deploying to ${{ vars.DEPLOY_HOST }}"
           ssh-keyscan -p 22 ${{ vars.DEPLOY_HOST }} >> ~/.ssh/known_hosts
-          echo "SetEnv PATH=/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /etc/ssh/sshd_config
+    - name: Fix SSH env
+      run: echo "SetEnv PATH=/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /etc/ssh/sshd_config
     - name: Deploy to Raviole1 with deploy-rs
       shell: 'nix develop -c bash -e {0}'
       run: deploy .#Raviole1
