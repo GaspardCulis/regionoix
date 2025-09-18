@@ -20,6 +20,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "Deploying to ${{ vars.DEPLOY_HOST }}"
           ssh-keyscan -p 22 ${{ vars.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          echo "SetEnv PATH=/nix/var/nix/profiles/default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /etc/ssh/sshd_config
     - name: Deploy to Raviole1 with deploy-rs
       shell: 'nix develop -c bash -e {0}'
       run: deploy .#Raviole1
