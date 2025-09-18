@@ -12,7 +12,6 @@ pub struct StripeService {
 impl StripeService {
     pub fn build() -> anyhow::Result<Self> {
         info!("Building StripeService");
-
         let secrets = StripeSecrets::load()?;
 
         let client = Client::new(secrets.api_key.clone());

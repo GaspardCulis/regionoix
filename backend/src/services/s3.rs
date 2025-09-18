@@ -13,7 +13,6 @@ pub struct S3Service {
 impl S3Service {
     pub fn build() -> anyhow::Result<Self> {
         info!("Building S3Service");
-
         let secrets = S3Secrets::load()?;
 
         let api_bucket = Bucket::new(
