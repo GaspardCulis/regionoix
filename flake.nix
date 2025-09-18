@@ -94,6 +94,7 @@
           deploy-rs.packages."${system}".deploy-rs
           sops
           sops-nix.packages."${system}".sops-install-secrets
+          ssh
         ];
         nativeBuildInputs = with pkgs; [
           rust
