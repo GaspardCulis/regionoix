@@ -25,8 +25,6 @@ import { CountBasket } from '../model/countBasket';
 // @ts-ignore
 import { FormAddToBasket } from '../model/formAddToBasket';
 // @ts-ignore
-import { FormDataMakeOrder } from '../model/formDataMakeOrder';
-// @ts-ignore
 import { FormUpdateQuantityBasket } from '../model/formUpdateQuantityBasket';
 
 // @ts-ignore
@@ -47,16 +45,17 @@ export class BasketService extends BaseService {
 
     /**
      * Add product to basket of current user
+     * Add product to basket of current user or if already in cart update quantity
      * @param formAddToBasket 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addItem(formAddToBasket: FormAddToBasket, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CartLineDto>;
-    public addItem(formAddToBasket: FormAddToBasket, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CartLineDto>>;
-    public addItem(formAddToBasket: FormAddToBasket, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CartLineDto>>;
-    public addItem(formAddToBasket: FormAddToBasket, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public add(formAddToBasket: FormAddToBasket, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CartLineDto>;
+    public add(formAddToBasket: FormAddToBasket, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CartLineDto>>;
+    public add(formAddToBasket: FormAddToBasket, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CartLineDto>>;
+    public add(formAddToBasket: FormAddToBasket, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (formAddToBasket === null || formAddToBasket === undefined) {
-            throw new Error('Required parameter formAddToBasket was null or undefined when calling addItem.');
+            throw new Error('Required parameter formAddToBasket was null or undefined when calling add.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -114,14 +113,15 @@ export class BasketService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public empty(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public empty(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public empty(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public empty(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public empty(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<string>;
+    public empty(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
+    public empty(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
+    public empty(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -145,7 +145,7 @@ export class BasketService extends BaseService {
 
         let localVarPath = `/api/basket`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
+        return this.httpClient.request<string>('delete', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -163,10 +163,10 @@ export class BasketService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getBasket(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CartDto>;
-    public getBasket(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CartDto>>;
-    public getBasket(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CartDto>>;
-    public getBasket(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public get(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CartDto>;
+    public get(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CartDto>>;
+    public get(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CartDto>>;
+    public get(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -214,10 +214,10 @@ export class BasketService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getCount(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CountBasket>;
-    public getCount(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CountBasket>>;
-    public getCount(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CountBasket>>;
-    public getCount(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public get_1(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CountBasket>;
+    public get_1(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CountBasket>>;
+    public get_1(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CountBasket>>;
+    public get_1(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -260,81 +260,17 @@ export class BasketService extends BaseService {
     }
 
     /**
-     * Make order from current user\&#39;s basket
-     * @param formDataMakeOrder 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public makeOrder(formDataMakeOrder: FormDataMakeOrder, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<string>;
-    public makeOrder(formDataMakeOrder: FormDataMakeOrder, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
-    public makeOrder(formDataMakeOrder: FormDataMakeOrder, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
-    public makeOrder(formDataMakeOrder: FormDataMakeOrder, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (formDataMakeOrder === null || formDataMakeOrder === undefined) {
-            throw new Error('Required parameter formDataMakeOrder was null or undefined when calling makeOrder.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            'text/plain'
-        ]);
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-        const localVarTransferCache: boolean = options?.transferCache ?? true;
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'Application/Json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/api/basket/order`;
-        const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<string>('post', `${basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                body: formDataMakeOrder,
-                responseType: <any>responseType_,
-                ...(withCredentials ? { withCredentials } : {}),
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
      * Remove product from current user\&#39;s basket
      * @param productId Product id
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public removeItem(productId: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<string>;
-    public removeItem(productId: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
-    public removeItem(productId: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
-    public removeItem(productId: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public remove(productId: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<string>;
+    public remove(productId: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
+    public remove(productId: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
+    public remove(productId: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (productId === null || productId === undefined) {
-            throw new Error('Required parameter productId was null or undefined when calling removeItem.');
+            throw new Error('Required parameter productId was null or undefined when calling remove.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -384,15 +320,15 @@ export class BasketService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateItemQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CartLineDto>;
-    public updateItemQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CartLineDto>>;
-    public updateItemQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CartLineDto>>;
-    public updateItemQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CartLineDto>;
+    public updateQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CartLineDto>>;
+    public updateQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CartLineDto>>;
+    public updateQuantity(productId: number, formUpdateQuantityBasket: FormUpdateQuantityBasket, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (productId === null || productId === undefined) {
-            throw new Error('Required parameter productId was null or undefined when calling updateItemQuantity.');
+            throw new Error('Required parameter productId was null or undefined when calling updateQuantity.');
         }
         if (formUpdateQuantityBasket === null || formUpdateQuantityBasket === undefined) {
-            throw new Error('Required parameter formUpdateQuantityBasket was null or undefined when calling updateItemQuantity.');
+            throw new Error('Required parameter formUpdateQuantityBasket was null or undefined when calling updateQuantity.');
         }
 
         let localVarHeaders = this.defaultHeaders;

@@ -25,7 +25,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sea-orm = { version = "1.1", features = [
   "sqlx-postgres",
-  "runtime-async-std-native-tls",
+  "runtime-actix-rustls",
   "macros",
 ] }
 anyhow = "1.0"
@@ -34,6 +34,7 @@ thiserror = "2.0"
 argon2 = "0.5"
 actix-session = { version = "0.11", features = ["redis-session"] }
 actix-identity = "0.9"
+actix-multipart = "0.7"
 
 tracing-actix-web = "0.7"
 tracing = "0.1"
@@ -46,4 +47,16 @@ chrono = "0.4"
 
 tokio = { version = "1.47", features = ["full"] }
 meilisearch-sdk = "0.29"
-futures = "0.3.31"
+futures = "0.3"
+rusty-s3 = "0.8"
+reqwest = "0.12"
+
+async-stripe = { version = "0.41", features = ["runtime-tokio-hyper-rustls"] }
+
+[dev-dependencies]
+sea-orm = { version = "1.1", features = [
+  "sqlx-postgres",
+  "sqlx-sqlite",
+  "runtime-async-std-native-tls",
+  "macros",
+] }

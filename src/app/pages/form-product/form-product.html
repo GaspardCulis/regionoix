@@ -1,0 +1,136 @@
+<div class="flex-1 p-6 bg-base-100 h-screen">
+  <button class="btn btn-link text-gray-600 no-underline p-0 font-medium" (click)="onBack()">
+    <fa-icon [icon]="faArrowLeft" /> Retour aux produits
+  </button>
+
+  <h1 class="text-xl font-bold">Créer un nouveau produit</h1>
+
+  <div class="divider"></div>
+  <div class="p-4 mx-auto">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 mb-4">
+        <div class="sm:col-span-2">
+          <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom du produit <span
+              class="text-red-500">*</span></label>
+          <input type="text" formControlName="name" id="name"
+            class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+          @if (hasTriedSubmit && productForm.controls.name.invalid) {
+          <p class="text-sm text-red-500">
+            Le nom du produit est requis, il doit faire au minimum 3 caractères.
+          </p>
+          }
+        </div>
+        <div class="w-full">
+          <label for="brand" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Marque <span
+              class="text-red-500">*</span></label>
+          <select id="brand" formControlName="brand"
+            class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+            <option value="">Sélectionner une marque</option>
+            @for (brand of brands; track brand.id) {
+            <option value="{{ brand.id }}">{{ brand.name }}</option>
+            }
+          </select>
+
+          @if (hasTriedSubmit && productForm.controls.brand.invalid) {
+          <p class="text-sm text-red-500">La marque est requise.</p>
+          }
+        </div>
+        <div class="w-full">
+          <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix (€) <span
+              class="text-red-500">*</span></label>
+          <input type="number" formControlName="price" id="price" min="0.01"
+            class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+          @if (hasTriedSubmit && productForm.controls.price.invalid) {
+          <p class="text-sm text-red-500">Le prix est requis, il doit être positif.</p>
+          }
+        </div>
+
+        <div class="w-full">
+          <label for="region" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Région <span
+              class="text-red-500">*</span></label>
+          <select id="region"
+            class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            formControlName="region">
+            <option value="">Sélectionner une région</option>
+            @for (reg of regions; track reg.id) {
+            <option value="{{ reg.id }}">{{ reg.name }}</option>
+            }
+          </select>
+
+          @if (hasTriedSubmit && productForm.controls.region.invalid) {
+          <p class="text-sm text-red-500">La région est requise.</p>
+          }
+        </div>
+        <div>
+          <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Catégorie <span
+              class="text-red-500">*</span></label>
+          <select id="category"
+            class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            formControlName="category">
+            <option value="">Sélectionner une catégorie</option>
+            @for (cat of categories; track cat.id) {
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+            }
+          </select>
+
+          @if (hasTriedSubmit && productForm.controls.category.invalid) {
+          <p class="text-sm text-red-500">La catégorie est requise.</p>
+          }
+        </div>
+        <div>
+          <label for="item-weight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Poids
+            (kg)</label>
+          <input type="number" min="0.010" formControlName="weight"
+            class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+        </div>
+
+        <div>
+          <label for="item-stock" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock <span
+              class="text-red-500">*</span></label>
+          <input type="number" min="0" formControlName="stock"
+            class="bg-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+          @if (hasTriedSubmit && productForm.controls.stock.invalid) {
+          <p class="text-sm text-red-500">Le stock est requis.</p>
+          }
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image <span
+              class="text-red-500">*</span></label>
+          <input type="file" class="file-input" accept="image/*" (change)="onUploadImage($event)" />
+          @if (hasTriedSubmit && productForm.controls.image.invalid) {
+          <p class="text-sm text-red-500">Veuillez uploader une image.</p>
+          }
+        </div>
+        <div class="sm:col-span-2">
+          <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description
+          </label>
+          <textarea formControlName="description" id="description" rows="8"
+            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-500 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"></textarea>
+        </div>
+
+        <div>
+          <label for="" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Propriétés</label>
+          <div>
+            @for (tag of tags; track tag.id) {
+            <input class="btn" type="checkbox" name="tags" aria-label="{{ tag.name }}" value="{{ tag.id }}"
+              (change)="onCheckChangeTag($event)" [checked]="isTagSelected(tag.id)" />
+
+            }
+            <input class="btn btn-square" type="button" value="×" (click)="onResetTags()" />
+          </div>
+        </div>
+      </div>
+
+      @if(hasTriedSubmit && productForm.invalid){
+      <div role="alert" class="alert alert-error mb-4">
+        <fa-icon [icon]="faCircleXmark" />
+        <span>Le formulaire est invalide. Veuillez remplir les champs obligatoires marqués par un
+          astérisque.</span>
+      </div>
+      }
+
+      <button type="submit" class="btn btn-success">Ajouter le produit</button>
+    </form>
+  </div>
+</div>

@@ -17,8 +17,6 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { Model } from '../model/model';
-// @ts-ignore
 import { ProductDto } from '../model/productDto';
 
 // @ts-ignore
@@ -38,14 +36,77 @@ export class ProductsService extends BaseService {
     }
 
     /**
-     * Returns product list
+     * Delete product by id
+     * Product and its orders are deleted. Please refer to database schema to learn on cascade actions.
+     * @param id Product id
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public get(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Model>;
-    public get(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Model>>;
-    public get(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Model>>;
-    public get(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public deleteById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<string>;
+    public deleteById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
+    public deleteById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
+    public deleteById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling deleteById.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'text/plain'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/products/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<string>('delete', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Returns product list
+     * @param pageSize Number of results in a page. Defaults to all results.
+     * @param pageIndex Specific page to fetch; page index starts from zero. Defaults to zero.
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public get(pageSize?: number, pageIndex?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ProductDto>>;
+    public get(pageSize?: number, pageIndex?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ProductDto>>>;
+    public get(pageSize?: number, pageIndex?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ProductDto>>>;
+    public get(pageSize?: number, pageIndex?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageSize, 'page_size');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageIndex, 'page_index');
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -74,9 +135,10 @@ export class ProductsService extends BaseService {
 
         let localVarPath = `/api/products`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<Model>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<Array<ProductDto>>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -142,17 +204,78 @@ export class ProductsService extends BaseService {
     }
 
     /**
-     * Search for products
-     * @param query The raw search query
-     * @param filters Search filters in this example form: &#x60;id &gt; 1 AND genres &#x3D; Action&#x60;. The list of filterable attributes is &#x60;[\&quot;weight\&quot;, \&quot;price\&quot;, \&quot;categories\&quot;, \&quot;tags\&quot;]&#x60;. See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
-     * @param sort Sort by some specific attribute in the format &#x60;attribute:method&#x60; where &#x60;method: asc | desc&#x60;. Ex: &#x60;price:asc&#x60;. The list of sortable attributes is &#x60;[\&quot;name\&quot;, \&quot;price\&quot;]&#x60;. See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
+     * Returns product with discount list
+     * @param pageSize Number of results in a page. Defaults to all results.
+     * @param pageIndex Specific page to fetch; page index starts from zero. Defaults to zero.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public search(query: string, filters?: string, sort?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ProductDto>>;
-    public search(query: string, filters?: string, sort?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ProductDto>>>;
-    public search(query: string, filters?: string, sort?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ProductDto>>>;
-    public search(query: string, filters?: string, sort?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getDiscounts(pageSize?: number, pageIndex?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ProductDto>>;
+    public getDiscounts(pageSize?: number, pageIndex?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ProductDto>>>;
+    public getDiscounts(pageSize?: number, pageIndex?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ProductDto>>>;
+    public getDiscounts(pageSize?: number, pageIndex?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageSize, 'page_size');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageIndex, 'page_index');
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/products/discounts`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Array<ProductDto>>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Search for products
+     * @param query The raw search query
+     * @param filters Search filters in this example form: &#x60;id &gt; 1 AND genres &#x3D; Action&#x60;. The list of filterable attributes is &#x60;[\&quot;weight\&quot;, \&quot;price\&quot;, \&quot;categories\&quot;, \&quot;tags\&quot;, \&quot;brand_name\&quot;, \&quot;region_name\&quot;]&#x60;. See the [Meilisearch filter expression reference](https://www.meilisearch.com/docs/learn/filtering_and_sorting/filter_expression_reference#filter-expression-reference) for more info.
+     * @param sort Sort by some specific attribute in the format &#x60;attribute:method&#x60; where &#x60;method: asc | desc&#x60;. Ex: &#x60;price:asc&#x60;. The list of sortable attributes is &#x60;[\&quot;name\&quot;, \&quot;price\&quot;, \&quot;weight\&quot;]&#x60;. See the [Meilisearch sorting API](https://www.meilisearch.com/docs/reference/api/search#sort) for more info.
+     * @param pageSize Number of results per page in a search. Defaults to 128 results.
+     * @param pageIndex Specific page to fetch; page index starts from 1. Defaults to 1.
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ProductDto>>;
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ProductDto>>>;
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ProductDto>>>;
+    public search(query: string, filters?: string, sort?: string, pageSize?: number, pageIndex?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (query === null || query === undefined) {
             throw new Error('Required parameter query was null or undefined when calling search.');
         }
@@ -164,6 +287,10 @@ export class ProductsService extends BaseService {
           <any>filters, 'filters');
         localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
           <any>sort, 'sort');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageSize, 'page_size');
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageIndex, 'page_index');
 
         let localVarHeaders = this.defaultHeaders;
 

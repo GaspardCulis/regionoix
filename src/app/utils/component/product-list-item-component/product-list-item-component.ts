@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Product } from '../../../models/product-model';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ProductDto } from '../../../generated/clients/regionoix-client';
 
 @Component({
   selector: 'app-product-list-item-component',
@@ -9,9 +9,11 @@ import { Product } from '../../../models/product-model';
   templateUrl: './product-list-item-component.html',
   styleUrl: './product-list-item-component.css'
 })
-export class ProductListItemComponent {
-  @Input() product!: Product;
+export class ProductListItemComponent implements OnInit {
+
+  @Input() product!: ProductDto;
   @Input() quantity!: number;
+  final_price: number | null = null;
 
   @Output() removeFromBasket = new EventEmitter<number>();
   @Output() quantityChange = new EventEmitter<{ productId: number, quantity: number }>();
@@ -33,6 +35,13 @@ export class ProductListItemComponent {
       this.quantity--;
     }
     this.quantityChange.emit({ productId: this.product.id, quantity: this.quantity });
+  }
+
+  ngOnInit(): void {
+    // Compute final price  
+    if (this.product && this.product.discount) {
+      this.final_price = this.product.price - (this.product.price * this.product.discount.percentage_off) / 100;
+    }
   }
 }
 

@@ -1,10 +1,11 @@
 use sea_orm::{
-    DbErr, DerivePartialModel, EntityTrait, JoinType, ModelTrait, QuerySelect as _,
-    RelationTrait as _,
+    ConnectionTrait, DbErr, DerivePartialModel, EntityTrait, JoinType, ModelTrait,
+    QuerySelect as _, RelationTrait as _,
 };
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use crate::dtos::discount::DiscountDto;
 use crate::dtos::{DtoTrait, PartialDto};
 use crate::dtos::{brand::BrandDto, category::CategoryDto, region::RegionDto, tag::TagDto};
 use crate::prelude::*;
@@ -28,6 +29,8 @@ pub struct ProductDto {
     #[sea_orm(skip)]
     /// Won't be fectched unless `finalize` is called.
     pub tags: Option<Vec<TagDto>>,
+    #[sea_orm(nested)]
+    pub discount: Option<DiscountDto>,
 }
 
 impl DtoTrait for ProductDto {
@@ -36,11 +39,12 @@ impl DtoTrait for ProductDto {
             .join(JoinType::LeftJoin, product::Relation::Brand.def())
             .join(JoinType::LeftJoin, product::Relation::Region.def())
             .join(JoinType::LeftJoin, product::Relation::Category.def())
+            .join(JoinType::LeftJoin, product::Relation::Discount.def())
     }
 }
 
 impl PartialDto for ProductDto {
-    async fn finalize(mut self, db: &sea_orm::DatabaseConnection) -> Result<Self, DbErr> {
+    async fn finalize<C: ConnectionTrait>(mut self, db: &C) -> Result<Self, DbErr> {
         let product = product::Entity::find_by_id(self.id)
             .one(db)
             .await?

@@ -1,71 +1,81 @@
 .topbar {
-    display: flex;
-    align-items: center;
-    background: var(--color-surface);
-    padding: 1rem 1.5rem;
-    gap: 1.5rem;
+  display: flex;
+  align-items: center;
+  background: var(--color-surface);
+  padding: 1rem 1.5rem;
+  gap: 1.5rem;
 }
 
 .topbar a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
 }
 
 .topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-left: auto;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
 }
 
 .logo {
-    width: 200px;
-    height: 80px;
-    object-fit: contain;
-    margin-right: 1rem;
+  width: 50px;
+  height: auto;
+  object-fit: contain;
 }
 
 .title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 1.5rem 0 0;
-    color: var(--color-text);
-    white-space: nowrap;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 1.5rem 0 0;
+  color: var(--color-text);
+  white-space: nowrap;
 }
 
 .search {
-    flex: 0 0 220px;
-    max-width: 220px;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-text-muted);
-    border-radius: 20px;
-    font-size: 1rem;
-    margin-right: 1.5rem;
-    color: var(--color-text);
-    background-color: var(--color-bg);
+  flex: 1;
+  max-width: 300px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-text-muted);
+  border-radius: 20px;
+  font-size: 1rem;
+  margin-right: 1.5rem;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
-.user-basket img {
-    width: 40px;
-    height: 40px;
+.user-basket {
+  cursor: pointer;
 }
 
 .user-profile img {
-    width: 40px;
-    height: 40px;
+  width: 40px;
+  height: 40px;
 }
 
 .basket-count {
-    position: absolute;
-    top: 34px;
-    right: -16px;
-    color: var(--color-bg);
-    background-color: var(--color-primary);
-    border-radius: 50%;
-    font-size: 0.8rem;
-    padding: 2px 6px;
-    min-width: 20px;
-    text-align: center;
-    font-weight: bold;
+  position: absolute;
+  top: 4rem;
+  right: 10.5rem;
+  color: var(--color-bg);
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.bottom {
+  height: 4px;
+  background: var(--color-primary);
 }

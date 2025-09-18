@@ -1,0 +1,104 @@
+<div class="flex-1 p-6 bg-base-100 h-screen ">
+    <button class="btn btn-link text-gray-600 no-underline p-0 font-medium" (click)="onBack()">
+        <fa-icon [icon]="faArrowLeft" /> Retour aux produits
+    </button>
+
+
+
+    @if (loading){
+    <h1 class="text-xl font-bold"> Chargement du produit <span class="loading loading-spinner loading-lg"></span></h1>
+    <div class="divider"></div>
+
+    }@else if(!loading && product) {
+
+    <h1 class="text-xl font-bold"> Détails du produit</h1>
+    <div class="divider"></div>
+
+    <table class="table table-zebra w-full">
+        <tbody>
+            <tr>
+                <th class="w-40">ID</th>
+                <td>{{ product.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ product.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ product.description ?? "Pas de description" }}</td>
+            </tr>
+            <tr>
+                <th>Prix @if(product.discount){original}</th>
+                <td>{{ product.price | number:'1.2-2'}}€</td>
+            </tr>
+            <tr>
+                <th>Promotion</th>
+                <td>
+                    @if (!product.discount){
+                    Aucune promotion.
+                    }@else {
+                    {{ product.discount.percentage_off}} % de réduction jusqu'au {{ product.discount.end_date | date:
+                    "dd/MM/yyyy"}}
+
+                    }
+                </td>
+            </tr>
+
+            @if( product.discount){
+            <tr>
+                <th>Prix réduit</th>
+                <td>
+                    {{ product.price - (product.price * product.discount.percentage_off) / 100| number:'1.2-2'}}€
+                </td>
+            </tr>
+
+            }
+            <tr>
+                <th>Catégorie</th>
+                <td>{{ product.category?.name ?? "Pas de catégorie" }}</td>
+            </tr>
+
+            <tr>
+                <th>Région</th>
+                <td>{{ product.region?.name ?? "Pas de région" }}</td>
+            </tr>
+            <tr>
+                <th>Stock</th>
+                <td>{{ product.stock }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>
+                    <img [src]="product.image" alt="{{ product.name }}" class="h-32 rounded border" />
+                </td>
+            </tr>
+
+            <tr>
+                <th>Tags</th>
+                <td>
+                    @if (product.tags?.length === 0){
+                    Aucun
+                    }
+                    @for (tag of product.tags; track $index) {
+                    <span>#{{tag.name}}</span>
+                    }
+                </td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+
+    }@else {
+    <h1 class="text-xl font-bold"> Erreur lors du chargement du produit</h1>
+
+
+    }
+
+
+
+</div>

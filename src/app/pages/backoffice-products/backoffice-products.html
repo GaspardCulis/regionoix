@@ -1,0 +1,70 @@
+<div class="flex-1 p-6 bg-base-100 h-screen ">
+  <div class="flex justify-between items-center">
+    <h1 class="text-xl font-bold">Produits</h1>
+    <button class="btn btn-primary" (click)="onCreateProduct()">
+      <fa-icon [icon]="faPlus" />Ajouter
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  @if (products.length === 0){
+  <p>Aucun produit.</p>
+  }@else{
+  <div class="overflow-x-auto max-w-full">
+    <table class="table table-zebra">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Stock</th>
+          <th>Prix</th>
+          <th>Région</th>
+          <th>Catégorie</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of products; track product.id) {
+        <tr>
+          <th>{{ product.id }}</th>
+          <th>{{ product.name }}</th>
+          <th class="truncate max-w-xs">{{ product.description }}</th>
+          <th>{{ product.stock }}</th>
+          <th>{{ product.price }} €</th>
+          <th>{{ product?.region?.name }}</th>
+          <th>{{ product?.category?.name }}</th>
+          <th>
+            <div class="join">
+              <button class="btn btn-outline btn-primary join-item" (click)="onSee(product.id)">Voir</button>
+              <button class="btn btn-outline btn-secondary join-item">Modifier</button>
+              <button class="btn btn-outline btn-error join-item" (click)="openDeleteModal(product)">Supprimer</button>
+            </div>
+          </th>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+
+  <dialog id="delete_modal" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Supprimer "{{selectedProduct?.name}}"</h3>
+      <p class="py-4"> <fa-icon [icon]="faCircleExclamation" class="text-error" /> <span class="font-bold"> Attention
+        </span>si vous
+        supprimez le produit "{{selectedProduct?.name}}", toutes les commandes
+        associées seront
+        aussi
+        supprimées.</p>
+      <div class="modal-action">
+        <form method="dialog">
+          <button class="btn">Annuler</button>
+          <button class="btn btn-outline btn-error" (click)="deleteProduct()">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+</div>

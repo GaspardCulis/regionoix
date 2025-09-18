@@ -1,0 +1,152 @@
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="/">Accueil</a> > Mon compte
+  </div>
+  <h1 class="page-title">Mon compte</h1>
+</div>
+
+<div class="account-container">
+  <aside class="sidebar">
+    <button class="tab" [class.active]="informationPage" (click)="showInformationPage()">Mes informations</button>
+    <button class="tab" [class.active]="!informationPage" (click)="showOrdersPage()">Mes commandes</button>
+    <button class="tab logout-btn" (click)="logout()">Déconnexion</button>
+  </aside>
+
+
+  @if (informationPage) {
+  <section class="content-card">
+    <h2>Mes informations personnelles</h2>
+    <form (ngSubmit)="save()">
+      <div class="form-row">
+        <label>
+          Prénom
+          <input type="text" [(ngModel)]="user.firstname" name="firstName" />
+        </label>
+
+        <label>
+          Nom
+          <input type="text" [(ngModel)]="user.lastname" name="lastName" />
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label>
+          Adresse mail
+          <input type="email" [(ngModel)]="user.email" name="email" />
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="save-btn">Sauvegarder</button>
+        <button type="button" class="password-btn" (click)="changePassword()">Changer le mot de passe</button>
+      </div>
+    </form>
+  </section>
+  }@else if(selectedOrder){
+  <section class="content-card">
+    <button class="btn btn-link text-gray-600 no-underline p-0 font-medium" (click)="backToOrders()">
+      <fa-icon [icon]="faArrowLeft" />Retour aux commandes
+    </button>
+    <h2>Commande N°{{selectedOrder.id}}</h2>
+
+    <div class="bg-gray-50 rounded-2xl shadow-sm p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div>
+          <p class="text-gray-500">Date de création</p>
+          <p class="font-medium">
+            {{ selectedOrder.creation_date ? (selectedOrder.creation_date | date:'dd/MM/yyyy') : '-' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-gray-500">Date de livraison</p>
+          <p class="font-medium">
+            {{ selectedOrder.arrival_date ? (selectedOrder.arrival_date | date:'dd/MM/yyyy') : '-' }}
+          </p>
+          <p class="mt-1 text-xs font-medium" [ngClass]="{
+              'text-green-600': selectedOrder && isDelivered(selectedOrder),
+              'text-yellow-600': selectedOrder && !isDelivered(selectedOrder)
+            }">
+            {{ selectedOrder
+            ? isDelivered(selectedOrder)
+            ? 'Commande livrée'
+            : 'En cours de livraison'
+            : '' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-gray-500">Total</p>
+          <p class="font-medium text-lg">
+            {{ selectedOrder.total_price | number:'1.2-2' }} €
+          </p>
+        </div>
+        <div>
+          <p class="text-gray-500">Adresse de livraison</p>
+          <p class="font-medium">
+            {{ selectedOrder.adress.firstname }} {{ selectedOrder.adress.lastname }}
+          </p>
+          <p class="text-sm">
+            {{ selectedOrder.adress.street }}<br />
+            {{ selectedOrder.adress.city }},
+            {{ selectedOrder.adress.country }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-50 rounded-2xl shadow-sm p-6">
+      <h3 class="text-lg font-semibold mb-4">Articles commandés</h3>
+      <div class="divide-y divide-gray-200">
+        <div *ngFor="let line of selectedOrder?.order_lines ?? []" class="flex items-center gap-4 py-4">
+          <img [src]="line.product.image ?? '/assets/default.png'" alt="{{ line.product.name }}"
+            class="w-16 h-16 object-cover rounded-lg border" />
+          <div class="flex-1">
+            <p class="font-medium">{{ line.product.name }}</p>
+            <p class="text-sm text-gray-500">
+              {{ line.quantity }} × {{ line.product.price }} €
+            </p>
+          </div>
+          <div class="font-semibold">
+            {{ (line.quantity * line.product.price) | number:'1.2-2' }} €
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  } @else {
+  <section class="content-card">
+    <h2>Mes commandes</h2>
+
+    <div class="orders-container" *ngIf="orders.length > 0; else noOrders">
+      @for(order of orders; track order.id){
+      <button class="order-card" (click)="onDetails(order)">
+        @if(isDelivered(order)) {
+        <div class="order-header" [ngClass]="{'delivered': isDelivered(order), 'in-delivery': !isDelivered(order)}">
+          <h3>Commande N°{{ order.id }}</h3>
+          <p>Livré le {{ order.arrival_date | date:'dd/MM/yyyy' }}</p>
+          <p class="order-total">{{ order.total_price | number:'1.2-2' }} €</p>
+        </div>
+        } @else {
+        <div class="order-header" [ngClass]="{'delivered': isDelivered(order), 'in-delivery': !isDelivered(order)}">
+          <h3>Commande N°{{ order.id }}</h3>
+          <p>Livraison prévue le {{ order.arrival_date | date:'dd/MM/yyyy' }}</p>
+          <p class="order-total">{{ order.total_price | number:'1.2-2' }} €</p>
+        </div>
+        }
+
+        <div *ngFor="let line of order.order_lines" class="order-item">
+          <img [src]="line.product.image ?? '/assets/default.png'" alt="{{ line.product.name }}" />
+          <div class="order-item-details">
+            <p class="product-name">{{ line.product.name }}</p>
+            <p class="product-price">{{ line.quantity }} × {{ line.product.price }} €</p>
+          </div>
+        </div>
+      </button>
+      }
+    </div>
+
+    <ng-template #noOrders>
+      <p>Vous n'avez pas encore de commandes.</p>
+    </ng-template>
+  </section>
+  }
+</div>

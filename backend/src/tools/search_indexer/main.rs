@@ -1,42 +1,38 @@
 use regionoix::{
-    dtos::{IntoDto, PartialDto, product_index::ProductIndex},
-    *,
+    dtos::{product::ProductDto, product_index::ProductIndex},
+    prelude::*,
 };
 
-use meilisearch_sdk::client::Client;
-use sea_orm::{Database, EntityTrait};
+use sea_orm::EntityTrait;
 use tracing::info;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
 
-    info!("Loading environment variables from .env");
-    let secrets = secrets::Secrets::load().expect("load secrets");
-
     info!("Connecting to database");
-    let db = Database::connect(secrets.database_url)
+    let db = DatabaseService::build()
         .await
-        .expect("Failed to connect to database");
+        .expect("failed to build DB service");
 
-    info!("Connecting to Meilisearch API");
-    let client = Client::new(secrets.meili.api_url, Some(secrets.meili.admin_api_key)).unwrap();
+    info!("Connecting to Meilisearch indexer");
+    let search = SearchService::build_admin().expect("failed to build Meilisearch service");
 
     info!("Querying products");
-    let products = entities::product::Entity::find()
-        .into_dto::<dtos::product::ProductDto>()
-        .all(&db)
+    let products = product::Entity::find()
+        .into_dto::<ProductDto>()
+        .all(&db.conn)
         .await
         .expect("valid connection");
 
     // Finalize (fetch tags)
     let products: Vec<_> =
-        futures::future::try_join_all(products.into_iter().map(|p| p.finalize(&db)))
+        futures::future::try_join_all(products.into_iter().map(|p| p.finalize(&db.conn)))
             .await
             .unwrap();
 
     // Index
-    let products_index = client.index("products");
+    let products_index = search.index("products");
 
     info!("Clearing previous documents");
     products_index

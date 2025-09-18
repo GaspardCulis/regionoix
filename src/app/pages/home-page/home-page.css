@@ -1,0 +1,93 @@
+.home-container {
+  background-color: var(--color-bg);
+}
+
+.hero {
+  background: linear-gradient(rgba(139, 94, 60, 0.3), rgba(191, 163, 138, 0.2)),
+    url('/assets/noix-banner.jpeg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.hero-overlay {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 600px;
+  height: auto;
+}
+
+.hero-overlay h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.hero-overlay p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-discover {
+  background-color: var(--color-text);
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--color-primary-pale);
+}
+
+.btn-discover:hover {
+  background-color: var(--color-primary-pale);
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  color: var(--color-text);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/*Nouveauté, Promotions & Best-Seller*/
+.tabs-section {
+  margin: 2rem 0;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  color: var(--color-primary);
+  transition: background 0.2s;
+}
+
+.tab.active {
+  background: var(--color-primary);
+  border-radius: 8px;
+  color: var(--color-surface);
+}
+
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.bottom {
+  height: 4px;
+  background: var(--color-primary);
+}

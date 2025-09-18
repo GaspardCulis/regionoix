@@ -16,11 +16,31 @@
     allowedTCPPorts = [22];
   };
 
-  environment.systemPackages = map lib.lowPrio [
-    pkgs.curl
-    pkgs.gitMinimal
-    pkgs.helix
-  ];
+  # Save on storage
+  nix.settings.auto-optimise-store = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
+  environment.systemPackages = with pkgs;
+    map lib.lowPrio [
+      curl
+      gitMinimal
+      helix
+      htop
+      bottom
+    ];
+
+  virtualisation = {
+    containers.enable = true;
+    podman = {
+      enable = true;
+      # Required for containers to be able to talk to each other.
+      defaultNetwork.settings.dns_enabled = true;
+    };
+  };
 
   # SSH
   services = {

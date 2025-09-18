@@ -1,54 +1,66 @@
 <div class="page-container">
-    <!-- Navbar en haut -->
-    <nav class="navbar">
-        <div class="nav-left">
-            <span class="brand">Produits Régionaux</span>
-        </div>
-        <div class="nav-right">
-            <div class="dropdown">
-                <button class="dropbtn">Catégories</button>
-                <div class="dropdown-content">
-                    <button *ngFor="let c of categories" (click)="selectedCategory = c">{{ c }}</button>
-                </div>
-            </div>
-            <div class="dropdown">
-                <button class="dropbtn">Régions</button>
-                <div class="dropdown-content">
-                    <button *ngFor="let r of regions" (click)="selectedRegion = r">{{ r }}</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
     <!-- Sidebar + Produits -->
     <aside class="filters">
+
         <h3>Filtres</h3>
+        <app-filter-dropdown-component title="Tri" [selectedOptions]="sortsState"
+            (optionToggled)="onSortsChange($event)"></app-filter-dropdown-component>
 
-        <label>
-            Prix max :
-            <input type="number" [(ngModel)]="maxPrice" placeholder="Ex: 50" />
+        <label class="price-filter">
+            Prix :
+            <div class="inputs">
+                <input type="number" [(ngModel)]="minPrice" placeholder="Min" min="0" (change)="loadProducts()" />
+                <span> - </span>
+                <input type="number" [(ngModel)]="maxPrice" placeholder="Max" min="0" (change)="loadProducts()" />
+            </div>
         </label>
 
-        <label>
-            Catégorie :
-            <select [(ngModel)]="selectedCategory">
-                <option value="">Toutes</option>
-                <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        <!-- Catégories -->
+        <app-filter-dropdown-component title="Catégories" [selectedOptions]="categoriesState"
+            (optionToggled)="onCategoriesChange($event)"></app-filter-dropdown-component>
+
+        <!-- Régions -->
+        <app-filter-dropdown-component title="Régions" [selectedOptions]="regionsState"
+            (optionToggled)="onRegionsChange($event)"></app-filter-dropdown-component>
+
+        <!-- Propriétés -->
+        <app-filter-dropdown-component title="Propriétés" [selectedOptions]="propertiesState"
+            (optionToggled)="onTagChange($event)"></app-filter-dropdown-component>
+
+        <!--Brands-->
+        <app-filter-dropdown-component title="Marques" [selectedOptions]="brandsState"
+            (optionToggled)="onBrandsChange($event)"></app-filter-dropdown-component>
+
+        <!--Reset Filters-->
+        <div class="reset-filters">
+            <button (click)="resetFilters()">Réinitialiser les filtres</button>
+        </div>
+
+        <!--Pagination-->
+        <nav class="pagination">
+            <button (click)="prevPage()" [disabled]="currentPage === 1">⬅ </button>
+            <span>Page {{ currentPage }}</span>
+
+            <button (click)="nextPage()"> ➡</button>
+            <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+                <option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }}</option>
             </select>
-        </label>
-
-        <label>
-            Région :
-            <select [(ngModel)]="selectedRegion">
-                <option value="">Toutes</option>
-                <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
-            </select>
-        </label>
+        </nav>
     </aside>
 
     <main class="product-grid">
-        <app-product-card-component *ngFor="let product of filteredProducts" [id]="product.id" [name]="product.name"
-            [image]="product.image" [price]="product.price" (addToBasket)="addItem($event)">
+
+        @if (products.length === 0) {
+        <div class="no-products-message">
+            <p> Aucun produit ne correspond à votre recherche </p>
+        </div>
+        } @else {
+        <app-product-card-component *ngFor="let product of products" [id]="product.id" [name]="product.name"
+            [image]="product.image ?? '/assets/default.png'" [discount]="product.discount?.percentage_off ?? null"
+            [price]="product.price" [stock]="product.stock" (addToBasket)="addItem($event)">
         </app-product-card-component>
+        }
+
     </main>
+
 </div>

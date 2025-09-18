@@ -1,11 +1,14 @@
 use std::num::ParseIntError;
 
 use actix_web::{ResponseError, http::StatusCode};
+use stripe::StripeError;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("an unspecified internal error occurred: {0}")]
     InternalError(#[from] anyhow::Error),
+    #[error("an unspecified internal communication error occurred: {0}")]
+    InternalCommunicationError(#[from] reqwest::Error),
     #[error("an error occurred while interacting with the database: {0}")]
     DatabaseError(#[from] sea_orm::DbErr),
     #[error("could not find requested {table_name}")]
@@ -15,10 +18,14 @@ pub enum Error {
     },
     #[error("failed to parse: {0}")]
     ParseIntFailure(#[from] ParseIntError),
+    #[error("failed to process payment: {0}")]
+    PaymentError(#[from] StripeError),
     #[error("authentication failed: password mismatch")]
     AuthenticationFailure,
     #[error("unauthenticated")]
     Unauthenticated,
+    #[error("unauthorized")]
+    Unauthorized,
     #[error("bad request: {0}")]
     BadRequestError(String),
 }
@@ -29,7 +36,10 @@ impl ResponseError for Error {
     fn status_code(&self) -> actix_web::http::StatusCode {
         match self {
             Error::EntityNotFound { table_name: _ } => StatusCode::NOT_FOUND,
-            Error::BadRequestError(_) => StatusCode::BAD_REQUEST,
+            Error::ParseIntFailure(_) | Error::BadRequestError(_) => StatusCode::BAD_REQUEST,
+            Error::AuthenticationFailure | Error::Unauthenticated | Error::Unauthorized => {
+                StatusCode::UNAUTHORIZED
+            }
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

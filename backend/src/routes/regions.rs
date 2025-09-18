@@ -1,8 +1,6 @@
 use crate::{dtos::region::RegionDto, prelude::*};
-use actix_web::{HttpResponse, get, web::Data};
+use regionoix::utils::PaginateQuery;
 use sea_orm::EntityTrait;
-
-use crate::{AppState, dtos::category::CategoryDto};
 
 pub fn config(cfg: &mut ServiceConfig) {
     cfg.service(get);
@@ -11,20 +9,23 @@ pub fn config(cfg: &mut ServiceConfig) {
 #[utoipa::path(
     summary="Returns region list",
     tag="Regions",
+    params(PaginateQuery),
     responses(
         (
             status=200,
             description="Region list successfully returned",
             content_type="application/json",
-            body=CategoryDto,
+            body=Vec<RegionDto>,
             example=json!([{"id": 1, "name": "Auvergne-Rhône-Alpes", "description": null}, {"id": 2, "name": "Grand Est", "description": null}]),
         ),
     ),
 )]
 #[get("")]
-pub async fn get(data: Data<AppState>) -> crate::Result<HttpResponse> {
-    let db = &data.db;
-    let regions: Vec<RegionDto> = Region::find().into_dto().all(db).await?;
+pub async fn get(
+    db: web::Data<DatabaseService>,
+    query: web::Query<PaginateQuery>,
+) -> crate::Result<HttpResponse> {
+    let regions: Vec<RegionDto> = query.paginate(Region::find().into_dto(), &db.conn).await?;
 
     Ok(HttpResponse::Ok().json(regions))
 }
