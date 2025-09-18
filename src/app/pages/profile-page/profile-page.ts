@@ -82,8 +82,7 @@ export class ProfilePage implements OnInit {
       next: () => {
         this.authStateService.notifyAuthChanged();
         this.basketState.refreshCount();
-
-        this.router.navigate(['/connection']);
+        window.location.reload();
       },
       error: () => this.snackBar.show('Erreur lors de la déconnexion', 'error'),
     });
