@@ -45,7 +45,7 @@ export class CreateAccount {
         form.resetForm();
         this.goToLogin();
       },
-      error: () => this.snackBar.show('Une erreur est survenu, veuillez contacter le support', 'error')
+      error: () => this.snackBar.show('Une erreur est survenue, veuillez contacter le support', 'error')
     })
   }
 

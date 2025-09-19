@@ -116,7 +116,7 @@ describe('CreateAccount', () => {
     tick();
 
     expect(snackBarSpy.show).toHaveBeenCalledWith(
-      'Une erreur est survenu, veuillez contacter le support', 'error'
+      'Une erreur est survenue, veuillez contacter le support', 'error'
     );
   }));
 
