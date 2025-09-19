@@ -93,17 +93,16 @@ async fn handle_expired_payment(
     // Get order lines ordered by product to avoid deadlock
     let order_lines = order
         .find_related(order_line::Entity)
-        .find_also_related(product::Entity)
         .order_by_asc(order_line::Column::ProductId)
         .lock_exclusive()
         .all(txn)
         .await?;
 
     // Re-increment stock
-    for (line, product) in order_lines.into_iter() {
-        let product = product.ok_or(crate::Error::InternalError(anyhow::anyhow!(
-            "Failed to find order-line product"
-        )))?;
+    for line in order_lines.into_iter() {
+        let product = line.find_related(product::Entity).one(txn).await?.ok_or(
+            crate::Error::InternalError(anyhow::anyhow!("Failed to find order-line product")),
+        )?;
 
         let mut product_am: product::ActiveModel = product.into();
         product_am.stock = Set(product_am.stock.unwrap() + line.quantity);
