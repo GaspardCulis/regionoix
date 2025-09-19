@@ -30,10 +30,7 @@ export class BackofficeProducts implements OnInit {
     this.productService.get().subscribe({
       next: (data) => (this.products = data),
       error: (err) => {
-        this.snackBar.show(
-          'Echec lors de la récupération des produits',
-          'error'
-        );
+        this.snackBar.show('Echec lors de la récupération des produits', 'error');
         // update products list
         console.error('Somethings went wrong during products recuperation', err);
       },
@@ -68,11 +65,10 @@ export class BackofficeProducts implements OnInit {
       },
       error: () => {
         this.snackBar.show(
-          'Échec lors de la suppression du produit',
+          `Le produit "${this.selectedProduct?.name}" ne peut pas être supprimé`,
           'error'
         );
       },
     });
   }
-
 }

@@ -1,4 +1,4 @@
-<div class="flex-1 p-6 bg-base-100 min-h-screen ">
+<div class="flex-1 p-6 bg-base-100 min-h-screen">
   <div class="flex justify-between items-center">
     <h1 class="text-xl font-bold">Produits</h1>
     <button class="btn btn-primary" (click)="onCreateProduct()">
@@ -38,9 +38,16 @@
           <th>{{ product?.category?.name }}</th>
           <th>
             <div class="join">
-              <button class="btn btn-outline btn-primary join-item" (click)="onSee(product.id)">Voir</button>
+              <button class="btn btn-outline btn-primary join-item" (click)="onSee(product.id)">
+                Voir
+              </button>
               <button class="btn btn-outline btn-secondary join-item">Modifier</button>
-              <button class="btn btn-outline btn-error join-item" (click)="openDeleteModal(product)">Supprimer</button>
+              <button
+                class="btn btn-outline btn-error join-item"
+                (click)="openDeleteModal(product)"
+              >
+                Supprimer
+              </button>
             </div>
           </th>
         </tr>
@@ -52,13 +59,13 @@
 
   <dialog id="delete_modal" class="modal">
     <div class="modal-box">
-      <h3 class="text-lg font-bold">Supprimer "{{selectedProduct?.name}}"</h3>
-      <p class="py-4"> <fa-icon [icon]="faCircleExclamation" class="text-error" /> <span class="font-bold"> Attention
-        </span>si vous
-        supprimez le produit "{{selectedProduct?.name}}", toutes les commandes
-        associées seront
-        aussi
-        supprimées.</p>
+      <h3 class="text-lg font-bold">Supprimer "{{ selectedProduct?.name }}" ?</h3>
+      <p class="py-4">
+        <fa-icon [icon]="faCircleExclamation" class="text-error" /> Pour des raisons de
+        <span class="font-bold"> traçabilité </span> la suppression du produit "{{
+          selectedProduct?.name
+        }}", ne sera effective que s’il n’apparaît dans aucun panier ni aucune commande.
+      </p>
       <div class="modal-action">
         <form method="dialog">
           <button class="btn">Annuler</button>

@@ -9,17 +9,16 @@ import { DatePipe, DecimalPipe } from '@angular/common';
   selector: 'app-backoffice-product',
   imports: [FontAwesomeModule, DatePipe, DecimalPipe],
   templateUrl: './backoffice-product.html',
-  styleUrl: './backoffice-product.css'
+  styleUrl: './backoffice-product.css',
 })
 export class BackofficeProduct implements OnInit {
   faArrowLeft = faArrowLeft;
   product: null | ProductDto = null;
   final_price: null | number = null;
   loading = true;
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private productService = inject(ProductsService);
-
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly productService = inject(ProductsService);
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -29,23 +28,27 @@ export class BackofficeProduct implements OnInit {
         next: (data) => {
           this.product = {
             ...data,
-            image: data.image ?? 'assets/default.png'
+            image: data.image ?? 'assets/default.png',
           };
 
           if (this.product.discount) {
-            this.final_price = this.product.price - (this.product.price * this.product.discount.percentage_off) / 100;
+            this.final_price =
+              this.product.price -
+              (this.product.price * this.product.discount.percentage_off) / 100;
           }
+          this.loading = false;
         },
-        error: (err) => console.error('Erreur lors de la récupération du produit', err)
+        error: (err) => {
+          console.error('Erreur lors de la récupération du produit', err);
+          this.loading = false;
+        },
       });
+    } else {
+      this.loading = false;
     }
-    this.loading = false;
   }
-
-
 
   onBack(): void {
     this.router.navigate(['/backoffice/products']);
   }
-
 }
