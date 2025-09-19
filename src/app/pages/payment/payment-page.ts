@@ -3,14 +3,24 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SnackbarService } from '../../services/snackbar-service';
-import { AuthentificationService, BasketService, CartDto, FormDataCreateCheckoutSession, LoggedUser, PaymentService, PostalInfo, ProductDto } from '../../generated/clients/regionoix-client';
+import {
+  AuthentificationService,
+  BasketService,
+  CartDto,
+  FormDataCreateCheckoutSession,
+  LoggedUser,
+  PaymentService,
+  PostalInfo,
+  ProductDto,
+} from '../../generated/clients/regionoix-client';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-payment-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './payment-page.html',
-  styleUrls: ['./payment-page.css']
+  styleUrls: ['./payment-page.css'],
 })
 export class PaymentPage implements OnInit {
   totalPrice!: number;
@@ -23,7 +33,7 @@ export class PaymentPage implements OnInit {
     firstname: '',
     lastname: '',
     postal_code: '',
-    street: ''
+    street: '',
   };
 
   private readonly router = inject(Router);
@@ -42,10 +52,10 @@ export class PaymentPage implements OnInit {
           email: user.email,
           firstname: user.firstname,
           lastname: user.lastname,
-          role: user.role
+          role: user.role,
         };
       },
-      error: () => this.router.navigate(['/connection'])
+      error: () => this.router.navigate(['/connection']),
     });
 
     this.basketService.get().subscribe({
@@ -53,7 +63,7 @@ export class PaymentPage implements OnInit {
         this.basket = basket;
         this.totalPrice = this.totalBasketPrice;
       },
-      error: () => this.snackBarService.show('Erreur lors du chargement du panier.', 'error')
+      error: () => this.snackBarService.show('Erreur lors du chargement du panier.', 'error'),
     });
   }
 
@@ -62,25 +72,38 @@ export class PaymentPage implements OnInit {
   }
 
   submitAll() {
-    if (!this.address.lastname || !this.address.firstname ||
-      !this.address.street || !this.address.city ||
-      !this.address.postal_code || !this.address.country) {
+    if (
+      !this.address.lastname ||
+      !this.address.firstname ||
+      !this.address.street ||
+      !this.address.city ||
+      !this.address.postal_code ||
+      !this.address.country
+    ) {
       this.snackBarService.show('Veuillez remplir tous les champs requis.', 'info');
       return;
     }
     const checkoutInterface: FormDataCreateCheckoutSession = {
-      cancel_url: window.location.origin + "/error-payment",
+      cancel_url: window.location.origin + '/error-payment',
       postal_info: this.address,
-      success_url: window.location.origin + "/payment-successful",
+      success_url: window.location.origin + '/payment-successful',
     };
 
     this.paymentService.createCheckoutSession(checkoutInterface).subscribe({
       next: (redirectUrl: string) => {
         window.location.href = redirectUrl;
       },
-      error: () => {
-        this.snackBarService.show('Echec de redirection vers la page de paiement', "error");
-      }
+
+      error: (e: HttpErrorResponse) => {
+        if (e.status === 400) {
+          this.snackBarService.show(
+            "Au moins un des produits dans votre panier n'a plus de stock.",
+            'error'
+          );
+        } else {
+          this.snackBarService.show('Echec de redirection vers la page de paiement', 'error');
+        }
+      },
     });
   }
 
@@ -90,9 +113,11 @@ export class PaymentPage implements OnInit {
   }
 
   get totalBasketPrice(): number {
-    return this.basket?.lines?.reduce((total, line) =>
-      total + this.getProductPrice(line.product) * line.quantity, 0
-    ) ?? 0;
+    return (
+      this.basket?.lines?.reduce(
+        (total, line) => total + this.getProductPrice(line.product) * line.quantity,
+        0
+      ) ?? 0
+    );
   }
-
 }
